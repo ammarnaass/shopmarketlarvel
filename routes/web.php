@@ -1,0 +1,179 @@
+<?php
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InstantBuyController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\WishlistController;
+use Illuminate\Support\Facades\Route;
+
+// Home
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Static pages
+Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
+Route::get('/about', fn() => redirect()->route('page.show', 'about'));
+Route::get('/contact', fn() => redirect()->route('page.show', 'contact'));
+Route::get('/faq', fn() => redirect()->route('page.show', 'faq'));
+Route::get('/return', fn() => redirect()->route('page.show', 'return-policy'));
+Route::get('/track', [PageController::class, 'track'])->name('track');
+Route::post('/track', [PageController::class, 'track'])->name('track.submit');
+Route::get('/api/countries/{code}/states', [PageController::class, 'states'])->name('api.countries.states');
+Route::get('/currency/{code}', function (string $code) {
+    $code = strtoupper($code);
+    $countries = config('ecommerce.countries', []);
+    if (!array_key_exists($code, $countries)) {
+        $code = config('ecommerce.default_country', 'SD');
+    }
+    session(['selected_country' => $code]);
+    return back();
+})->name('currency.switch');
+
+// Auth
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Shop
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/shop/{slug}', [ShopController::class, 'show'])->name('shop.show');
+Route::get('/category/{slug}', [ShopController::class, 'category'])->name('shop.category');
+Route::get('/categories/{slug}', fn($slug) => redirect()->route('shop.category', $slug));
+
+// Cart (guest + auth)
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->name('cart.coupon');
+Route::delete('/cart/coupon', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove');
+
+// Checkout
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/calculate-shipping', [CheckoutController::class, 'calculateShipping'])->name('checkout.shipping');
+    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
+
+    // Orders
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist', [WishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
+    // Account
+    Route::get('/account', [App\Http\Controllers\AccountController::class, 'index'])->name('account.index');
+    Route::put('/account', [App\Http\Controllers\AccountController::class, 'updateProfile'])->name('account.update');
+    Route::put('/account/password', [App\Http\Controllers\AccountController::class, 'updatePassword'])->name('account.password');
+    Route::post('/account/address', [App\Http\Controllers\AccountController::class, 'storeAddress'])->name('account.address.store');
+    Route::post('/account/address/{address}/default', [App\Http\Controllers\AccountController::class, 'setDefaultAddress'])->name('account.address.default');
+    Route::delete('/account/address/{address}', [App\Http\Controllers\AccountController::class, 'destroyAddress'])->name('account.address.destroy');
+});
+
+// Instant Buy (works for guests and authenticated users)
+Route::get('/instant', [InstantBuyController::class, 'create'])->name('instant.create');
+Route::get('/instant/{slug}', [InstantBuyController::class, 'create'])->name('instant.buy');
+Route::post('/instant/calculate', [InstantBuyController::class, 'calculate'])->name('instant.calculate');
+Route::post('/instant/coupon', [InstantBuyController::class, 'validateCoupon'])->name('instant.coupon');
+Route::post('/instant/submit', [InstantBuyController::class, 'submit'])->name('instant.submit');
+Route::get('/order/{orderNumber}/thanks', [InstantBuyController::class, 'thankyou'])->name('instant.thankyou');
+
+// Admin
+Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/quick-setting', [App\Http\Controllers\Admin\DashboardController::class, 'quickSetting'])->name('quickSetting');
+    Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
+    Route::post('/products/bulk-action', [App\Http\Controllers\Admin\ProductController::class, 'bulkAction'])->name('products.bulkAction');
+    Route::get('/products/export/csv', [App\Http\Controllers\Admin\ProductController::class, 'export'])->name('products.export');
+    Route::get('/products/{product}/gallery', [App\Http\Controllers\Admin\ProductController::class, 'gallery'])->name('products.gallery');
+    Route::post('/products/{product}/images', [App\Http\Controllers\Admin\ProductController::class, 'uploadImages'])->name('products.images.upload');
+    Route::patch('/products/{product}/images/{image}', [App\Http\Controllers\Admin\ProductController::class, 'updateImage'])->name('products.images.update');
+    Route::delete('/products/{product}/images/{image}', [App\Http\Controllers\Admin\ProductController::class, 'destroyImage'])->name('products.images.destroy');
+    Route::post('/products/{product}/images/{image}/primary', [App\Http\Controllers\Admin\ProductController::class, 'setPrimaryImage'])->name('products.images.primary');
+    Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
+    Route::resource('orders', App\Http\Controllers\Admin\OrderController::class)->except(['create', 'store', 'edit']);
+    Route::post('/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::post('/orders/{order}/notes', [App\Http\Controllers\Admin\OrderController::class, 'addNote'])->name('orders.notes.store');
+    Route::delete('/orders/notes/{note}', [App\Http\Controllers\Admin\OrderController::class, 'deleteNote'])->name('orders.notes.delete');
+    Route::post('/orders/bulk-action', [App\Http\Controllers\Admin\OrderController::class, 'bulkAction'])->name('orders.bulkAction');
+    Route::resource('coupons', App\Http\Controllers\Admin\CouponController::class);
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+
+    // Reviews
+    Route::get('/reviews', [App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('reviews.index');
+    Route::patch('/reviews/{review}/status', [App\Http\Controllers\Admin\ReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
+    Route::delete('/reviews/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    // Tags
+    Route::get('/tags', [App\Http\Controllers\Admin\TagController::class, 'index'])->name('tags.index');
+    Route::post('/tags', [App\Http\Controllers\Admin\TagController::class, 'store'])->name('tags.store');
+    Route::put('/tags/{tag}', [App\Http\Controllers\Admin\TagController::class, 'update'])->name('tags.update');
+    Route::delete('/tags/{tag}', [App\Http\Controllers\Admin\TagController::class, 'destroy'])->name('tags.destroy');
+
+    // Pages
+    Route::resource('pages', App\Http\Controllers\Admin\PageController::class)->except(['show']);
+
+    // Shipping (zones + methods + companies + labels + tracking)
+    Route::get('/shipping', [App\Http\Controllers\Admin\ShippingController::class, 'index'])->name('shipping.index');
+    // Companies
+    Route::get('/shipping/companies/create', [App\Http\Controllers\Admin\ShippingController::class, 'createCompany'])->name('shipping.company.create');
+    Route::post('/shipping/companies', [App\Http\Controllers\Admin\ShippingController::class, 'storeCompany'])->name('shipping.company.store');
+    Route::get('/shipping/companies/{company}/edit', [App\Http\Controllers\Admin\ShippingController::class, 'editCompany'])->name('shipping.company.edit');
+    Route::put('/shipping/companies/{company}', [App\Http\Controllers\Admin\ShippingController::class, 'updateCompany'])->name('shipping.company.update');
+    Route::delete('/shipping/companies/{company}', [App\Http\Controllers\Admin\ShippingController::class, 'destroyCompany'])->name('shipping.company.destroy');
+    // Zones
+    Route::get('/shipping/zones/create', [App\Http\Controllers\Admin\ShippingController::class, 'createZone'])->name('shipping.zone.create');
+    Route::post('/shipping/zones', [App\Http\Controllers\Admin\ShippingController::class, 'storeZone'])->name('shipping.zone.store');
+    Route::get('/shipping/zones/{zone}/edit', [App\Http\Controllers\Admin\ShippingController::class, 'editZone'])->name('shipping.zone.edit');
+    Route::put('/shipping/zones/{zone}', [App\Http\Controllers\Admin\ShippingController::class, 'updateZone'])->name('shipping.zone.update');
+    Route::delete('/shipping/zones/{zone}', [App\Http\Controllers\Admin\ShippingController::class, 'destroyZone'])->name('shipping.zone.destroy');
+    // Methods
+    Route::get('/shipping/methods/create', [App\Http\Controllers\Admin\ShippingController::class, 'createMethod'])->name('shipping.method.create');
+    Route::post('/shipping/methods', [App\Http\Controllers\Admin\ShippingController::class, 'storeMethod'])->name('shipping.method.store');
+    Route::get('/shipping/methods/{method}/edit', [App\Http\Controllers\Admin\ShippingController::class, 'editMethod'])->name('shipping.method.edit');
+    Route::put('/shipping/methods/{method}', [App\Http\Controllers\Admin\ShippingController::class, 'updateMethod'])->name('shipping.method.update');
+    Route::delete('/shipping/methods/{method}', [App\Http\Controllers\Admin\ShippingController::class, 'destroyMethod'])->name('shipping.method.destroy');
+    Route::post('/shipping/zones/{zone}/methods', [App\Http\Controllers\Admin\ShippingController::class, 'storeMethodForZone'])->name('shipping.zone.method.store');
+    // Labels (Waybills)
+    Route::get('/shipping/labels/create', [App\Http\Controllers\Admin\ShippingController::class, 'createLabel'])->name('shipping.label.create');
+    Route::post('/shipping/labels', [App\Http\Controllers\Admin\ShippingController::class, 'storeLabel'])->name('shipping.label.store');
+    Route::get('/shipping/labels/{label}', [App\Http\Controllers\Admin\ShippingController::class, 'showLabel'])->name('shipping.label.show');
+    Route::post('/shipping/labels/{label}/status', [App\Http\Controllers\Admin\ShippingController::class, 'updateLabelStatus'])->name('shipping.label.updateStatus');
+    Route::post('/shipping/labels/{label}/tracking', [App\Http\Controllers\Admin\ShippingController::class, 'addTrackingUpdate'])->name('shipping.label.tracking');
+    Route::get('/shipping/labels/{label}/pdf', [App\Http\Controllers\Admin\ShippingController::class, 'printLabel'])->name('shipping.label.pdf');
+    Route::post('/shipping/bulk-ship', [App\Http\Controllers\Admin\ShippingController::class, 'bulkShip'])->name('shipping.bulkShip');
+
+    // Payments
+    Route::get('/payments', [App\Http\Controllers\Admin\PaymentController::class, 'index'])->name('payments.index');
+
+    // Currencies
+    Route::get('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'index'])->name('currencies.index');
+    Route::post('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'update'])->name('currencies.update');
+
+    // Reports
+    Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+
+    // Settings
+    Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
+    Route::post('/settings/remove-image', [App\Http\Controllers\Admin\SettingsController::class, 'removeImage'])->name('settings.removeImage');
+
+    // Customize
+    Route::get('/customize', [App\Http\Controllers\Admin\CustomizeController::class, 'index'])->name('customize.index');
+    Route::post('/customize', [App\Http\Controllers\Admin\CustomizeController::class, 'update'])->name('customize.update');
+    Route::post('/customize/reset', [App\Http\Controllers\Admin\CustomizeController::class, 'reset'])->name('customize.reset');
+    Route::post('/customize/remove-image', [App\Http\Controllers\Admin\CustomizeController::class, 'removeImage'])->name('customize.removeImage');
+});

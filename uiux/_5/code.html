@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>قائمة المفضلة | متجر خالد</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#586377",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e7e7f3",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#ffede6",
+                        "surface-container": "#ededf9",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#00174b",
+                        "primary-container": "#2563eb",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-container-low": "#f3f3fe",
+                        "surface-container-highest": "#e1e2ed",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-background": "#191b23",
+                        "surface": "#faf8ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "inverse-on-surface": "#f0f0fb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "background": "#faf8ff",
+                        "on-surface": "#191b23",
+                        "tertiary-container": "#bc4800",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#111c2d",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "surface-bright": "#faf8ff",
+                        "surface-variant": "#e1e2ed",
+                        "secondary-container": "#d5e0f8",
+                        "primary": "#004ac6",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary": "#943700",
+                        "outline-variant": "#c3c6d7",
+                        "on-primary-container": "#eeefff",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "outline": "#737686",
+                        "inverse-surface": "#2e3039",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-dim": "#d9d9e5",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "surface-tint": "#0053db",
+                        "secondary": "#545f73"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "margin-page": "2rem",
+                        "stack-md": "1rem",
+                        "stack-lg": "1.5rem",
+                        "gutter": "1.5rem",
+                        "stack-sm": "0.5rem"
+                    },
+                    "fontFamily": {
+                        "title-lg": ["IBM Plex Sans Arabic"],
+                        "headline-md": ["IBM Plex Sans Arabic"],
+                        "body-sm": ["IBM Plex Sans Arabic"],
+                        "headline-sm": ["IBM Plex Sans Arabic"],
+                        "display-lg": ["IBM Plex Sans Arabic"],
+                        "body-md": ["IBM Plex Sans Arabic"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest dark:bg-inverse-surface border-b border-outline-variant dark:border-outline shadow-sm flex items-center justify-between px-margin-page py-stack-md w-full sticky top-0 z-50">
+<div class="flex items-center gap-gutter">
+<h1 class="font-display-lg text-display-lg text-primary dark:text-primary-fixed-dim">Khaled Store</h1>
+<nav class="hidden md:flex items-center gap-stack-lg font-body-md text-body-md">
+<a class="text-on-surface-variant dark:text-on-secondary-container hover:text-primary transition-colors duration-200" href="#">الرئيسية</a>
+<a class="text-on-surface-variant dark:text-on-secondary-container hover:text-primary transition-colors duration-200" href="#">التصنيفات</a>
+<a class="text-on-surface-variant dark:text-on-secondary-container hover:text-primary transition-colors duration-200" href="#">العروض</a>
+<a class="text-on-surface-variant dark:text-on-secondary-container hover:text-primary transition-colors duration-200" href="#">الأكثر مبيعاً</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="relative hidden sm:block">
+<input class="bg-surface-container-low border border-outline-variant rounded-full px-4 py-2 text-body-sm focus:ring-2 focus:ring-primary focus:outline-none w-64" placeholder="ابحث عن منتجات..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="active:scale-95 transition-transform"><span class="material-symbols-outlined">account_circle</span></button>
+<button class="active:scale-95 transition-transform text-primary border-b-2 border-primary pb-1"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span></button>
+<button class="active:scale-95 transition-transform relative">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute -top-2 -right-2 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full">3</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin-page py-stack-lg min-h-screen">
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-body-sm text-on-surface-variant mb-stack-lg">
+<a class="hover:text-primary transition-colors" href="#">الرئيسية</a>
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+<span class="text-primary font-bold">المفضلة</span>
+</nav>
+<!-- Page Title -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-outline-variant pb-6">
+<div>
+<div class="flex items-center gap-3 text-primary mb-2">
+<span class="material-symbols-outlined text-display-lg" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<h2 class="font-headline-md text-headline-md">قائمة المفضلة</h2>
+</div>
+<p class="text-on-surface-variant font-body-md">لديك <span class="font-bold text-on-surface">12 منتج</span> في قائمة الأمنيات الخاصة بك</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-6 py-2.5 bg-error-container text-on-error-container rounded-lg font-label-md hover:bg-error hover:text-on-error transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">delete_sweep</span>
+                    إفراغ القائمة
+                </button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary rounded-lg font-label-md hover:opacity-90 transition-all active:scale-95 shadow-md">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+                    شراء الكل
+                </button>
+</div>
+</div>
+<!-- Wishlist Content -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant">
+<!-- Table Header -->
+<div class="hidden md:grid grid-cols-12 bg-surface-container-low px-6 py-4 font-label-md text-on-surface-variant border-b border-outline-variant">
+<div class="col-span-6">المنتج</div>
+<div class="col-span-2 text-center">السعر</div>
+<div class="col-span-4 text-left">الإجراءات</div>
+</div>
+<!-- List Items -->
+<div class="divide-y divide-outline-variant">
+<!-- Item 1 -->
+<div class="grid grid-cols-1 md:grid-cols-12 items-center px-6 py-6 gap-4 hover:bg-surface-container-low transition-colors group">
+<div class="col-span-1 md:col-span-6 flex items-center gap-4">
+<div class="w-24 h-24 flex-shrink-0 bg-surface-container rounded-lg overflow-hidden border border-outline-variant">
+<img alt="تيشيرت قطني" class="w-full h-full object-cover" data-alt="A premium high-quality minimalist white cotton t-shirt presented on a clean studio background with soft cinematic lighting. The fabric texture is visible and detailed, reflecting a professional retail aesthetic with neutral cool tones and sharp focus. The mood is modern and clean, fitting for a high-end clothing store catalog." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgh_KJg12ecSeDjuo54XiUxC-mrDScnK4ApgRrJCQp1bVYNW5w9vuD-peUHwzjo-pPHrziEvrZcrfWP39iVdcH5kRFMt5cIAvoAEpv47rorqjTBVvPAQWIV7r1orx20VORHy39x7z2TvEy1KYCFyerfY2paFRBuEldtCa5z0dGrTa381xK2tV6sdFpFFWYi25FRNN0IjMb-irXlEKfVChZlKyJjzFZhG7ZdtrxTSOyHrpDZ6nPFxjcrg2UXn7YaivLoTnK2fFxEeo"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface group-hover:text-primary transition-colors">تيشيرت قطني ناعم</h3>
+<p class="text-body-sm text-on-surface-variant line-clamp-2 mt-1">قطن 100% ممتاز، مريح للاستخدام اليومي بتصميم عصري.</p>
+<span class="inline-block mt-2 px-2 py-0.5 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold rounded uppercase">متوفر في المخزن</span>
+</div>
+</div>
+<div class="col-span-1 md:col-span-2 text-right md:text-center">
+<span class="font-headline-sm text-headline-sm text-primary">150 ر.س</span>
+</div>
+<div class="col-span-1 md:col-span-4 flex items-center justify-end gap-3">
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container/30" title="إزالة">
+<span class="material-symbols-outlined">delete</span>
+</button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-primary text-on-primary rounded-full font-label-md hover:bg-on-primary-fixed-variant transition-all active:scale-95 shadow-md">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+                            شراء فوري
+                        </button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="grid grid-cols-1 md:grid-cols-12 items-center px-6 py-6 gap-4 hover:bg-surface-container-low transition-colors group">
+<div class="col-span-1 md:col-span-6 flex items-center gap-4">
+<div class="w-24 h-24 flex-shrink-0 bg-surface-container rounded-lg overflow-hidden border border-outline-variant">
+<img alt="حذاء رياضي" class="w-full h-full object-cover" data-alt="A sleek red high-performance athletic running shoe floating in a minimalist gray space. Professional studio product photography with dynamic sharp lighting highlights the mesh textures and aerodynamic design. The aesthetic is clean, energetic, and high-end, utilizing a palette of vibrant red and neutral grays." src=""/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface group-hover:text-primary transition-colors">حذاء رياضي ألترا بلس</h3>
+<p class="text-body-sm text-on-surface-variant line-clamp-2 mt-1">حذاء خفيف الوزن للجري، مريح للقدمين مع تقنية امتصاص الصدمات.</p>
+<span class="inline-block mt-2 px-2 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold rounded uppercase">آخر 3 قطع!</span>
+</div>
+</div>
+<div class="col-span-1 md:col-span-2 text-right md:text-center">
+<span class="font-headline-sm text-headline-sm text-primary">350 ر.س</span>
+</div>
+<div class="col-span-1 md:col-span-4 flex items-center justify-end gap-3">
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container/30" title="إزالة">
+<span class="material-symbols-outlined">delete</span>
+</button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-primary text-on-primary rounded-full font-label-md hover:bg-on-primary-fixed-variant transition-all active:scale-95 shadow-md">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+                            شراء فوري
+                        </button>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="grid grid-cols-1 md:grid-cols-12 items-center px-6 py-6 gap-4 hover:bg-surface-container-low transition-colors group">
+<div class="col-span-1 md:col-span-6 flex items-center gap-4">
+<div class="w-24 h-24 flex-shrink-0 bg-surface-container rounded-lg overflow-hidden border border-outline-variant">
+<img alt="ساعة ذكية" class="w-full h-full object-cover" data-alt="A modern luxury smartwatch with a sleek metal finish and dark band, displayed against a soft-focus lifestyle background. The lighting is elegant and directional, accentuating the glass screen and sophisticated industrial design. The overall look is professional, high-tech, and aspirational, using a palette of deep blues and polished silver." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPtoZcljKwMDu-EKwCfEluksPxfintPAp4RWDzJL9iuPBTf2PF9PS_pdecTYOsPpAbzh1_cYHdt5h09xUXQid_bqnGNPEOJAjqTpEXLvHd4xjD2zs3mLKLnF-H_T2oV0UTsEnJFU387mRdxp9YctPm0u8LiHv-bOkZsCXM-kAdIe8rKQrQouBcRg3o3zA0UNQIuP0rxF_fgyPKNdJFyCcX_p9wiBIMF_YKAVShhSFqxhjCs6b5A9UhcLLalZ5XH7h1S9L-jcfcMWA"/>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface group-hover:text-primary transition-colors">ساعة ذكية برو X</h3>
+<p class="text-body-sm text-on-surface-variant line-clamp-2 mt-1">تتبع نشاطك البدني، ضربات القلب، وتلقي الإشعارات مباشرة على معصمك.</p>
+<span class="inline-block mt-2 px-2 py-0.5 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold rounded uppercase">متوفر في المخزن</span>
+</div>
+</div>
+<div class="col-span-1 md:col-span-2 text-right md:text-center">
+<span class="font-headline-sm text-headline-sm text-primary">450 ر.س</span>
+</div>
+<div class="col-span-1 md:col-span-4 flex items-center justify-end gap-3">
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container/30" title="إزالة">
+<span class="material-symbols-outlined">delete</span>
+</button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-primary text-on-primary rounded-full font-label-md hover:bg-on-primary-fixed-variant transition-all active:scale-95 shadow-md">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+                            شراء فوري
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination/Load More Hint -->
+<div class="mt-8 text-center">
+<button class="text-primary font-label-md flex items-center gap-2 mx-auto hover:underline">
+                عرض المزيد من المنتجات
+                <span class="material-symbols-outlined">keyboard_arrow_down</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-inverse-surface dark:bg-surface-container-highest w-full px-margin-page py-12 flex flex-col md:flex-row justify-between gap-gutter">
+<div class="flex flex-col gap-stack-md max-w-sm">
+<h2 class="font-headline-sm text-headline-sm text-surface-container-lowest">Khaled Store</h2>
+<p class="font-body-sm text-body-sm text-surface-variant">الوجهة المثالية لتسوق أحدث المنتجات بجودة عالية وأسعار منافسة. نحن نهتم بتجربتكم ونسعى دائماً للأفضل.</p>
+<div class="flex gap-4 mt-2">
+<a class="text-surface-variant hover:text-primary-fixed transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-surface-variant hover:text-primary-fixed transition-colors" href="#"><span class="material-symbols-outlined">share</span></a>
+<a class="text-surface-variant hover:text-primary-fixed transition-colors" href="#"><span class="material-symbols-outlined">mail</span></a>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-12 mt-8 md:mt-0">
+<div class="flex flex-col gap-3">
+<h4 class="text-primary-fixed font-label-md mb-2">روابط سريعة</h4>
+<a class="text-surface-variant font-body-sm hover:text-primary-fixed transition-colors" href="#">من نحن</a>
+<a class="text-surface-variant font-body-sm hover:text-primary-fixed transition-colors" href="#">اتصل بنا</a>
+<a class="text-surface-variant font-body-sm hover:text-primary-fixed transition-colors" href="#">الأسئلة الشائعة</a>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="text-primary-fixed font-label-md mb-2">القانونية</h4>
+<a class="text-surface-variant font-body-sm hover:text-primary-fixed transition-colors" href="#">سياسة الخصوصية</a>
+<a class="text-surface-variant font-body-sm hover:text-primary-fixed transition-colors" href="#">الشروط والأحكام</a>
+</div>
+<div class="flex flex-col gap-3 col-span-2 sm:col-span-1">
+<h4 class="text-primary-fixed font-label-md mb-2">النشرة البريدية</h4>
+<div class="flex gap-2">
+<input class="bg-on-surface-variant/20 border-none rounded px-3 py-2 text-white text-body-sm focus:ring-1 focus:ring-primary-fixed w-full" placeholder="بريدك الإلكتروني" type="email"/>
+<button class="bg-primary-fixed text-on-primary-fixed px-4 py-2 rounded active:scale-95 transition-transform"><span class="material-symbols-outlined">send</span></button>
+</div>
+</div>
+</div>
+<div class="w-full border-t border-surface-variant/20 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-surface-variant font-body-sm">
+<p>© 2024 متجر خالد. جميع الحقوق محفوظة</p>
+<div class="flex gap-6">
+<img alt="Visa" class="h-4 opacity-50 grayscale hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwHPfGtQybKUaR5xSqGKsiiDiIaGnvhjX8jD9P-dVM5KghPu59q3xn6d1b36VWbJITSmjAKsIXSfxjUnO2az98zPz6Gn3vW84dWHcroi1EPvQPknu2hITTovjyA8fjjkOOOKWCDah_3Ye4aQnSlxK7x0FqaOpPxPSDltpdkK0_Tt9IJSwVYbyoksNsUzRoU9Pou6R1iV-I5M4O1Gseq6VGDP6iFbDVd5agd7Ag41p5JGe2ttxm7xji25fF_ZATjqU7GzQyQ7UzutA"/>
+<img alt="Mastercard" class="h-6 opacity-50 grayscale hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYyfHSldEUnJSfG3hi9CgRDIIVL1pCVg00_8iezZgbJlq63YDDVqaT5wp6_DVb5Dum_Pcmg5BiuHmiMJilhQXN0TZjS3ybiz245Fr3UA14YwzMEVML-mO-Fxo3gNxRnve3sjHQW1eFwpUZsPJ6pt7GDKDX69Vc9S7IhdVGwXfb1Nj2sJIHGem7KPYf-nC67WJpcX9_46Ogf0bo0mAdBfUTIZffKl92JCXe68KSx282nQwlry45N6rGJ5QS-pZNK352cLDfXbcbJW4"/>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (this.classList.contains('bg-primary')) {
+                    const originalContent = this.innerHTML;
+                    this.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> جاري الإضافة...';
+                    this.disabled = true;
+                    setTimeout(() => {
+                        this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> تمت الإضافة';
+                        this.classList.replace('bg-primary', 'bg-green-600');
+                        setTimeout(() => {
+                            this.innerHTML = originalContent;
+                            this.classList.replace('bg-green-600', 'bg-primary');
+                            this.disabled = false;
+                        }, 2000);
+                    }, 800);
+                }
+            });
+        });
+
+        // Delete Row Animation
+        document.querySelectorAll('button[title="إزالة"]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('.grid');
+                row.style.transition = 'all 0.4s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    row.remove();
+                }, 400);
+            });
+        });
+    </script>
+</body></html>

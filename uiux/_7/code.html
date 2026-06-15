@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>إضافة/تعديل منطقة شحن - متجر خالد</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            background-color: #faf8ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for better UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c3c6d7;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #737686;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#d8e3fb",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d5e0f8",
+                        "surface-container-high": "#e7e7f3",
+                        "inverse-surface": "#2e3039",
+                        "on-primary-container": "#eeefff",
+                        "tertiary-fixed": "#ffdbcd",
+                        "outline": "#737686",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-variant": "#e1e2ed",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-container": "#586377",
+                        "surface-container-low": "#f3f3fe",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#2563eb",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-tint": "#0053db",
+                        "on-secondary-fixed": "#111c2d",
+                        "primary": "#004ac6",
+                        "inverse-on-surface": "#f0f0fb",
+                        "background": "#faf8ff",
+                        "surface": "#faf8ff",
+                        "surface-container": "#ededf9",
+                        "primary-fixed": "#dbe1ff",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#00174b",
+                        "secondary": "#545f73",
+                        "on-surface": "#191b23",
+                        "tertiary-container": "#bc4800",
+                        "inverse-primary": "#b4c5ff",
+                        "outline-variant": "#c3c6d7",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#943700",
+                        "surface-dim": "#d9d9e5",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "surface-container-highest": "#e1e2ed",
+                        "on-background": "#191b23",
+                        "on-tertiary-container": "#ffede6",
+                        "surface-bright": "#faf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-lg": "1.5rem",
+                        "stack-md": "1rem",
+                        "stack-sm": "0.5rem",
+                        "sidebar-width": "260px",
+                        "margin-page": "2rem",
+                        "gutter": "1.5rem"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background">
+<!-- SideNavBar Shell -->
+<aside class="bg-on-secondary-fixed dark:bg-on-secondary-fixed fixed top-0 right-0 h-full w-[260px] flex flex-col h-screen overflow-y-auto right-0 border-l border-outline-variant z-50">
+<!-- Brand Header -->
+<div class="p-gutter flex flex-col items-center gap-2 mb-4">
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Khaled Store Logo" class="w-12 h-12" data-alt="A clean, geometric logo for a professional retail brand named Khaled Store, featuring abstract blue and white shapes on a crisp background, representing efficiency and modern commerce." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_NLjcOWfpZ3aztOyvnoEtnxv-h1hDZcyVxUaXShUj3uB_7xmbv231kcL63yjF496ZSX0YvCHHF8s7uUj3atCjMojKEJJy8TS68WyAWmS61qBaNaUkKe95sYG43bNv71fp2HGnE1PNHV1xPsnejYwhzGFJU_6B8Iw0UYzaP84JGSBNS_KI-nrZZipjACoY0avceLVt4DnM5LTJAmQrHdFl3hQVxUt0GNyTbp8Uy3BdnGIb6YV2wULJkC46Vg8RK1YKJbHJTggg2DY"/>
+</div>
+<div class="text-center">
+<h1 class="font-headline-md text-headline-md font-bold text-surface-container-lowest">متجر خالد</h1>
+<p class="font-body-sm text-body-sm text-surface-variant">إدارة المتجر</p>
+</div>
+</div>
+<!-- Navigation Items -->
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 p-3 font-body-md text-body-md rounded transition-colors text-surface-variant hover:text-surface-container-lowest hover:bg-on-secondary-fixed-variant transition-colors active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>لوحة القيادة</span>
+</a>
+<a class="flex items-center gap-3 p-3 font-body-md text-body-md rounded transition-colors text-surface-variant hover:text-surface-container-lowest hover:bg-on-secondary-fixed-variant transition-colors active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>المنتجات</span>
+</a>
+<a class="flex items-center gap-3 p-3 font-body-md text-body-md rounded transition-colors text-surface-variant hover:text-surface-container-lowest hover:bg-on-secondary-fixed-variant transition-colors active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span>الطلبات</span>
+</a>
+<a class="flex items-center gap-3 p-3 font-body-md text-body-md rounded transition-colors text-surface-variant hover:text-surface-container-lowest hover:bg-on-secondary-fixed-variant transition-colors active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>العملاء</span>
+</a>
+<a class="flex items-center gap-3 p-3 font-body-md text-body-md rounded transition-colors bg-secondary dark:bg-secondary text-surface-container-lowest border-l-4 border-primary" href="#">
+<span class="material-symbols-outlined">local_shipping</span>
+<span>الشحن</span>
+</a>
+<a class="flex items-center gap-3 p-3 font-body-md text-body-md rounded transition-colors text-surface-variant hover:text-surface-container-lowest hover:bg-on-secondary-fixed-variant transition-colors active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>العملات</span>
+</a>
+<a class="flex items-center gap-3 p-3 font-body-md text-body-md rounded transition-colors text-surface-variant hover:text-surface-container-lowest hover:bg-on-secondary-fixed-variant transition-colors active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>التقارير</span>
+</a>
+<a class="flex items-center gap-3 p-3 font-body-md text-body-md rounded transition-colors text-surface-variant hover:text-surface-container-lowest hover:bg-on-secondary-fixed-variant transition-colors active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>الإعدادات</span>
+</a>
+</nav>
+<!-- Logout / Footer -->
+<div class="p-4 border-t border-outline-variant/20 mt-auto">
+<button class="flex items-center gap-3 p-3 w-full font-body-md text-body-md text-error hover:bg-error-container/10 rounded transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<span>تسجيل الخروج</span>
+</button>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="bg-surface-container-lowest dark:bg-on-surface-variant fixed top-0 left-0 right-[260px] h-16 flex justify-between items-center px-gutter w-auto rtl border-b border-outline-variant shadow-sm z-40">
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pr-10 pl-4 py-1.5 bg-surface-container-low border-none rounded-lg text-label-md focus:ring-2 focus:ring-primary w-64" placeholder="البحث..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-outline hover:text-primary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-outline hover:text-primary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3 cursor-pointer active:opacity-80">
+<div class="text-left hidden md:block">
+<p class="font-label-md text-label-md font-bold text-on-surface">خالد العتيبي</p>
+<p class="text-[11px] text-outline">مدير النظام</p>
+</div>
+<img alt="صورة الملف الشخصي" class="w-10 h-10 rounded-full border border-outline-variant shadow-sm" data-alt="A professional portrait of a business owner, high-detail character illustration with modern business casual attire, set against a soft blurred office background with warm natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkynpYQl5Lrqetck-INoKn650A25AqC2uXgy3U4Cb7t9W6lz5T4F2e7Qcf7swFXtntJzhZkBUGSQsoSH5qH7GBrQnqn5UHHbXdYHm4LJTv9iMKFokZ5QNYXA1kHVuHcXA4SdH8jNx7kMOB-t0LzB-N_cCuEMsDWHvWAB2IW0ghlBXpL1Sj76VFvBeAtB41wile9gD_D3gQexzrcWch30VJy54N6cyfvzgL_ef8M6QSSvShY81uZnFsXlNHXRmEYdmoa_U48pJTsxE"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="mr-[260px] pt-16 min-h-screen p-gutter">
+<!-- Header & Breadcrumbs -->
+<div class="mb-stack-lg flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div>
+<nav aria-label="Breadcrumb" class="flex text-outline font-label-md text-label-md mb-2">
+<ol class="flex items-center space-x-reverse space-x-2">
+<li><a class="hover:text-primary transition-colors" href="#">لوحة القيادة</a></li>
+<li><span class="material-symbols-outlined text-[14px]">chevron_left</span></li>
+<li><a class="hover:text-primary transition-colors" href="#">الشحن</a></li>
+<li><span class="material-symbols-outlined text-[14px]">chevron_left</span></li>
+<li class="text-primary font-bold">إضافة منطقة شحن</li>
+</ol>
+</nav>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">إضافة/تعديل منطقة شحن</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2 border border-primary text-primary font-label-md rounded-lg hover:bg-primary/5 transition-all active:scale-95">
+                    إلغاء التعديلات
+                </button>
+<button class="px-6 py-2 bg-primary text-white font-label-md rounded-lg shadow-sm hover:shadow-md transition-all active:scale-95">
+                    حفظ المنطقة
+                </button>
+</div>
+</div>
+<!-- Form Container -->
+<div class="max-w-5xl mx-auto">
+<div class="bg-surface-container-lowest shadow-sm rounded-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant bg-surface-container-low/50">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">public</span>
+                        بيانات منطقة الشحن الجغرافية
+                    </h3>
+</div>
+<form class="p-8 space-y-8">
+<!-- Basic Info -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant block">اسم المنطقة <span class="text-error">*</span></label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="الرياض والمنطقة الوسطى" type="text"/>
+<p class="text-[11px] text-outline">اسم فريد يساعدك في تمييز هذه المنطقة في لوحة الإدارة.</p>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant block">الأولوية</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-md focus:ring-2 focus:ring-primary outline-none transition-all" type="number" value="1"/>
+<p class="text-[11px] text-outline">القيم الأقل تأخذ أولوية أعلى عند مطابقة عنوان العميل.</p>
+</div>
+<div class="md:col-span-2 space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant block">الوصف</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-md focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="منطقة الشحن الرئيسية للرياض والمدن المحيطة..." rows="3"></textarea>
+</div>
+</div>
+<hr class="border-outline-variant/30"/>
+<!-- Geographic Selection -->
+<div class="space-y-6">
+<!-- Countries -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface-variant block">الدول المشمولة</label>
+<span class="text-[11px] text-primary cursor-pointer hover:underline">تحديد الكل</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<label class="flex items-center gap-3 p-3 rounded-xl border border-primary bg-primary/5 cursor-pointer transition-all hover:bg-primary/10">
+<input checked="" class="w-5 h-5 rounded text-primary border-primary focus:ring-primary transition-all" type="checkbox"/>
+<span class="flex items-center gap-2 font-label-md text-label-md">
+<span class="text-xl">🇸🇦</span> المملكة العربية السعودية
+                                    </span>
+</label>
+<label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant cursor-pointer transition-all hover:bg-surface-container-high">
+<input class="w-5 h-5 rounded text-primary border-outline-variant focus:ring-primary transition-all" type="checkbox"/>
+<span class="flex items-center gap-2 font-label-md text-label-md">
+<span class="text-xl">🇦🇪</span> الإمارات العربية
+                                    </span>
+</label>
+<label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant cursor-pointer transition-all hover:bg-surface-container-high">
+<input class="w-5 h-5 rounded text-primary border-outline-variant focus:ring-primary transition-all" type="checkbox"/>
+<span class="flex items-center gap-2 font-label-md text-label-md">
+<span class="text-xl">🇰🇼</span> الكويت
+                                    </span>
+</label>
+<label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant cursor-pointer transition-all hover:bg-surface-container-high">
+<input class="w-5 h-5 rounded text-primary border-outline-variant focus:ring-primary transition-all" type="checkbox"/>
+<span class="flex items-center gap-2 font-label-md text-label-md">
+<span class="text-xl">🇶🇦</span> قطر
+                                    </span>
+</label>
+</div>
+</div>
+<!-- Regions / States -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface-variant block">المناطق / الولايات</label>
+<span class="text-[11px] text-outline italic">اترك فارغاً للشمول الكلي</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant flex flex-wrap gap-2">
+<!-- Selected Tags -->
+<div class="flex items-center gap-2 px-3 py-1 bg-primary text-white rounded-full text-label-sm">
+                                    الرياض <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-primary text-white rounded-full text-label-sm">
+                                    القصيم <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-primary text-white rounded-full text-label-sm">
+                                    حائل <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
+</div>
+<div class="flex-1 min-w-[120px]">
+<input class="w-full bg-transparent border-none text-label-md focus:ring-0 p-0 placeholder:text-outline/50" placeholder="اضغط للبحث عن منطقة..." type="text"/>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="px-3 py-1 rounded-full border border-outline-variant text-[12px] text-on-surface-variant cursor-pointer hover:bg-surface-container-high transition-colors">+ مكة المكرمة</span>
+<span class="px-3 py-1 rounded-full border border-outline-variant text-[12px] text-on-surface-variant cursor-pointer hover:bg-surface-container-high transition-colors">+ المدينة المنورة</span>
+<span class="px-3 py-1 rounded-full border border-outline-variant text-[12px] text-on-surface-variant cursor-pointer hover:bg-surface-container-high transition-colors">+ المنطقة الشرقية</span>
+</div>
+</div>
+<!-- Cities -->
+<div class="space-y-3">
+<label class="font-label-md text-label-md text-on-surface-variant block">المدن المحددة</label>
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant max-h-48 overflow-y-auto">
+<div class="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-6">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary">مدينة الرياض</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary">بريدة</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary">حائل</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary">عنيزة</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary text-outline">جدة</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary text-outline">الدمام</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary text-outline">أبها</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary text-outline">جازان</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded text-primary border-outline focus:ring-primary transition-all" type="checkbox"/>
+<span class="font-body-sm text-body-sm group-hover:text-primary text-outline">الخفجي</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<hr class="border-outline-variant/30"/>
+<!-- Settings -->
+<div class="flex items-center justify-between p-4 bg-tertiary-fixed/20 rounded-xl border border-tertiary-fixed-dim">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed-variant">
+<span class="material-symbols-outlined">star</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md font-bold text-on-surface">تعيين كمنطقة افتراضية</h4>
+<p class="text-[11px] text-outline">سيتم تطبيق هذه المنطقة على جميع المناطق غير المغطاة أعلاه.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row items-center gap-4 pt-6">
+<button class="w-full sm:w-auto px-10 py-3 bg-primary text-white font-title-lg rounded-xl shadow-md hover:shadow-lg hover:bg-primary/90 transition-all active:scale-95 flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined">save</span>
+                            حفظ المنطقة
+                        </button>
+<button class="w-full sm:w-auto px-8 py-3 border-2 border-primary-fixed-dim text-primary font-title-lg rounded-xl hover:bg-primary-fixed/30 transition-all active:scale-95 flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined">add_road</span>
+                            إضافة طرق شحن
+                        </button>
+<div class="sm:mr-auto">
+<button class="text-error font-label-md hover:underline px-4" type="button">
+                                حذف المنطقة
+                            </button>
+</div>
+</div>
+</form>
+</div>
+<!-- Help Section -->
+<div class="mt-gutter grid grid-cols-1 md:grid-cols-3 gap-stack-md">
+<div class="p-4 bg-surface-container-high rounded-xl flex items-start gap-3">
+<span class="material-symbols-outlined text-primary">info</span>
+<div class="text-on-surface-variant">
+<p class="font-label-md text-label-md font-bold mb-1">ما هي مناطق الشحن؟</p>
+<p class="text-[11px] leading-relaxed">تساعدك مناطق الشحن على تحديد تكاليف ومدة مختلفة لكل موقع جغرافي حسب سياسة متجرك.</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-high rounded-xl flex items-start gap-3">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<div class="text-on-surface-variant">
+<p class="font-label-md text-label-md font-bold mb-1">كيف تعمل الأولوية؟</p>
+<p class="text-[11px] leading-relaxed">إذا كان عنوان العميل ينتمي لمنطقتين، سيتم اختيار المنطقة ذات الرقم الأقل في خانة الأولوية.</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-high rounded-xl flex items-start gap-3">
+<span class="material-symbols-outlined text-primary">security</span>
+<div class="text-on-surface-variant">
+<p class="font-label-md text-label-md font-bold mb-1">خصوصية البيانات</p>
+<p class="text-[11px] leading-relaxed">يتم تأمين كافة عناوين الشحن والبيانات الجغرافية وفق أعلى معايير التشفير الرقمي.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-12 text-center text-outline font-label-sm text-label-sm border-t border-outline-variant pt-6">
+            © 2024 متجر خالد - جميع الحقوق محفوظة
+        </footer>
+</main>
+<script>
+        // Micro-interaction for checkbox visual state
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parent = this.closest('.p-3');
+                if (parent) {
+                    if (this.checked) {
+                        parent.classList.add('border-primary', 'bg-primary/5');
+                        parent.classList.remove('border-outline-variant');
+                    } else {
+                        parent.classList.remove('border-primary', 'bg-primary/5');
+                        parent.classList.add('border-outline-variant');
+                    }
+                }
+            });
+        });
+    </script>
+</body></html>
