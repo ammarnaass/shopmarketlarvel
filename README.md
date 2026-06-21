@@ -1,58 +1,211 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛒 متجر أمار (Amar Store) - التوثيق الكامل للمشروع
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+متجر إلكتروني متكامل واحترافي مبني باستخدام إطار العمل **Laravel 13** و **PHP 8.3** ونظام التصميم **Tailwind CSS 4**. تم تصميم المتجر لخدمة دول شمال إفريقيا مع نظام دفع عند الاستلام (COD)، وحساب تكاليف الشحن الديناميكي، ونظام الشراء الفوري (Instant Buy).
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📋 جدول المحتويات
+1. [🚀 الميزات الرئيسية](#-الميزات-رئيسية)
+2. [💻 التقنيات المستخدمة (Tech Stack)](#-التقنيات-المستخدمة-tech-stack)
+3. [🌍 التغطية الإقليمية والشحن](#-التغطية-الإقليمية-والشحن)
+4. [🛠️ خطوات التثبيت والتشغيل السريع](#-خطوات-التثبيت-والتشغيل-السريع)
+5. [🔑 نظام الأدوار والصلاحيات (Access Control)](#-نظام-الأدوار-والصلاحيات-access-control)
+6. [📊 لوحة التحكم والإدارة (Admin Dashboard)](#-لوحة-التحكم-والإدارة-admin-dashboard)
+7. [⚙️ إعدادات المتجر وقاعدة البيانات](#-إعدادات-المتجر-وقاعدة-البيانات)
+8. [🗂️ بنية ملفات المشروع](#-بنية-ملفات-المشروع)
+9. [💻 أوامر Artisan المخصصة والمفيدة](#-أوامر-artisan-المخصصة-والمفيدة)
+10. [🛡️ أمان واستكشاف الأخطاء](#-أمان-واستكشاف-الأخطاء)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 الميزات الرئيسية
 
-## Learning Laravel
+### 1. 🛒 نظام الشراء الفوري (Instant Buy)
+تم إدماج نموذج شراء فوري متكامل ومبسط مباشرة داخل صفحة المنتج دون الحاجة للمرور بسلة المشتريات التقليدية:
+* **حساب السعر المباشر (Live Price Calculator):** يعتمد على تقنيات AJAX لتحديث السعر النهائي فورًا عند تعديل الكمية، اختيار المقاس/اللون، تطبيق كوبونات الخصم، تغيير الولاية/البلد، أو تغيير وسيلة الشحن.
+* **دعم الضيوف (Guest Checkout):** تمكين الزوار من إتمام الطلبات دون الحاجة لتسجيل حساب مسبق، بجانب دعم العملاء المسجلين.
+* **تخصيص الطلبات:** إمكانية إدخال نصوص مخصصة أو رفع ملفات وصور خاصة بالمنتج مباشرة من النموذج.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 2. 📊 لوحة إدارة مبيعات متكاملة (KPIs & Charts)
+لوحة تحكم إدارية حديثة وجذابة تدعم الإحصائيات الفورية:
+* **بطاقات الأداء الرئيسية (KPIs):** تتبع إجمالي المبيعات، الطلبات، العملاء الجدد، والمنتجات.
+* **مخطط المبيعات الأسبوعية:** عرض بياني تفاعلي لمبيعات آخر 7 أيام.
+* **توزيع حالات الطلبات:** تمثيل مرئي لحالة الطلبات (Pending, Processing, Shipped, Delivered, Cancelled).
+* **إشعارات المخزون المنخفض:** عرض المنتجات التي قل مخزونها عن 10 قطع لإعادة تعبئته.
+* **التحكم بالإعدادات السريعة (Quick Settings):** واجهة مخصصة لتحديث العملة الأساسية، شركة الشحن الافتراضية، ونظام الدفع مباشرة لتحديث ملفات البيئة وتصفير الكاش.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. 🗺️ مرونة شحن إقليمية
+توفير حساب شحن وتوصيل مخصص يغطي 6 دول عربية بالولايات/المحافظات والرموز الدولية والعملات المحلية.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 💻 التقنيات المستخدمة (Tech Stack)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+* **Backend:** Laravel 13.x & PHP 8.3
+* **Frontend Design:** Tailwind CSS v4.0 (مبني عبر Vite للأداء العالي وتصغير الحجم)
+* **Frontend Logic:** Alpine.js (للتفاعلات الخفيفة والنوافذ المنبثقة) & AJAX (لمحرك الحساب الفوري)
+* **Icons:** Font Awesome 6.5 Pro
+* **Typography:** خطوط Cairo و Tajawal و Inter المتناسقة مع واجهات RTL
+* **Database:** SQLite (بيئة التطوير الافتراضية) / MySQL 8.0 & MariaDB (بيئة الإنتاج)
+* **Cache & Queues:** Database Driver (الافتراضي) مع دعم التحول إلى Redis
 
+---
+
+## 🌍 التغطية الإقليمية والشحن
+
+يدعم المتجر 6 دول في شمال أفريقيا بشكل كامل، بما يشمل العملات، رموز الاتصال الدولية، والولايات والمحافظات:
+
+| رمز الدولة | الدولة | العملة المحلية | رمز الاتصال | عدد الولايات/المحافظات | شركات الشحن الافتراضية |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| **DZ** | الجزائر | د.ج (DZD) | `+213` | 48 ولاية | Yalidin, Noest, Aramex |
+| **MA** | المغرب | د.م. (MAD) | `+212` | 32 إقليم | Aramex, Local |
+| **TN** | تونس | د.ت (TND) | `+216` | 24 ولاية | Aramex, Local |
+| **LY** | ليبيا | د.ل (LYD) | `+218` | 20 شعبية | SMSA, Aramex |
+| **EG** | مصر | ج.م (EGP) | `+20` | 27 محافظة | SMSA, Aramex |
+| **SD** | السودان | ج.س (SDG) | `+249` | 16 ولاية | Sudan Post, Local |
+
+---
+
+## 🛠️ خطوات التثبيت والتشغيل السريع
+
+### 1. المتطلبات البرمجية
+* تثبيت PHP 8.3+ مع إضافات (`pdo_sqlite`, `pdo_mysql`, `mbstring`, `openssl`, `intl`).
+* تثبيت Composer 2.x.
+* تثبيت Node.js (للتحكم في تجميع الأصول).
+
+### 2. إعداد مجلد المشروع وحزم PHP
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+# تثبيت الاعتماديات الخاصة بـ Composer
+composer install
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 3. إعداد ملفات البيئة والتشفير
+```bash
+# نسخ نموذج البيئة الافتراضي
+copy .env.example .env
 
-## Contributing
+# توليد مفتاح تشفير التطبيق
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. إعداد قاعدة البيانات وتجهيز الجداول (SQLite كخيار افتراضي)
+```bash
+# إنشاء ملف قاعدة بيانات فارغ لـ SQLite
+New-Item -ItemType File -Path database\database.sqlite -Force
 
-## Code of Conduct
+# تشغيل التهجيرات (Migrations) وإنشاء الجداول
+php artisan migrate --force
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# تعبئة قاعدة البيانات بالبيانات الأساسية (التصنيفات، المنتجات، الكوبونات)
+php artisan db:seed --force
 
-## Security Vulnerabilities
+# شحن مناطق التوصيل والولايات الـ 6 للدول
+php artisan db:seed --class=ShippingZonesSeeder --force
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 5. تجميع أصول الواجهة الأمامية (Tailwind CSS 4)
+```bash
+# تثبيت حزم npm
+npm install
 
-## License
+# بناء ملفات الواجهة للإنتاج
+npm run build
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 6. تشغيل الخادم المحلي للتطوير
+```bash
+php artisan serve
+```
+يمكنك الآن زيارة الموقع عبر الرابط: [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+---
+
+## 🔑 نظام الأدوار والصلاحيات (Access Control)
+
+يحتوي المتجر على نظام متكامل للتحكم بالوصول (RBAC) مقسم إلى 3 أدوار رئيسية و 6 صلاحيات:
+
+### 1. الأدوار (Roles)
+* **مدير النظام (`admin`):** يملك تحكمًا كاملاً وتصريحًا لكافة لوحات التحكم والعمليات.
+* **مدير المتجر (`manager`):** يملك صلاحية إدارة الكتالوج، مبيعات المنتجات، الطلبيات، الكوبونات والتصنيفات.
+* **العميل (`customer`):** حساب مستخدم عادي للشراء وتتبع الطلبات الخاصة به فقط.
+
+### 2. الصلاحيات (Permissions)
+* `manage_products` - إضافة وتعديل وحذف المنتجات.
+* `manage_orders` - إدارة الطلبات، تغيير حالاتها وتصدير الفواتير.
+* `manage_users` - إدارة حسابات المديرين والمستخدمين.
+* `manage_categories` - تعديل تصنيفات المتجر.
+* `manage_coupons` - إنشاء كوبونات الخصم والتحكم بنسبها وصلاحياتها.
+* `manage_settings` - التحكم بإعدادات النظام والعملات والشحن.
+
+---
+
+## 📊 لوحة التحكم والإدارة (Admin Dashboard)
+
+توفر لوحة التحكم واجهة استخدام حديثة ومحسنة:
+* **نظام الإحصائيات (KPIs):** 4 بطاقات تفاعلية بألوان متباينة لتلخيص البيانات المالية والتشغيلية.
+* **إحصائيات المبيعات الأسبوعية:** رسم بياني يتم تحديثه ديناميكيًا استنادًا لطلبات آخر 7 أيام.
+* **الطلبيات الحديثة:** جدول يعرض تفاصيل آخر 8 طلبيات مع تمييز نوع الطلب (شراء فوري أو سلة تسوق تقليدية).
+* **إعدادات البيئة السريعة:** إمكانية تعديل إعدادات المتجر بنقرة واحدة (مثل تغيير وسيلة الدفع أو شركة الشحن) مما يعيد بناء كاش الإعدادات تلقائيًا.
+
+---
+
+## ⚙️ إعدادات المتجر وقاعدة البيانات
+
+### التحويل إلى قاعدة بيانات MySQL 8 (للإنتاج)
+1. قم بإنشاء قاعدة بيانات فارغة في خادم MySQL الخاص بك:
+   ```sql
+   CREATE DATABASE amar_store CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+2. قم بتعديل القيم التالية في ملف التكوين `.env`:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=amar_store
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   ```
+3. أعد تشغيل الهجرات والبيانات الأساسية:
+   ```bash
+   php artisan config:clear
+   php artisan migrate:fresh --seed --force
+   php artisan db:seed --class=ShippingZonesSeeder --force
+   ```
+
+---
+
+## 🗂️ بنية ملفات المشروع
+
+أبرز الملفات والمجلدات المخصصة المضافة للمشروع:
+* `app/Http/Controllers/InstantBuyController.php` - معالجة عمليات حساب الأسعار المباشرة عبر AJAX واستقبال طلبات الشراء الفوري.
+* `app/Http/Controllers/Admin/DashboardController.php` - حساب مؤشرات الأداء (KPIs) وإحصائيات الرسوم البيانية للوحة التحكم.
+* `app/Models/ShippingZone.php` - نموذج التحكم بنطاقات الشحن وأسعار التوصيل للدول الست.
+* `config/ecommerce.php` - ملف الإعدادات المركزي لرموز الدول، الولايات، أسعار الشحن الافتراضية، وإعدادات الدفع عند الاستلام.
+* `resources/views/frontend/shop/show.blade.php` - واجهة عرض المنتج التي تحتوي على استمارة الشراء الفوري التفاعلية.
+* `resources/views/admin/dashboard.blade.php` - واجهة لوحة التحكم المحسنة بالرسوم البيانية والمؤشرات المرئية.
+* `test_instant.py` - سكربت اختبار متكامل (E2E) باستخدام Python لاختبار عملية الشراء الفوري وحساب الأسعار التفاعلية تلقائيًا.
+
+---
+
+## 💻 أوامر Artisan المخصصة والمفيدة
+
+| الأمر البرمجي | الوصف | الاستخدام |
+| :--- | :--- | :--- |
+| `php artisan ecommerce:create-admin` | إنشاء حساب مدير نظام أو مدير متجر بشكل تفاعلي وآمن. | إنشاء حسابات الإدارة لأول مرة. |
+| `php artisan db:seed --class=ShippingZonesSeeder` | إعادة شحن وتعيين مناطق الشحن الافتراضية لجميع الدول في قاعدة البيانات. | تهيئة أسعار وتفاصيل الشحن. |
+| `php artisan about` | عرض معلومات وتفاصيل البيئة الحالية لـ Laravel والتطبيق. | تشخيص حالة الخادم والبيئة. |
+| `php artisan route:clear` & `config:clear` | مسح ملفات الكاش الخاصة بالمسارات والتكوينات لتطبيق التحديثات فورًا. | عند تعديل ملفات `.env` أو مسارات الويب. |
+
+---
+
+## 🛡️ أمان واستكشاف الأخطاء
+
+* **أمان المعاملات:** يتم حماية جميع استمارات الشراء والعمليات بواسطة نظام التشفير ومنع تزوير الطلبات عبر مواقع أخرى (CSRF Protection)، مع استثناء مسارات الشراء الفوري عند إرسالها كـ API خارجي بشكل مقنن وآمن.
+* **حسابات تجريبية افتراضية للمطورين:**
+  * **مدير النظام (Admin):** البريد: `admin@amarstore.com` \| كلمة المرور: `password`
+  * **مدير المتجر (Manager):** البريد: `manager@amarstore.com` \| كلمة المرور: `password`
+  * **عميل تجريبي (Customer):** البريد: `customer@test.com` \| كلمة المرور: `password`
+
+---
+**تطوير وإعداد:** عمار ناص (@amar_naas)
+**الإصدار الحالي:** v2.0.0 (يونيو 2026)
