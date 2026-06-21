@@ -26,6 +26,13 @@
                 </div>
 
                 <div class="mb-4">
+                    <label class="block text-sm font-semibold mb-1">أيقونة التصنيف</label>
+                    <input type="text" name="icon" value="{{ old('icon') }}" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('icon') border-red-500 @enderror" placeholder="مثال: fa-laptop أو storefront">
+                    <p class="text-xs text-on-surface-variant mt-1">يمكنك استخدام أيقونات FontAwesome (تبدأ بـ fa-) أو Google Material Symbols.</p>
+                    @error('icon')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="mb-4">
                     <label class="block text-sm font-semibold mb-1">التصنيف الأب</label>
                     <select name="parent_id" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('parent_id') border-red-500 @enderror">
                         <option value="">— بدون أب (رئيسي) —</option>

@@ -36,6 +36,8 @@ class CategoryController extends Controller
             'order' => 'nullable|integer',
             'status' => 'required|in:active,inactive',
             'image' => 'nullable|image|max:2048',
+            'icon' => 'nullable|string|max:50',
+            'banner' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('image')) {
@@ -61,6 +63,8 @@ class CategoryController extends Controller
             'order' => 'nullable|integer',
             'status' => 'required|in:active,inactive',
             'image' => 'nullable|image|max:2048',
+            'icon' => 'nullable|string|max:50',
+            'banner' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('image')) {

@@ -9,7 +9,7 @@
     <div class="container-app">
         <div class="max-w-md mx-auto">
             {{-- Card --}}
-            <div class="card animate-fade-up overflow-hidden">
+            <div class="card animate-fade-up overflow-hidden border border-outline-variant/60 shadow-lg">
                 <div class="bg-gradient-to-l from-brand-600 via-brand-500 to-accent-500 text-white p-6 text-center">
                     <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
                         <span class="material-symbols-outlined text-2xl">login</span>

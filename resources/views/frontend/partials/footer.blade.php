@@ -6,20 +6,34 @@
 
 {{-- Newsletter section --}}
 @if(site('show_newsletter', '1') === '1')
-<section class="bg-gradient-to-l from-brand-600 to-accent-500 text-white">
-    <div class="container-app py-12">
-        <div class="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-                <h3 class="text-2xl md:text-3xl font-extrabold mb-2">اشترك في النشرة البريدية</h3>
-                <p class="text-white/90">احصل على آخر العروض والخصومات الحصرية مباشرة في بريدك</p>
+<section class="relative overflow-hidden" style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 40%, #7c3aed 100%);">
+    {{-- Decorative background shapes --}}
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-white/5 rounded-full blur-2xl"></div>
+        <div class="absolute top-0 left-1/2 w-px h-full bg-white/10"></div>
+    </div>
+    <div class="container-app py-14 relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm text-white/90 mb-5">
+                <span class="material-symbols-outlined text-yellow-300" style="font-size:16px">mail</span>
+                نشرة إخبارية حصرية
             </div>
-            <form class="flex gap-2" onsubmit="event.preventDefault(); showToast('شكراً لاشتراكك! سنتواصل معك قريباً', 'success');">
-                <input type="email" required placeholder="بريدك الإلكتروني"
-                       class="form-input bg-white text-gray-800 border-0 flex-1 h-12">
-                <button type="submit" class="btn-accent btn-lg whitespace-nowrap">
-                    <span class="material-symbols-outlined">send</span> اشتراك
+            <h3 class="text-2xl md:text-3xl font-extrabold text-white mb-3">اشترك في نشرتنا البريدية</h3>
+            <p class="text-white/75 mb-8 text-base max-w-lg mx-auto">احصل على أحدث العروض والخصومات الحصرية مباشرة في بريدك الإلكتروني، ولا تفوّت أي صفقة!</p>
+            <form class="flex max-w-md mx-auto gap-0 shadow-2xl rounded-2xl overflow-hidden" 
+                  onsubmit="event.preventDefault(); typeof showToast !== 'undefined' ? showToast('شكراً لاشتراكك! سنتواصل معك قريباً', 'success') : alert('شكراً!');">
+                <input type="email" required placeholder="أدخل بريدك الإلكتروني..."
+                       class="flex-1 min-w-0 px-5 py-3.5 bg-white text-gray-800 text-sm focus:outline-none border-0"
+                       style="border-radius: 0;">
+                <button type="submit" 
+                        class="px-6 py-3.5 font-bold text-sm whitespace-nowrap flex items-center gap-2 transition-all duration-200 active:scale-95 cursor-pointer text-white"
+                        style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 0;">
+                    <span class="material-symbols-outlined" style="font-size:16px">send</span>
+                    اشتراك
                 </button>
             </form>
+            <p class="text-white/50 text-xs mt-4">لن نشارك بريدك أبداً • يمكنك إلغاء الاشتراك في أي وقت</p>
         </div>
     </div>
 </section>
@@ -31,36 +45,38 @@
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
             {{-- Brand --}}
             <div class="col-span-2 lg:col-span-2">
-                <div class="flex items-center gap-3 mb-4">
+                <div class="mb-4">
                     @if(site('store_logo'))
-                        <img src="{{ site('store_logo') }}" alt="{{ site('store_name') }}" class="h-12 w-auto object-contain bg-white rounded-xl p-1">
+                        <img src="{{ site('store_logo') }}" alt="{{ site('store_name') }}" class="h-12 w-auto object-contain max-w-[200px] bg-white rounded-xl p-1">
                     @else
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white shadow-lg">
-                            <span class="material-symbols-outlined text-xl">storefront</span>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white shadow-lg">
+                                <span class="material-symbols-outlined text-xl">storefront</span>
+                            </div>
+                            <div>
+                                <p class="font-extrabold text-xl text-white">{{ site('store_name', config('app.name')) }}</p>
+                                <p class="text-xs text-gray-400">{{ site('store_description', 'متجرك المفضل') }}</p>
+                            </div>
                         </div>
                     @endif
-                    <div>
-                        <p class="font-extrabold text-xl text-white">{{ site('store_name', config('app.name')) }}</p>
-                        <p class="text-xs text-gray-400">{{ site('store_description', 'متجرك المفضل') }}</p>
-                    </div>
                 </div>
                 <p class="text-sm leading-relaxed mb-6 max-w-md">
-                    {{ site('footer_about', 'متجر إلكتروني متكامل يوفر لك تجربة تسوق فريدة مع شحن سريع ودفع آمن عند الاستلام في 6 دول عربية.') }}
+                    {{ site('footer_about', 'متجر إلكتروني متكامل يوفر لك تجربة تسوق فريدة مع شحن سريع ودفع آمن عند الاستلام.') }}
                 </p>
                 <div class="flex gap-2">
                     @if(site('facebook_url'))
                         <a href="{{ site('facebook_url') }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition" title="Facebook">
-                            <span class="material-symbols-outlined">facebook</span>
+                            <i class="fa-brands fa-facebook-f text-lg text-white"></i>
                         </a>
                     @endif
                     @if(site('twitter_url'))
                         <a href="{{ site('twitter_url') }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-brand-400 flex items-center justify-center transition" title="Twitter">
-                            <span class="material-symbols-outlined">x</span>
+                            <i class="fa-brands fa-x-twitter text-lg text-white"></i>
                         </a>
                     @endif
                     @if(site('instagram_url'))
                         <a href="{{ site('instagram_url') }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-500 flex items-center justify-center transition" title="Instagram">
-                            <span class="material-symbols-outlined">photo_camera</span>
+                            <i class="fa-brands fa-instagram text-lg text-white"></i>
                         </a>
                     @endif
                     @if(site('whatsapp_number'))
@@ -71,12 +87,12 @@
                             if(strlen($wa) < 12) $wa = '213' . $wa;
                         @endphp
                         <a href="https://wa.me/{{ $wa }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-green-600 flex items-center justify-center transition" title="WhatsApp">
-                            <span class="material-symbols-outlined">whatsapp</span>
+                            <i class="fa-brands fa-whatsapp text-lg text-white"></i>
                         </a>
                     @endif
                     @if(site('youtube_url'))
                         <a href="{{ site('youtube_url') }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-red-600 flex items-center justify-center transition" title="YouTube">
-                            <span class="material-symbols-outlined">play_circle</span>
+                            <i class="fa-brands fa-youtube text-lg text-white"></i>
                         </a>
                     @endif
                 </div>
@@ -166,7 +182,7 @@
                     </li>
                     @if(site('contact_whatsapp'))
                         <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-accent-400 mt-1">whatsapp</span>
+                            <i class="fa-brands fa-whatsapp text-accent-400 mt-1.5 text-base"></i>
                             <div>
                                 <p class="text-gray-400 text-xs">واتساب</p>
                                 @php

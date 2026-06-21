@@ -63,7 +63,7 @@
                         <div class="col-span-1 md:col-span-6 flex items-center gap-4">
                             <div class="w-24 h-24 flex-shrink-0 bg-surface-container rounded-lg overflow-hidden border border-outline-variant">
                                 @if($image)
-                                    <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $image->alt ?? $product->name }}" class="w-full h-full object-cover">
+                                    <img src="{{ asset('storage/' . $image->image) }}" alt="{{ $image->alt ?? $product->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
                                         <span class="material-symbols-outlined text-3xl">image</span>

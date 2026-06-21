@@ -19,7 +19,7 @@ Alpine.plugin(intersect);
 // Expose to global window for inline x-data="window.x.foo()" if needed
 window.Alpine = Alpine;
 
-// Start Alpine after DOM is ready
-Alpine.start();
+// Alpine.start() will be called in app.js after stores/components register
+
 
 export default Alpine;

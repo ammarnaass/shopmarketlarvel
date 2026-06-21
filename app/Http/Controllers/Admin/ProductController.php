@@ -71,6 +71,20 @@ class ProductController extends Controller
             'featured' => 'boolean',
             'images' => 'nullable|array|max:' . self::IMAGE_MAX_FILES,
             'images.*' => 'image|mimes:' . self::IMAGE_MIMES . '|max:' . self::IMAGE_MAX_SIZE_KB,
+            'options' => 'nullable|array',
+            'options.*.name' => 'required|string|max:255',
+            'options.*.type' => 'required|in:select,radio,color,text,file',
+            'options.*.required' => 'boolean',
+            'options.*.values' => 'nullable|array',
+            'options.*.values.*.value' => 'required|string|max:255',
+            'options.*.values.*.color_code' => 'nullable|string|max:20',
+            'options.*.values.*.price_adjustment' => 'nullable|numeric',
+            'options.*.values.*.stock' => 'nullable|integer',
+            'custom_fields' => 'nullable|array',
+            'custom_fields.*.label' => 'required|string|max:255',
+            'custom_fields.*.type' => 'required|in:text,textarea,file,number,calculated',
+            'custom_fields.*.required' => 'boolean',
+            'custom_fields.*.price_effect' => 'nullable|numeric',
         ], [
             'images.max' => 'الحد الأقصى ' . self::IMAGE_MAX_FILES . ' صور في المرة الواحدة',
             'images.*.image' => 'يجب أن يكون الملف صورة',
@@ -89,6 +103,13 @@ class ProductController extends Controller
             if ($request->hasFile('images')) {
                 $this->storeImages($request->file('images'), $product);
             }
+
+            // Sync options and custom fields
+            $this->syncOptionsAndCustomFields(
+                $product,
+                $request->input('options', []),
+                $request->input('custom_fields', [])
+            );
         });
 
         return redirect()->route('admin.products.gallery', $product)
@@ -198,7 +219,7 @@ class ProductController extends Controller
     public function edit(Product $product): View
     {
         $categories = \App\Models\Category::where('status', 'active')->get();
-        $product->load('images', 'options.values', 'variants');
+        $product->load('images', 'options.values', 'variants', 'customFields');
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
@@ -216,12 +237,34 @@ class ProductController extends Controller
             'type' => 'required|in:simple,variable,digital,bundle',
             'status' => 'required|in:active,inactive,draft',
             'featured' => 'boolean',
+            'options' => 'nullable|array',
+            'options.*.name' => 'required|string|max:255',
+            'options.*.type' => 'required|in:select,radio,color,text,file',
+            'options.*.required' => 'boolean',
+            'options.*.values' => 'nullable|array',
+            'options.*.values.*.value' => 'required|string|max:255',
+            'options.*.values.*.color_code' => 'nullable|string|max:20',
+            'options.*.values.*.price_adjustment' => 'nullable|numeric',
+            'options.*.values.*.stock' => 'nullable|integer',
+            'custom_fields' => 'nullable|array',
+            'custom_fields.*.label' => 'required|string|max:255',
+            'custom_fields.*.type' => 'required|in:text,textarea,file,number,calculated',
+            'custom_fields.*.required' => 'boolean',
+            'custom_fields.*.price_effect' => 'nullable|numeric',
         ]);
 
-        $product->update($request->only([
-            'category_id', 'name', 'description', 'short_description',
-            'price', 'sale_price', 'sku', 'stock', 'type', 'status', 'featured',
-        ]));
+        DB::transaction(function () use ($request, $product) {
+            $product->update($request->only([
+                'category_id', 'name', 'description', 'short_description',
+                'price', 'sale_price', 'sku', 'stock', 'type', 'status', 'featured',
+            ]));
+
+            $this->syncOptionsAndCustomFields(
+                $product,
+                $request->input('options', []),
+                $request->input('custom_fields', [])
+            );
+        });
 
         return redirect()->route('admin.products.gallery', $product)
             ->with('success', 'تم تحديث المنتج');
@@ -350,5 +393,51 @@ class ProductController extends Controller
         }
 
         return $created;
+    }
+
+    /**
+     * Sync product options and custom fields from input array.
+     */
+    protected function syncOptionsAndCustomFields(Product $product, array $optionsInput = [], array $customFieldsInput = [])
+    {
+        // Delete previous options (option values will be cascadingly deleted)
+        $product->options()->delete();
+
+        foreach ($optionsInput as $index => $opt) {
+            if (empty($opt['name'])) continue;
+
+            $option = $product->options()->create([
+                'name' => $opt['name'],
+                'type' => $opt['type'] ?? 'select',
+                'required' => filter_var($opt['required'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'order' => $index,
+            ]);
+
+            if (!empty($opt['values']) && is_array($opt['values'])) {
+                foreach ($opt['values'] as $val) {
+                    if (!isset($val['value']) || $val['value'] === '') continue;
+                    $option->values()->create([
+                        'value' => $val['value'],
+                        'color_code' => $val['color_code'] ?? null,
+                        'price_adjustment' => (float)($val['price_adjustment'] ?? 0),
+                        'stock' => (int)($val['stock'] ?? 0),
+                    ]);
+                }
+            }
+        }
+
+        // Sync custom fields
+        $product->customFields()->delete();
+
+        foreach ($customFieldsInput as $cf) {
+            if (empty($cf['label'])) continue;
+
+            $product->customFields()->create([
+                'label' => $cf['label'],
+                'type' => $cf['type'] ?? 'text',
+                'required' => filter_var($cf['required'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'price_effect' => (float)($cf['price_effect'] ?? 0),
+            ]);
+        }
     }
 }

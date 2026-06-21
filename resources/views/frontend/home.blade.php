@@ -171,8 +171,12 @@
                    class="group relative bg-white rounded-2xl p-5 text-center transition-all duration-300 hover:-translate-y-1 border border-gray-100 hover:border-brand-200 overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-brand-50 to-accent-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div class="relative z-10">
-                        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <span class="material-symbols-outlined text-2xl text-brand-600">{{ $category->icon ?? 'local_offer' }}</span>
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden">
+                            @if($category->image)
+                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                            @else
+                                @categoryIcon($category->icon ?? 'local_offer', 'text-2xl text-brand-600')
+                            @endif
                         </div>
                         <h3 class="font-semibold text-sm text-gray-800 group-hover:text-brand-700 transition-colors">{{ $category->name }}</h3>
                         <p class="text-xs text-gray-400 mt-1">{{ $category->products_count ?? $category->products()->count() }} منتج</p>

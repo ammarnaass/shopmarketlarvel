@@ -151,4 +151,73 @@ class ShippingZone extends Model
             ->implode('، ');
         return $carriers ?: ($this->company?->name ?? 'متجر');
     }
+
+    public function getFormattedCities(): string
+    {
+        if (empty($this->cities)) {
+            return '';
+        }
+        if (is_string($this->cities)) {
+            return $this->cities;
+        }
+        $list = [];
+        if (is_array($this->cities)) {
+            foreach ($this->cities as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $city) {
+                        $list[] = $city;
+                    }
+                } else {
+                    $list[] = $value;
+                }
+            }
+        }
+        return implode('، ', $list);
+    }
+
+    public function getFormattedCountries(): string
+    {
+        if (empty($this->countries)) {
+            return '';
+        }
+        if (is_string($this->countries)) {
+            return $this->countries;
+        }
+        $list = [];
+        if (is_array($this->countries)) {
+            foreach ($this->countries as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $country) {
+                        $list[] = $country;
+                    }
+                } else {
+                    $list[] = $value;
+                }
+            }
+        }
+        return implode('، ', $list);
+    }
+
+    public function getFormattedStates(): string
+    {
+        if (empty($this->states)) {
+            return '';
+        }
+        if (is_string($this->states)) {
+            return $this->states;
+        }
+        $list = [];
+        if (is_array($this->states)) {
+            foreach ($this->states as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $state) {
+                        $list[] = $state;
+                    }
+                } else {
+                    $list[] = $value;
+                }
+            }
+        }
+        return implode('، ', $list);
+    }
 }

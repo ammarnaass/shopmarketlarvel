@@ -126,6 +126,160 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Product Options & Specifications Card -->
+            <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6 space-y-6" x-data="productOptionsManager()">
+                <div class="flex items-center justify-between text-primary">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">tune</span>
+                        <h3 class="font-title-lg text-title-lg font-bold">خيارات ومواصفات المنتج (الألوان، المقاسات، الخ)</h3>
+                    </div>
+                    <button type="button" @click="addOption()" class="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">add</span>إضافة خيار جديد
+                    </button>
+                </div>
+
+                <div class="space-y-6">
+                    <template x-for="(option, optIndex) in options" :key="option.id">
+                        <div class="border border-outline-variant/50 rounded-xl p-4 bg-surface-container-lowest relative space-y-4 shadow-sm">
+                            <!-- Option Header Control -->
+                            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-outline-variant/30">
+                                <div class="flex items-center gap-3 flex-1 min-w-[200px]">
+                                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-between font-bold text-sm text-gray-500">
+                                        <span class="mx-auto" x-text="optIndex + 1"></span>
+                                    </div>
+                                    <input type="text" :name="`options[${optIndex}][name]`" x-model="option.name" required placeholder="اسم الخيار (مثال: اللون، المقاس)" class="flex-1 min-w-[150px] bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <select :name="`options[${optIndex}][type]`" x-model="option.type" class="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary outline-none cursor-pointer">
+                                        <option value="select">قائمة منسدلة (Dropdown)</option>
+                                        <option value="radio">أزرار اختيار (Radio)</option>
+                                        <option value="color">خيار ألوان (Color Picker)</option>
+                                        <option value="text">نص يكتبه العميل (Text Input)</option>
+                                        <option value="file">رفع ملف من العميل (File Upload)</option>
+                                    </select>
+                                    <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-on-surface-variant">
+                                        <input type="checkbox" :name="`options[${optIndex}][required]`" x-model="option.required" class="w-4 h-4 text-primary rounded">
+                                        <span>مطلوب</span>
+                                    </label>
+                                    <button type="button" @click="removeOption(optIndex)" class="text-error hover:bg-error/10 p-1.5 rounded-lg transition" title="حذف الخيار">
+                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Option Values Section (Only for selectable types) -->
+                            <div x-show="['select', 'radio', 'color'].includes(option.type)" class="space-y-3">
+                                <div class="flex items-center justify-between text-xs font-bold text-on-surface-variant">
+                                    <span>القيم المتاحة للخيارات:</span>
+                                    <button type="button" @click="addValue(optIndex)" class="text-primary hover:underline flex items-center gap-0.5">
+                                        <span class="material-symbols-outlined text-xs">add_circle</span>إضافة قيمة جديدة
+                                    </button>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <template x-for="(val, valIndex) in option.values" :key="val.id">
+                                        <div class="grid grid-cols-12 gap-2 items-center bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+                                            <!-- Value Input -->
+                                            <div class="col-span-12 md:col-span-4 flex items-center gap-2">
+                                                <input type="text" :name="`options[${optIndex}][values][${valIndex}][value]`" x-model="val.value" required placeholder="القيمة (مثال: أحمر، XL)" class="w-full bg-white border border-outline-variant rounded-lg px-2.5 py-1.5 text-xs focus:ring-1 focus:ring-primary outline-none">
+                                            </div>
+                                            <!-- Color Code (Only if type is color) -->
+                                            <div class="col-span-12 md:col-span-3 flex items-center gap-1.5" x-show="option.type === 'color'">
+                                                <input type="color" x-model="val.color_code" class="w-7 h-7 rounded border cursor-pointer p-0">
+                                                <input type="text" :name="`options[${optIndex}][values][${valIndex}][color_code]`" x-model="val.color_code" placeholder="#FFFFFF" class="flex-1 bg-white border border-outline-variant rounded-lg px-2 py-1.5 text-xs font-mono focus:ring-1 focus:ring-primary outline-none" maxlength="7">
+                                            </div>
+                                            <!-- Price Adjustment -->
+                                            <div class="col-span-6 md:col-span-2 relative font-mono">
+                                                <input type="number" :name="`options[${optIndex}][values][${valIndex}][price_adjustment]`" x-model="val.price_adjustment" step="0.01" placeholder="فرق السعر" class="w-full bg-white border border-outline-variant rounded-lg pl-6 pr-2 py-1.5 text-xs text-left focus:ring-1 focus:ring-primary outline-none">
+                                                <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] text-outline">ر.س</span>
+                                            </div>
+                                            <!-- Option Stock -->
+                                            <div class="col-span-4 md:col-span-2 font-mono">
+                                                <input type="number" :name="`options[${optIndex}][values][${valIndex}][stock]`" x-model="val.stock" placeholder="المخزون" class="w-full bg-white border border-outline-variant rounded-lg px-2 py-1.5 text-xs text-center focus:ring-1 focus:ring-primary outline-none">
+                                            </div>
+                                            <!-- Delete Button -->
+                                            <div class="col-span-2 md:col-span-1 text-left">
+                                                <button type="button" @click="removeValue(optIndex, valIndex)" class="text-gray-400 hover:text-error p-1 rounded transition">
+                                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div x-show="option.values.length === 0" class="text-center py-4 bg-gray-50/30 border border-dashed rounded-lg text-xs text-on-surface-variant">
+                                        لا توجد قيم بعد. انقر على "إضافة قيمة جديدة" للبدء.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div x-show="options.length === 0" class="text-center py-8 border border-dashed border-outline-variant/60 rounded-xl text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-4xl text-outline-variant mb-2">tune</span>
+                        <p>لا توجد خيارات مضافة لهذا المنتج حالياً.</p>
+                        <p class="text-xs text-outline mt-1">يمكنك إضافة ألوان ومقاسات ومواصفات مخصصة لتمكين العملاء من اختيارها.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Custom Input Fields Card -->
+            <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6 space-y-6" x-data="productCustomFieldsManager()">
+                <div class="flex items-center justify-between text-primary">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined">edit_note</span>
+                        <h3 class="font-title-lg text-title-lg font-bold">حقول مخصصة مطلوبة من المشتري عند الطلب</h3>
+                    </div>
+                    <button type="button" @click="addField()" class="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">add</span>إضافة حقل مخصص
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <template x-for="(field, fIndex) in fields" :key="field.id">
+                        <div class="grid grid-cols-12 gap-3 items-center bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/50 shadow-sm relative">
+                            <!-- Field Label -->
+                            <div class="col-span-12 md:col-span-4 flex flex-col gap-1">
+                                <label class="text-xs text-on-surface-variant font-bold">اسم الحقل (مثال: الاسم للكتابة، لون التطريز)</label>
+                                <input type="text" :name="`custom_fields[${fIndex}][label]`" x-model="field.label" required placeholder="اسم الحقل المطلوب من العميل" class="w-full bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-xs focus:ring-1 focus:ring-primary outline-none">
+                            </div>
+                            <!-- Field Type -->
+                            <div class="col-span-6 md:col-span-3 flex flex-col gap-1">
+                                <label class="text-xs text-on-surface-variant font-bold">نوع الحقل</label>
+                                <select :name="`custom_fields[${fIndex}][type]`" x-model="field.type" class="w-full bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-xs focus:ring-1 focus:ring-primary outline-none cursor-pointer">
+                                    <option value="text">حقل نصي قصير (Text)</option>
+                                    <option value="textarea">حقل نصي طويل (Textarea)</option>
+                                    <option value="number">رقم (Number)</option>
+                                    <option value="file">تحميل ملف/صورة (File Upload)</option>
+                                </select>
+                            </div>
+                            <!-- Price Effect -->
+                            <div class="col-span-6 md:col-span-3 flex flex-col gap-1">
+                                <label class="text-xs text-on-surface-variant font-bold">تكلفة إضافية عند التعبئة</label>
+                                <div class="relative font-mono">
+                                    <input type="number" :name="`custom_fields[${fIndex}][price_effect]`" x-model="field.price_effect" step="0.01" placeholder="مثال: 15.00" class="w-full bg-white border border-outline-variant rounded-lg pl-6 pr-3 py-1.5 text-xs focus:ring-1 focus:ring-primary outline-none">
+                                    <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] text-outline">ر.س</span>
+                                </div>
+                            </div>
+                            <!-- Required Toggle & Remove -->
+                            <div class="col-span-12 md:col-span-2 flex items-center justify-between md:justify-end gap-4 mt-2 md:mt-0 pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
+                                <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-on-surface-variant">
+                                    <input type="checkbox" :name="`custom_fields[${fIndex}][required]`" x-model="field.required" class="w-4 h-4 text-primary rounded">
+                                    <span>مطلوب</span>
+                                </label>
+                                <button type="button" @click="removeField(fIndex)" class="text-error hover:bg-error/10 p-1.5 rounded-lg transition" title="حذف الحقل">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div x-show="fields.length === 0" class="text-center py-6 border border-dashed border-outline-variant/60 rounded-xl text-sm text-on-surface-variant">
+                        <span class="material-symbols-outlined text-3xl text-outline-variant mb-2">edit_note</span>
+                        <p>لا توجد حقول مخصصة مطلوبة من العميل حالياً.</p>
+                        <p class="text-xs text-outline mt-1">مثل طلب كتابة اسم خاص على المنتج، أو تحميل شعار العميل.</p>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <!-- Right Side: Sidebar Controls (4 columns) -->
@@ -216,3 +370,97 @@
     </div>
 </form>
 @endsection
+
+@push('scripts')
+<script>
+    function productOptionsManager() {
+        return {
+            options: {!! json_encode(old('options', [])) !!}.map((opt, idx) => {
+                return {
+                    id: 'opt_' + idx,
+                    name: opt.name || '',
+                    type: opt.type || 'select',
+                    required: opt.required == 1,
+                    values: (opt.values || []).map((val, vidx) => ({
+                        id: 'val_' + idx + '_' + vidx,
+                        value: val.value || '',
+                        color_code: val.color_code || '#3b82f6',
+                        price_adjustment: val.price_adjustment || '',
+                        stock: val.stock || ''
+                    }))
+                };
+            }) || [],
+            optCounter: 100,
+            valCounter: 1000,
+            
+            init() {
+                // Done via expression
+            },
+            
+            addOption() {
+                this.optCounter++;
+                this.options.push({
+                    id: 'opt_' + this.optCounter,
+                    name: '',
+                    type: 'select',
+                    required: false,
+                    values: []
+                });
+            },
+            
+            removeOption(index) {
+                this.options.splice(index, 1);
+            },
+            
+            addValue(optIndex) {
+                this.valCounter++;
+                this.options[optIndex].values.push({
+                    id: 'val_' + this.valCounter,
+                    value: '',
+                    color_code: '#3b82f6',
+                    price_adjustment: '',
+                    stock: ''
+                });
+            },
+            
+            removeValue(optIndex, valIndex) {
+                this.options[optIndex].values.splice(valIndex, 1);
+            }
+        };
+    }
+
+    function productCustomFieldsManager() {
+        return {
+            fields: {!! json_encode(old('custom_fields', [])) !!}.map((cf, idx) => {
+                return {
+                    id: 'field_' + idx,
+                    label: cf.label || '',
+                    type: cf.type || 'text',
+                    required: cf.required == 1,
+                    price_effect: cf.price_effect || ''
+                };
+            }) || [],
+            fieldCounter: 100,
+            
+            init() {
+                // Done via expression
+            },
+            
+            addField() {
+                this.fieldCounter++;
+                this.fields.push({
+                    id: 'field_' + this.fieldCounter,
+                    label: '',
+                    type: 'text',
+                    required: false,
+                    price_effect: ''
+                });
+            },
+            
+            removeField(index) {
+                this.fields.splice(index, 1);
+            }
+        };
+    }
+</script>
+@endpush

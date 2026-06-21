@@ -38,7 +38,11 @@
                                     <img src="{{ asset('storage/' . $cat->image) }}" class="w-10 h-10 rounded object-cover" alt="">
                                 @else
                                     <div class="w-10 h-10 rounded bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white">
-                                        <span class="material-symbols-outlined">label</span>
+                                        @if($cat->icon)
+                                            @categoryIcon($cat->icon, 'text-xl text-white')
+                                        @else
+                                            <span class="material-symbols-outlined">label</span>
+                                        @endif
                                     </div>
                                 @endif
                                 <div>

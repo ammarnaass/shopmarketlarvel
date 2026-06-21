@@ -230,24 +230,55 @@ class InstantBuyController extends Controller
             'last_name' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
             'country_code' => 'required|string|size:2',
-            'state_code' => 'nullable|string|max:5',
             'city' => 'required|string|max:100',
-            'district' => 'nullable|string|max:100',
             'address' => 'required|string',
-            'zip' => 'nullable|string|max:20',
             'shipping_method' => 'required|in:standard,express',
-            'payment_method' => 'required|in:cod,bank,bank_transfer',
-            'delivery_type' => 'required|in:home,office',
+            'delivery_type' => 'nullable|in:home,office',
             'shipping_company_id' => 'nullable|exists:shipping_companies,id',
-            'notes' => 'nullable|string|max:500',
             'quantity' => 'required|integer|min:1',
             'options' => 'nullable|array',
             'custom_text' => 'nullable|string|max:500',
-            'coupon_code' => 'nullable|string',
         ];
-        if ($isGuest) {
+
+        // Conditional validation rules based on admin customize settings
+        if (\App\Models\Setting::get('instant_show_email', '1') === '1' && \App\Models\Setting::get('instant_req_email', '0') === '1') {
             $rules['email'] = 'required|email|max:255';
+        } else {
+            $rules['email'] = 'nullable|email|max:255';
         }
+
+        if (\App\Models\Setting::get('instant_show_state', '1') === '1' && \App\Models\Setting::get('instant_req_state', '0') === '1') {
+            $rules['state_code'] = 'required|string|max:5';
+        } else {
+            $rules['state_code'] = 'nullable|string|max:5';
+        }
+
+        if (\App\Models\Setting::get('instant_show_district', '1') === '1' && \App\Models\Setting::get('instant_req_district', '0') === '1') {
+            $rules['district'] = 'required|string|max:100';
+        } else {
+            $rules['district'] = 'nullable|string|max:100';
+        }
+
+        if (\App\Models\Setting::get('instant_show_zip', '1') === '1' && \App\Models\Setting::get('instant_req_zip', '0') === '1') {
+            $rules['zip'] = 'required|string|max:20';
+        } else {
+            $rules['zip'] = 'nullable|string|max:20';
+        }
+
+        if (\App\Models\Setting::get('instant_show_notes', '1') === '1') {
+            $rules['notes'] = 'nullable|string|max:500';
+        }
+
+        if (\App\Models\Setting::get('instant_show_coupon', '1') === '1') {
+            $rules['coupon_code'] = 'nullable|string';
+        }
+
+        $allowedPaymentMethods = ['cod'];
+        if (\App\Models\Setting::get('instant_enable_bank_transfer', '0') === '1') {
+            $allowedPaymentMethods[] = 'bank';
+            $allowedPaymentMethods[] = 'bank_transfer';
+        }
+        $rules['payment_method'] = 'required|in:' . implode(',', $allowedPaymentMethods);
 
         $data = $request->validate($rules, [
             'first_name.required' => 'الاسم الأول مطلوب',
@@ -341,13 +372,14 @@ class InstantBuyController extends Controller
             $data, $product, $qty, $subtotal, $shippingCost, $couponId, $discount, $codFee, $tax, $grandTotal,
             $optionsSummary, $customFilePath, $fullPhone, $isGuest, $base, $optionsAdjustment, $customFieldPrice
         ) {
+            $addressEmail = $isGuest ? ($data['email'] ?? ('guest_' . str_replace('+', '', $fullPhone) . '@amarstore.com')) : null;
             $address = ShippingAddress::create([
                 'user_id' => $isGuest ? null : Auth::id(),
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
                 'name' => $data['first_name'] . ' ' . $data['last_name'],
                 'phone' => $fullPhone,
-                'email' => $isGuest ? $data['email'] : null,
+                'email' => $addressEmail,
                 'country_code' => $data['country_code'],
                 'state_code' => $data['state_code'] ?? null,
                 'city' => $data['city'],
@@ -359,7 +391,7 @@ class InstantBuyController extends Controller
 
             $order = Order::create([
                 'user_id' => $isGuest ? null : Auth::id(),
-                'guest_email' => $isGuest ? $data['email'] : null,
+                'guest_email' => $addressEmail,
                 'guest_phone' => $isGuest ? $fullPhone : null,
                 'is_instant_buy' => true,
                 'shipping_address_id' => $address->id,

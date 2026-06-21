@@ -39,15 +39,17 @@ class ShopController extends Controller
         return view('frontend.shop.show', compact('product', 'related', 'relatedProducts', 'cartCount', 'shippingCompanies'));
     }
 
-    public function category(string $slug): View
+    public function category(Request $request, string $slug): View
     {
         $category = Category::where('slug', $slug)->where('status', 'active')->firstOrFail();
 
-        $products = $this->productService->searchProducts(['category_id' => $category->id])
-            ->paginate(12);
+        $products = $this->productService->searchProducts(array_merge($request->all(), ['category_id' => $category->id]))
+            ->paginate(12)
+            ->withQueryString();
 
         $cartCount = $this->cartService->getCart()->total_items;
 
         return view('frontend.shop.category', compact('category', 'products', 'cartCount'));
     }
 }
+

@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Design System - style_guidelines</title>
-    <style>
-        body { font-family: sans-serif; padding: 2rem; background: #faf8ff; line-height: 1.6; }
-        pre { background: #f0f0fb; padding: 1rem; border-radius: 4px; overflow-x: auto; }
-    </style>
-</head>
-<body>
-    <h1>Design System style_guidelines</h1>
-    <pre>## Brand & Style
+## Brand & Style
 The design system is engineered for high-performance retail management, emphasizing clarity, efficiency, and reliability. The visual language follows a **Corporate / Modern** aesthetic, prioritizing data density without sacrificing readability. 
 
 The personality is professional and systematic. It uses a structured layout to instill confidence in store owners managing inventory, orders, and customer data. The interface utilizes high-contrast navigation elements to provide clear wayfinding, while the content area remains neutral to let data and product imagery take center stage.
@@ -41,6 +29,4 @@ Depth is used sparingly to maintain a modern, flat-profile aesthetic.
   - *Ghost:* No background, blue border, used for secondary actions.
 - **Input Fields:** White background, 1px border (#e2e8f0), focuses to a 2px blue ring.
 - **KPI Widgets:** Features a circular icon container on the right (RTL), followed by the metric title and the large numeric value.
-- **Data Tables:** Clean rows with 1px horizontal dividers; hover states should utilize a very faint gray (#f1f5f9) highlight.</pre>
-</body>
-</html>
+- **Data Tables:** Clean rows with 1px horizontal dividers; hover states should utilize a very faint gray (#f1f5f9) highlight.

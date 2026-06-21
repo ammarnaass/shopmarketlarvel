@@ -144,12 +144,14 @@
                         </div>
                     </div>
 
+                    @if(site('instant_show_email', '1') === '1')
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">البريد الإلكتروني (اختياري)</label>
-                        <input type="email" name="email" x-model="form.email"
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">البريد الإلكتروني {{ site('instant_req_email', '0') === '1' ? '*' : '(اختياري)' }}</label>
+                        <input type="email" name="email" x-model="form.email" {{ site('instant_req_email', '0') === '1' ? 'required' : '' }}
                                class="w-full px-3 py-2 border-2 border-gray-200 focus:border-purple-500 rounded-lg text-sm"
                                placeholder="example@mail.com">
                     </div>
+                    @endif
 
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">رقم الهاتف *</label>
@@ -174,9 +176,10 @@
                                 @endforeach
                             </select>
                         </div>
+                        @if(site('instant_show_state', '1') === '1')
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">الولاية / المحافظة</label>
-                            <select name="state_code" x-model="form.state_code" @change="recalculate()"
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">الولاية / المحافظة {{ site('instant_req_state', '0') === '1' ? '*' : '' }}</label>
+                            <select name="state_code" x-model="form.state_code" @change="recalculate()" {{ site('instant_req_state', '0') === '1' ? 'required' : '' }}
                                     class="w-full px-3 py-2 border-2 border-gray-200 focus:border-purple-500 rounded-lg text-sm">
                                 <option value="">— اختر —</option>
                                 <template x-for="state in (statesList || [])" :key="state.code">
@@ -184,6 +187,7 @@
                                 </template>
                             </select>
                         </div>
+                        @endif
                     </div>
 
                     <div class="grid sm:grid-cols-2 gap-3">
@@ -193,12 +197,14 @@
                                    class="w-full px-3 py-2 border-2 border-gray-200 focus:border-purple-500 rounded-lg text-sm"
                                    placeholder="الخرطوم">
                         </div>
+                        @if(site('instant_show_district', '1') === '1')
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">الحي / المنطقة</label>
-                            <input type="text" name="district" x-model="form.district"
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">الحي / المنطقة {{ site('instant_req_district', '0') === '1' ? '*' : '' }}</label>
+                            <input type="text" name="district" x-model="form.district" {{ site('instant_req_district', '0') === '1' ? 'required' : '' }}
                                    class="w-full px-3 py-2 border-2 border-gray-200 focus:border-purple-500 rounded-lg text-sm"
                                    placeholder="الرياض">
                         </div>
+                        @endif
                     </div>
 
                     <div>
@@ -207,6 +213,24 @@
                                class="w-full px-3 py-2 border-2 border-gray-200 focus:border-purple-500 rounded-lg text-sm"
                                placeholder="الشارع، رقم المبنى، علامة مميزة">
                     </div>
+
+                    @if(site('instant_show_zip', '1') === '1')
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">الرمز البريدي (ZIP) {{ site('instant_req_zip', '0') === '1' ? '*' : '' }}</label>
+                        <input type="text" name="zip" x-model="form.zip" {{ site('instant_req_zip', '0') === '1' ? 'required' : '' }}
+                               class="w-full px-3 py-2 border-2 border-gray-200 focus:border-purple-500 rounded-lg text-sm"
+                               placeholder="11111">
+                    </div>
+                    @endif
+
+                    @if(site('instant_show_notes', '1') === '1')
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">ملاحظات الطلب (اختياري)</label>
+                        <textarea name="notes" x-model="form.notes"
+                                  class="w-full px-3 py-2 border-2 border-gray-200 focus:border-purple-500 rounded-lg text-sm"
+                                  rows="2" placeholder="أي ملاحظات بخصوص التوصيل..."></textarea>
+                    </div>
+                    @endif
                 </div>
 
                 {{-- 4) SHIPPING METHOD + PAYMENT (compact) --}}
@@ -233,18 +257,39 @@
                         </div>
                     </div>
 
-                    <div>
+                     <div>
                         <h3 class="font-bold text-sm mb-2"><span class="material-symbols-outlined text-purple-600 ml-1">credit_card</span>طريقة الدفع</h3>
-                        <label class="cursor-pointer block">
-                            <input type="hidden" name="payment_method" value="cod">
-                            <div class="p-3 border-2 border-purple-600 bg-purple-50 rounded-lg flex items-center gap-3">
-                                <span class="material-symbols-outlined text-green-600 text-2xl">payments</span>
-                                <div>
-                                    <p class="text-sm font-bold">الدفع عند الاستلام</p>
-                                    <p class="text-xs text-gray-500">ادفع نقداً عند استلام الطلب</p>
-                                </div>
+                        @if(site('instant_enable_bank_transfer', '0') === '1')
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="payment_method" value="cod" x-model="form.payment_method" class="sr-only peer">
+                                    <div class="p-3 border-2 rounded-lg text-center peer-checked:border-purple-600 peer-checked:bg-purple-50 border-gray-200">
+                                        <span class="material-symbols-outlined text-green-600 text-lg mb-1">payments</span>
+                                        <p class="text-sm font-semibold">الدفع عند الاستلام</p>
+                                        <p class="text-xs text-gray-500">ادفع عند استلام الطلب</p>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="payment_method" value="bank_transfer" x-model="form.payment_method" class="sr-only peer">
+                                    <div class="p-3 border-2 rounded-lg text-center peer-checked:border-purple-600 peer-checked:bg-purple-50 border-gray-200">
+                                        <span class="material-symbols-outlined text-blue-600 text-lg mb-1">account_balance</span>
+                                        <p class="text-sm font-semibold">تحويل بنكي</p>
+                                        <p class="text-xs text-gray-500">ادفع عبر حساب بنكي</p>
+                                    </div>
+                                </label>
                             </div>
-                        </label>
+                        @else
+                            <label class="cursor-pointer block">
+                                <input type="hidden" name="payment_method" value="cod">
+                                <div class="p-3 border-2 border-purple-600 bg-purple-50 rounded-lg flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-green-600 text-2xl">payments</span>
+                                    <div>
+                                        <p class="text-sm font-bold">الدفع عند الاستلام</p>
+                                        <p class="text-xs text-gray-500">ادفع نقداً عند استلام الطلب</p>
+                                    </div>
+                                </div>
+                            </label>
+                        @endif
                     </div>
                 </div>
 
@@ -268,6 +313,7 @@
                 </div>
 
                 {{-- 6) COUPON (optional, in same card as submit) --}}
+                @if(site('instant_show_coupon', '1') === '1')
                 <div class="bg-white rounded-2xl shadow-sm p-4">
                     <label class="block text-sm font-semibold mb-2"><span class="material-symbols-outlined text-purple-600 ml-1">confirmation_number</span>كوبون خصم (اختياري)</label>
                     <div class="flex gap-2">
@@ -283,10 +329,12 @@
                     <p x-show="couponMessage" x-text="couponMessage" class="text-green-600 text-xs mt-1"></p>
                     <p x-show="couponError" x-text="couponError" class="text-red-600 text-xs mt-1"></p>
                 </div>
+                @endif
 
                 {{-- 7) SUBMIT --}}
-                <button type="submit" :disabled="submitting || !form.city"
-                        class="w-full bg-gradient-to-l from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-4 rounded-xl font-extrabold text-base shadow-lg disabled:opacity-50 flex items-center justify-center gap-2">
+                <button type="submit" :disabled="submitting || !canSubmit"
+                        class="w-full bg-gradient-to-l from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-4 rounded-xl font-extrabold text-base shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        :class="canSubmit ? 'hover:shadow-2xl hover:-translate-y-0.5' : 'bg-gray-400'">
                     <template x-if="!submitting">
                         <span>
                             <span class="material-symbols-outlined ml-1">bolt</span>
@@ -331,18 +379,39 @@ function instantBuy() {
         form: {
             first_name: '',
             last_name: '',
+            email: '',
             phone: '',
             country_code: @json($defaultCountry),
             state_code: '',
             city: '',
             district: '',
             address: '',
+            zip: '',
+            notes: '',
             shipping_method: 'standard',
+            payment_method: 'cod',
         },
 
         countries: @json($countries),
         dialCode: '+249',
         currencySymbol: 'ج.س',
+
+        get canSubmit() {
+            const reqEmail = {{ site('instant_req_email', '0') === '1' ? 'true' : 'false' }};
+            const reqState = {{ site('instant_req_state', '0') === '1' ? 'true' : 'false' }};
+            const reqDistrict = {{ site('instant_req_district', '0') === '1' ? 'true' : 'false' }};
+            const reqZip = {{ site('instant_req_zip', '0') === '1' ? 'true' : 'false' }};
+
+            if (!this.form.first_name || !this.form.last_name || !this.form.phone || !this.form.city || !this.form.address) {
+                return false;
+            }
+            if (reqEmail && !this.form.email) return false;
+            if (reqState && !this.form.state_code) return false;
+            if (reqDistrict && !this.form.district) return false;
+            if (reqZip && !this.form.zip) return false;
+
+            return true;
+        },
 
         get basePrice() {
             const p = this.product;

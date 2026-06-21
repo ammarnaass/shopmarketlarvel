@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\Category;
+use App\Models\Page;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,6 +23,8 @@ class CustomizeController extends Controller
     {
         $themes = $this->themes();
         $banners = $this->banners();
+        $categories = Category::whereNull('parent_id')->orderBy('order')->get();
+        $pages = Page::where('is_active', true)->orderBy('sort_order')->get();
         $current = [
             'theme' => Setting::get('site_theme', 'light'),
             'primary_color' => Setting::get('primary_color', '#2563eb'),
@@ -41,10 +45,46 @@ class CustomizeController extends Controller
             'show_featured' => Setting::get('show_featured', '1'),
             'show_latest' => Setting::get('show_latest', '1'),
             'show_categories' => Setting::get('show_categories', '1'),
+            'nav_show_home' => Setting::get('nav_show_home', '1'),
+            'nav_show_products' => Setting::get('nav_show_products', '1'),
+            'nav_show_categories' => Setting::get('nav_show_categories', '1'),
+            'nav_show_contact' => Setting::get('nav_show_contact', '1'),
+            'nav_categories_limit' => Setting::get('nav_categories_limit', '3'),
+            'nav_categories_list' => Setting::get('nav_categories_list', ''),
+            'nav_pages_list' => Setting::get('nav_pages_list', ''),
+            'instant_enable_bank_transfer' => Setting::get('instant_enable_bank_transfer', '0'),
+            'instant_show_email' => Setting::get('instant_show_email', '1'),
+            'instant_req_email' => Setting::get('instant_req_email', '0'),
+            'instant_show_state' => Setting::get('instant_show_state', '1'),
+            'instant_req_state' => Setting::get('instant_req_state', '0'),
+            'instant_show_district' => Setting::get('instant_show_district', '1'),
+            'instant_req_district' => Setting::get('instant_req_district', '0'),
+            'instant_show_zip' => Setting::get('instant_show_zip', '1'),
+            'instant_req_zip' => Setting::get('instant_req_zip', '0'),
+            'instant_show_notes' => Setting::get('instant_show_notes', '1'),
+            'instant_show_coupon' => Setting::get('instant_show_coupon', '1'),
             'footer_about' => Setting::get('footer_about', 'متجر إلكتروني متكامل يوفر لك تجربة تسوق فريدة مع شحن سريع ودفع آمن عند الاستلام.'),
             'footer_copyright' => Setting::get('footer_copyright', 'جميع الحقوق محفوظة'),
+            'top_bar_show' => Setting::get('top_bar_show', '1'),
+            'top_bar_text' => Setting::get('top_bar_text', ''),
+            'top_bar_bg_color' => Setting::get('top_bar_bg_color', '#004ac6'),
+            'top_bar_text_color' => Setting::get('top_bar_text_color', '#ffffff'),
+            'top_bar_link' => Setting::get('top_bar_link', ''),
+            'whatsapp_btn_show' => Setting::get('whatsapp_btn_show', '0'),
+            'whatsapp_btn_phone' => Setting::get('whatsapp_btn_phone', ''),
+            'whatsapp_btn_text' => Setting::get('whatsapp_btn_text', 'مرحباً، أود الاستفسار عن المنتجات'),
+            'whatsapp_btn_position' => Setting::get('whatsapp_btn_position', 'right'),
+            'contact_phone' => Setting::get('contact_phone', '+249 90 000 0000'),
+            'contact_email' => Setting::get('contact_email', 'info@amarstore.com'),
+            'contact_whatsapp' => Setting::get('contact_whatsapp', ''),
+            'contact_address' => Setting::get('contact_address', 'الخرطوم، السودان'),
+            'facebook_url' => Setting::get('facebook_url', ''),
+            'twitter_url' => Setting::get('twitter_url', ''),
+            'instagram_url' => Setting::get('instagram_url', ''),
+            'whatsapp_number' => Setting::get('whatsapp_number', ''),
+            'youtube_url' => Setting::get('youtube_url', ''),
         ];
-        return view('admin.customize.index', compact('themes', 'banners', 'current'));
+        return view('admin.customize.index', compact('themes', 'banners', 'categories', 'pages', 'current'));
     }
 
     public function update(Request $request): RedirectResponse
@@ -82,24 +122,72 @@ class CustomizeController extends Controller
             'show_featured' => 'boolean',
             'show_latest' => 'boolean',
             'show_categories' => 'boolean',
+            'nav_show_home' => 'boolean',
+            'nav_show_products' => 'boolean',
+            'nav_show_categories' => 'boolean',
+            'nav_show_contact' => 'boolean',
+            'nav_categories_limit' => 'nullable|integer|min:1|max:10',
+            'nav_categories_list' => 'nullable|array',
+            'nav_pages_list' => 'nullable|array',
             'footer_about' => 'nullable|string|max:1000',
             'footer_copyright' => 'nullable|string|max:255',
+            'top_bar_show' => 'boolean',
+            'top_bar_text' => 'nullable|string|max:255',
+            'top_bar_bg_color' => 'nullable|string|max:20',
+            'top_bar_text_color' => 'nullable|string|max:20',
+            'top_bar_link' => 'nullable|string|max:500',
+            'whatsapp_btn_show' => 'boolean',
+            'whatsapp_btn_phone' => 'nullable|string|max:50',
+            'whatsapp_btn_text' => 'nullable|string|max:500',
+            'whatsapp_btn_position' => 'nullable|in:right,left',
+            'contact_phone' => 'nullable|string|max:50',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_whatsapp' => 'nullable|string|max:50',
+            'contact_address' => 'nullable|string|max:500',
+            'facebook_url' => 'nullable|url|max:500',
+            'twitter_url' => 'nullable|url|max:500',
+            'instagram_url' => 'nullable|url|max:500',
+            'whatsapp_number' => 'nullable|string|max:50',
+            'youtube_url' => 'nullable|url|max:500',
         ]);
 
-        $checkboxKeys = ['show_newsletter', 'show_featured', 'show_latest', 'show_categories'];
+        $checkboxKeys = [
+            'show_newsletter', 'show_featured', 'show_latest', 'show_categories',
+            'nav_show_home', 'nav_show_products', 'nav_show_categories', 'nav_show_contact',
+            'top_bar_show', 'whatsapp_btn_show'
+        ];
 
-        // Persist text fields first
+        // Explicitly set dynamic array inputs since empty arrays aren't submitted
+        $navCategoriesList = $request->input('nav_categories_list', []);
+        Setting::set('nav_categories_list', json_encode($navCategoriesList), 'customize');
+
+        $navPagesList = $request->input('nav_pages_list', []);
+        Setting::set('nav_pages_list', json_encode($navPagesList), 'customize');
+
+        // Persist checkbox keys (forces 0 if not checked/submitted)
+        foreach ($checkboxKeys as $key) {
+            Setting::set($key, $request->boolean($key) ? '1' : '0', 'customize');
+        }
+
+        // Persist other fields
         foreach ($data as $key => $value) {
             if (str_ends_with($key, '_file')) continue;
+            if ($key === 'nav_categories_list' || $key === 'nav_pages_list') continue;
+            if (in_array($key, $checkboxKeys, true)) continue; // Already saved
+
+            // Skip overwriting local image paths with empty values
+            if (in_array($key, ['hero_image', 'banner_1_image', 'banner_2_image'], true) && empty($value)) {
+                $existing = Setting::get($key);
+                if ($existing && !preg_match('#^https?://#i', $existing)) {
+                    continue;
+                }
+            }
+
             // Normalize color values to uppercase #RRGGBB
-            if (in_array($key, ['primary_color', 'accent_color'], true)) {
+            if (in_array($key, ['primary_color', 'accent_color', 'top_bar_bg_color', 'top_bar_text_color'], true)) {
                 $value = strtoupper(trim($value));
             }
-            if (in_array($key, $checkboxKeys)) {
-                Setting::set($key, $value ? '1' : '0', 'customize');
-            } else {
-                Setting::set($key, (string) $value, 'customize');
-            }
+            Setting::set($key, (string) $value, 'customize');
         }
 
         // Then handle file uploads (only if user picked a file, it overrides the text)

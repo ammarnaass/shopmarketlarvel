@@ -7,6 +7,7 @@ $activeTab = request('tab', 'store');
 $tabs = [
     'store' => ['icon' => 'store', 'title' => 'المتجر'],
     'currency' => ['icon' => 'payments', 'title' => 'العملة والمنطقة'],
+    'checkout' => ['icon' => 'bolt', 'title' => 'إعدادات الطلب الفوري'],
     'social' => ['icon' => 'share', 'title' => 'التواصل الاجتماعي'],
     'contact' => ['icon' => 'headset_mic', 'title' => 'معلومات الاتصال'],
     'seo' => ['icon' => 'search', 'title' => 'SEO ومحركات البحث'],
@@ -282,6 +283,104 @@ $tabs = [
                                 @endif
                             </div>
                         @endforeach
+                    </div>
+                </div>
+            </section>
+
+             @elseif($activeTab === 'checkout')
+            <section class="settings-card rounded-xl p-6">
+                <div class="flex items-center gap-2 mb-6 pb-4 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary">bolt</span>
+                    <h4 class="font-semibold text-lg">إعدادات فورم الطلب الفوري وطرق الدفع</h4>
+                </div>
+
+                {{-- Payment option --}}
+                <div class="mb-6 pb-6 border-b border-outline-variant">
+                    <h5 class="font-bold text-sm mb-3">خيارات الدفع</h5>
+                    <label class="flex items-center gap-3 p-3.5 border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container-low max-w-md">
+                        <input type="checkbox" name="instant_enable_bank_transfer" value="1" {{ (old('_token') ? old('instant_enable_bank_transfer') : $settings['checkout']['instant_enable_bank_transfer']) == '1' ? 'checked' : '' }} class="w-5 h-5 text-primary rounded">
+                        <div>
+                            <span class="text-sm font-semibold block">تفعيل التحويل البنكي</span>
+                            <span class="text-xs text-on-surface-variant">إتاحة خيار الدفع عبر التحويل البنكي إلى جانب الدفع عند الاستلام</span>
+                        </div>
+                    </label>
+                </div>
+
+                {{-- Form fields settings --}}
+                <div>
+                    <h5 class="font-bold text-sm mb-3">حقول الفورم (عرض وإجبارية الحقول)</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        
+                        {{-- Email field --}}
+                        <div class="p-4 border border-outline-variant rounded-xl space-y-3">
+                            <span class="font-semibold text-sm block border-b border-outline-variant/30 pb-2 mb-2">البريد الإلكتروني</span>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_show_email" value="1" {{ (old('_token') ? old('instant_show_email') : $settings['checkout']['instant_show_email']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>إظهار الحقل للعميل</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_req_email" value="1" {{ (old('_token') ? old('instant_req_email') : $settings['checkout']['instant_req_email']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>الحقل مطلوب (إجباري)</span>
+                            </label>
+                        </div>
+
+                        {{-- State field --}}
+                        <div class="p-4 border border-outline-variant rounded-xl space-y-3">
+                            <span class="font-semibold text-sm block border-b border-outline-variant/30 pb-2 mb-2">الولاية / المحافظة</span>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_show_state" value="1" {{ (old('_token') ? old('instant_show_state') : $settings['checkout']['instant_show_state']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>إظهار الحقل للعميل</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_req_state" value="1" {{ (old('_token') ? old('instant_req_state') : $settings['checkout']['instant_req_state']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>الحقل مطلوب (إجباري)</span>
+                            </label>
+                        </div>
+
+                        {{-- District field --}}
+                        <div class="p-4 border border-outline-variant rounded-xl space-y-3">
+                            <span class="font-semibold text-sm block border-b border-outline-variant/30 pb-2 mb-2">الحي / المنطقة</span>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_show_district" value="1" {{ (old('_token') ? old('instant_show_district') : $settings['checkout']['instant_show_district']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>إظهار الحقل للعميل</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_req_district" value="1" {{ (old('_token') ? old('instant_req_district') : $settings['checkout']['instant_req_district']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>الحقل مطلوب (إجباري)</span>
+                            </label>
+                        </div>
+
+                        {{-- Zip field --}}
+                        <div class="p-4 border border-outline-variant rounded-xl space-y-3">
+                            <span class="font-semibold text-sm block border-b border-outline-variant/30 pb-2 mb-2">الرمز البريدي (ZIP)</span>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_show_zip" value="1" {{ (old('_token') ? old('instant_show_zip') : $settings['checkout']['instant_show_zip']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>إظهار الحقل للعميل</span>
+                            </label>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_req_zip" value="1" {{ (old('_token') ? old('instant_req_zip') : $settings['checkout']['instant_req_zip']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>الحقل مطلوب (إجباري)</span>
+                            </label>
+                        </div>
+
+                        {{-- Notes field --}}
+                        <div class="p-4 border border-outline-variant rounded-xl space-y-3">
+                            <span class="font-semibold text-sm block border-b border-outline-variant/30 pb-2 mb-2">ملاحظات العميل</span>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_show_notes" value="1" {{ (old('_token') ? old('instant_show_notes') : $settings['checkout']['instant_show_notes']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>إظهار حقل الملاحظات للعميل</span>
+                            </label>
+                        </div>
+
+                        {{-- Coupon field --}}
+                        <div class="p-4 border border-outline-variant rounded-xl space-y-3">
+                            <span class="font-semibold text-sm block border-b border-outline-variant/30 pb-2 mb-2">كوبون الخصم</span>
+                            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                                <input type="checkbox" name="instant_show_coupon" value="1" {{ (old('_token') ? old('instant_show_coupon') : $settings['checkout']['instant_show_coupon']) == '1' ? 'checked' : '' }} class="w-4.5 h-4.5 text-primary rounded">
+                                <span>إظهار حقل الكوبون للعميل</span>
+                            </label>
+                        </div>
+
                     </div>
                 </div>
             </section>

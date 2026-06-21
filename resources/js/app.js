@@ -150,5 +150,9 @@ if (backToTop) {
     }, 100));
     backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
+// Start Alpine.js after all stores and components are registered
+if (window.Alpine) {
+    window.Alpine.start();
+}
 
 console.log('✓ Amar Store JS loaded (with Alpine.js)');

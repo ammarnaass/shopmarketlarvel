@@ -128,7 +128,7 @@
                             </h3>
                             <p class="text-outline text-sm mt-1">
                                 @if($zone->countries)
-                                    <span class="inline-flex items-center gap-1 ml-2"><span class="material-symbols-outlined text-sm">language</span>{{ is_array($zone->countries) ? implode('، ', $zone->countries) : $zone->countries }}</span>
+                                    <span class="inline-flex items-center gap-1 ml-2"><span class="material-symbols-outlined text-sm">language</span>{{ $zone->getFormattedCountries() }}</span>
                                 @endif
                             </p>
                         </div>
@@ -157,19 +157,19 @@
                         @if($zone->countries)
                             <div>
                                 <label class="text-outline text-xs font-bold block mb-1">الدول</label>
-                                <p class="text-sm font-semibold text-on-surface">{{ is_array($zone->countries) ? implode('، ', $zone->countries) : $zone->countries }}</p>
+                                <p class="text-sm font-semibold text-on-surface">{{ $zone->getFormattedCountries() }}</p>
                             </div>
                         @endif
                         @if($zone->states)
                             <div>
                                 <label class="text-outline text-xs font-bold block mb-1">المناطق / الولايات</label>
-                                <p class="text-sm text-on-surface">{{ is_array($zone->states) ? implode('، ', $zone->states) : $zone->states }}</p>
+                                <p class="text-sm text-on-surface">{{ $zone->getFormattedStates() }}</p>
                             </div>
                         @endif
                         @if($zone->cities)
                             <div>
                                 <label class="text-outline text-xs font-bold block mb-1">المدن المشمولة</label>
-                                <p class="text-xs text-on-surface-variant leading-relaxed">{{ is_array($zone->cities) ? implode('، ', $zone->cities) : $zone->cities }}</p>
+                                <p class="text-xs text-on-surface-variant leading-relaxed">{{ $zone->getFormattedCities() }}</p>
                             </div>
                         @endif
                         @if(!$zone->countries && !$zone->states && !$zone->cities)

@@ -3,7 +3,8 @@ $port = 8006;
 $docRoot = __DIR__ . '/public';
 
 // Start server in background
-$cmd = sprintf('start /B php -S 127.0.0.1:%d -t "%s" 2>NUL', $port, $docRoot);
+$router = __DIR__ . '/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php';
+$cmd = sprintf('cd "%s" && start /B php -S 127.0.0.1:%d "%s" 2>NUL', $docRoot, $port, $router);
 pclose(popen($cmd, 'r'));
 sleep(2);
 
@@ -39,7 +40,14 @@ foreach ($pages as $path => $file) {
 }
 
 // Kill server
-exec('taskkill /F /IM php.exe 2>NUL');
+$output = [];
+exec("netstat -ano | findstr :$port", $output);
+foreach ($output as $line) {
+    if (preg_match('/LISTENING\s+(\d+)$/', trim($line), $matches)) {
+        $pid = $matches[1];
+        exec("taskkill /F /PID $pid 2>NUL");
+    }
+}
 
 echo "=== TEST RESULTS ===\n";
 echo "Server: http://127.0.0.1:{$port}\n";

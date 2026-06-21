@@ -43,6 +43,9 @@
 
     {{-- Material Symbols (Stitch design system) --}}
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {{-- Font Awesome (for legacy category icons stored as fa-xxx) --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eecU/V7BUV/4hMa1cEQIFVQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         /* Inline critical CSS (loaded before Vite) */
@@ -67,8 +70,8 @@
         .page-loader-spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid #e0e7ff;
-            border-top-color: #4f46e5;
+            border: 4px solid #e1e2ed;
+            border-top-color: #004ac6;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -110,7 +113,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col antialiased">
+<body class="bg-surface text-on-surface min-h-screen flex flex-col antialiased">
 
     {{-- Page loader --}}
     <div class="page-loader" id="pageLoader">
@@ -215,5 +218,36 @@
             });
         })();
     </script>
+    {{-- Floating WhatsApp Button --}}
+    @if(site('whatsapp_btn_show', '0') === '1' && site('whatsapp_btn_phone'))
+        @php
+            $waPhone = preg_replace('/\D/', '', site('whatsapp_btn_phone'));
+            $waText = site('whatsapp_btn_text', 'مرحباً، أود الاستفسار عن المنتجات');
+            $waUrl = 'https://wa.me/' . $waPhone . '?text=' . urlencode($waText);
+            $waPosition = site('whatsapp_btn_position', 'right') === 'left' ? 'left-6' : 'right-6';
+        @endphp
+        <div class="fixed bottom-6 {{ $waPosition }} z-40 group">
+            {{-- Tooltip text --}}
+            <span class="absolute bottom-1/2 translate-y-1/2 {{ site('whatsapp_btn_position', 'right') === 'left' ? 'left-16' : 'right-16' }} whitespace-nowrap bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-md">
+                تواصل معنا عبر واتساب
+            </span>
+            <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer" 
+               class="w-14 h-14 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-bounce-subtle">
+                <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.96 9.96 0 001.333 4.982L2 22l5.202-1.362a9.932 9.932 0 004.81 1.233h.005c5.507 0 9.99-4.479 9.99-9.986.002-2.67-1.037-5.18-2.929-7.072A9.914 9.914 0 0012.012 2zm5.799 14.143c-.252.712-1.253 1.3-1.724 1.386-.432.08-1.002.138-2.836-.615-2.35-.966-3.83-3.32-3.95-3.48-.11-.16-1.008-1.332-1.008-2.541 0-1.209.629-1.804.85-2.051.222-.246.49-.311.654-.311.164 0 .328.001.472.008.152.008.356-.057.556.425.2.485.69 1.68.749 1.803.06.122.1.266.019.426-.08.162-.122.26-.244.403-.122.143-.257.32-.367.43-.122.122-.25.255-.107.498.142.243.633 1.037 1.36 1.682.937.83 1.728 1.087 1.974 1.21.246.12.39.102.535-.067.144-.17.614-.712.78-1.03.16-.316.326-.264.55-.18.225.084 1.428.673 1.674.795.246.122.41.182.47.286.062.103.062.597-.19 1.31z"/>
+                </svg>
+            </a>
+        </div>
+        
+        <style>
+            @keyframes bounce-subtle {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-4px); }
+            }
+            .animate-bounce-subtle {
+                animation: bounce-subtle 3s ease-in-out infinite;
+            }
+        </style>
+    @endif
 </body>
 </html>

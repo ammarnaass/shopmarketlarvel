@@ -53,6 +53,19 @@ class SettingsController extends Controller
             'seo_meta_keywords' => '',
             'seo_og_image' => '',
         ],
+        'checkout' => [
+            'instant_enable_bank_transfer' => '0',
+            'instant_show_email' => '1',
+            'instant_req_email' => '0',
+            'instant_show_state' => '1',
+            'instant_req_state' => '0',
+            'instant_show_district' => '1',
+            'instant_req_district' => '0',
+            'instant_show_zip' => '1',
+            'instant_req_zip' => '0',
+            'instant_show_notes' => '1',
+            'instant_show_coupon' => '1',
+        ],
     ];
 
     public function index(): View
@@ -71,17 +84,41 @@ class SettingsController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'group' => 'required|in:store,social,contact,seo,currency',
+            'group' => 'required|in:store,social,contact,seo,currency,checkout',
         ]);
 
         $group = $data['group'];
-        $rules = $this->rulesFor($group);
-        $validated = $request->validate($rules);
 
-        // Persist each key
-        foreach ($validated as $key => $value) {
-            if (in_array($key, ['group', '_token'])) continue;
-            Setting::set($key, (string) $value, $group);
+        if ($group === 'checkout') {
+            $checkboxKeys = [
+                'instant_enable_bank_transfer',
+                'instant_show_email', 'instant_req_email',
+                'instant_show_state', 'instant_req_state',
+                'instant_show_district', 'instant_req_district',
+                'instant_show_zip', 'instant_req_zip',
+                'instant_show_notes', 'instant_show_coupon'
+            ];
+            foreach ($checkboxKeys as $key) {
+                Setting::set($key, $request->boolean($key) ? '1' : '0', 'checkout');
+            }
+        } else {
+            $rules = $this->rulesFor($group);
+            $validated = $request->validate($rules);
+
+            // Persist each key
+            foreach ($validated as $key => $value) {
+                if (in_array($key, ['group', '_token'])) continue;
+                
+                // Skip overwriting local image paths with empty values
+                if (in_array($key, ['store_logo', 'store_favicon', 'seo_og_image'], true) && empty($value)) {
+                    $existing = Setting::get($key);
+                    if ($existing && !preg_match('#^https?://#i', $existing)) {
+                        continue;
+                    }
+                }
+                
+                Setting::set($key, (string) $value, $group);
+            }
         }
 
         // For currency group: also update the env file default_country so it sticks
@@ -206,6 +243,19 @@ class SettingsController extends Controller
             'currency' => [
                 'default_country' => 'required|string|size:2',
                 'fallback_currency' => 'required|string|size:3',
+            ],
+            'checkout' => [
+                'instant_enable_bank_transfer' => 'boolean',
+                'instant_show_email' => 'boolean',
+                'instant_req_email' => 'boolean',
+                'instant_show_state' => 'boolean',
+                'instant_req_state' => 'boolean',
+                'instant_show_district' => 'boolean',
+                'instant_req_district' => 'boolean',
+                'instant_show_zip' => 'boolean',
+                'instant_req_zip' => 'boolean',
+                'instant_show_notes' => 'boolean',
+                'instant_show_coupon' => 'boolean',
             ],
         };
     }

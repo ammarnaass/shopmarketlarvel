@@ -17,12 +17,18 @@
     {{-- Sidebar --}}
     <aside class="fixed right-0 top-0 h-full w-[260px] bg-on-background z-50 flex flex-col py-6 overflow-y-auto">
         <div class="px-6 mb-8 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
-                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">storefront</span>
-            </div>
-            <div>
-                <h1 class="text-lg font-bold text-surface-container-lowest leading-tight">{{ config('app.name') }}</h1>
-                <p class="text-xs text-surface-variant/60">إدارة النظام</p>
+            @if(site('store_logo'))
+                <img src="{{ site('store_logo') }}" alt="{{ site('store_name') }}" class="w-10 h-10 object-contain rounded-lg bg-white p-0.5 flex-shrink-0">
+            @else
+                <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary flex-shrink-0">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">storefront</span>
+                </div>
+            @endif
+            <div class="overflow-hidden">
+                <h1 class="text-sm font-bold text-surface-container-lowest leading-tight truncate" title="{{ site('store_name', config('app.name')) }}">
+                    {{ site('store_name', config('app.name')) }}
+                </h1>
+                <p class="text-[10px] text-surface-variant/60">إدارة النظام</p>
             </div>
         </div>
 
@@ -40,13 +46,7 @@
                     <span class="mr-auto bg-error text-on-error text-xs px-1.5 py-0.5 rounded-full">{{ $stats['pending_orders'] }}</span>
                 @endif
             </a>
-            <a href="#" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 sidebar-link">
-                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">bolt</span>
-                <span class="font-medium text-sm">طلبات فورية</span>
-                @if(($stats['instant_buy_orders'] ?? 0) > 0)
-                    <span class="mr-auto bg-tertiary-container text-on-tertiary-container text-xs px-1.5 py-0.5 rounded-full">{{ $stats['instant_buy_orders'] }}</span>
-                @endif
-            </a>
+
             <a href="{{ route('admin.coupons.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.coupons*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">confirmation_number</span>
                 <span class="font-medium text-sm">الكوبونات</span>
@@ -111,9 +111,13 @@
 
         <div class="px-6 py-4 mt-auto border-t border-outline/20">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
-                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">person</span>
-                </div>
+                @if(site('store_logo'))
+                    <img src="{{ site('store_logo') }}" alt="logo" class="w-10 h-10 rounded-full object-contain bg-white p-0.5 flex-shrink-0">
+                @else
+                    <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary flex-shrink-0">
+                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">person</span>
+                    </div>
+                @endif
                 <div class="flex-1 overflow-hidden">
                     <p class="text-sm font-medium text-surface-bright truncate">{{ auth()->user()->name ?? 'المدير' }}</p>
                     <p class="text-xs text-surface-variant/70 truncate">مدير المتجر</p>
@@ -137,12 +141,49 @@
                     <input type="text" placeholder="بحث سريع..."
                            class="bg-surface-container-low border border-outline-variant rounded-lg pr-10 pl-4 py-1.5 w-64 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
                 </div>
-                <button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-all relative">
-                    <span class="material-symbols-outlined">notifications</span>
-                    @if(($stats['pending_orders'] ?? 0) > 0)
-                        <span class="notif-dot"></span>
-                    @endif
-                </button>
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                    <button @click="open = !open" class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-all relative">
+                        <span class="material-symbols-outlined">notifications</span>
+                        @if(($stats['pending_orders'] ?? 0) > 0)
+                            <span class="notif-dot"></span>
+                        @endif
+                    </button>
+                    {{-- Notification Dropdown --}}
+                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute left-0 top-full mt-2 w-72 bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant z-50 overflow-hidden"
+                         x-cloak>
+                        <div class="px-4 py-3 border-b border-outline-variant flex items-center justify-between">
+                            <span class="font-semibold text-sm text-on-surface">الإشعارات</span>
+                            @if(($stats['pending_orders'] ?? 0) > 0)
+                                <span class="text-xs bg-error text-on-error px-2 py-0.5 rounded-full">{{ $stats['pending_orders'] }} جديد</span>
+                            @endif
+                        </div>
+                        @if(($stats['pending_orders'] ?? 0) > 0)
+                            <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="flex items-start gap-3 px-4 py-3 hover:bg-surface-container-low transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <span class="material-symbols-outlined text-amber-600" style="font-size:16px">pending</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-on-surface">طلبات معلقة تنتظر المراجعة</p>
+                                    <p class="text-xs text-on-surface-variant">{{ $stats['pending_orders'] }} طلب جديد</p>
+                                </div>
+                            </a>
+                        @else
+                            <div class="px-4 py-6 text-center">
+                                <span class="material-symbols-outlined text-outline text-3xl block mb-2">notifications_none</span>
+                                <p class="text-sm text-on-surface-variant">لا توجد إشعارات جديدة</p>
+                            </div>
+                        @endif
+                        <div class="px-4 py-2 border-t border-outline-variant">
+                            <a href="{{ route('admin.orders.index') }}" class="text-xs text-primary hover:underline block text-center">عرض كل الطلبات</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="flex items-center gap-2 mr-2 pr-2 border-r border-outline-variant">
                     <a href="{{ route('home') }}" target="_blank" class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-all" title="عرض المتجر">
                         <span class="material-symbols-outlined">open_in_new</span>

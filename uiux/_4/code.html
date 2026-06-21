@@ -3,389 +3,326 @@
 <html dir="rtl" lang="ar"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>تأكيد الطلب - متجر خالد</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#191b23",
+                    "on-primary-fixed": "#00174b",
+                    "surface-tint": "#0053db",
+                    "secondary-fixed": "#d8e3fb",
+                    "surface-container-low": "#f3f3fe",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#943700",
+                    "on-primary-container": "#eeefff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "primary-fixed": "#dbe1ff",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "surface-dim": "#d9d9e5",
+                    "secondary-container": "#d5e0f8",
+                    "outline": "#737686",
+                    "surface-variant": "#e1e2ed",
+                    "secondary-fixed-dim": "#bcc7de",
+                    "surface": "#faf8ff",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "background": "#faf8ff",
+                    "on-secondary-fixed-variant": "#3c475a",
+                    "surface-bright": "#faf8ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container": "#ededf9",
+                    "tertiary-container": "#bc4800",
+                    "primary-container": "#2563eb",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#ffede6",
+                    "on-secondary-fixed": "#111c2d",
+                    "inverse-on-surface": "#f0f0fb",
+                    "surface-container-highest": "#e1e2ed",
+                    "secondary": "#545f73",
+                    "primary": "#004ac6",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#434655",
+                    "on-tertiary-fixed": "#360f00",
+                    "on-secondary-container": "#586377",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#191b23",
+                    "inverse-surface": "#2e3039",
+                    "surface-container-high": "#e7e7f3",
+                    "inverse-primary": "#b4c5ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-md": "1rem",
+                    "stack-lg": "1.5rem",
+                    "sidebar-width": "260px",
+                    "gutter": "1.5rem",
+                    "stack-sm": "0.5rem",
+                    "margin-page": "2rem"
+            },
+            "fontFamily": {
+                    "label-md": ["IBM Plex Sans"],
+                    "label-sm": ["IBM Plex Sans"],
+                    "display-lg": ["IBM Plex Sans"],
+                    "title-lg": ["IBM Plex Sans"],
+                    "headline-sm": ["IBM Plex Sans"],
+                    "headline-md-mobile": ["IBM Plex Sans"],
+                    "body-sm": ["IBM Plex Sans"],
+                    "body-md": ["IBM Plex Sans"],
+                    "headline-md": ["IBM Plex Sans"]
+            },
+            "fontSize": {
+                    "label-md": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
 <style>
         body {
-            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            font-family: 'IBM Plex Sans', sans-serif;
             background-color: #faf8ff;
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        /* Custom scrollbar for side nav */
-        .sidebar-scroll::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar-scroll::-webkit-scrollbar-thumb {
-            background: #c3c6d7;
-            border-radius: 10px;
+        .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
     </style>
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "tertiary-fixed-dim": "#ffb596",
-                      "on-primary-fixed-variant": "#003ea8",
-                      "tertiary": "#943700",
-                      "on-error": "#ffffff",
-                      "on-tertiary-fixed-variant": "#7d2d00",
-                      "on-surface": "#191b23",
-                      "on-secondary-fixed": "#111c2d",
-                      "tertiary-container": "#bc4800",
-                      "surface": "#faf8ff",
-                      "outline-variant": "#c3c6d7",
-                      "on-tertiary-container": "#ffede6",
-                      "tertiary-fixed": "#ffdbcd",
-                      "primary-container": "#2563eb",
-                      "on-secondary": "#ffffff",
-                      "error": "#ba1a1a",
-                      "primary-fixed-dim": "#b4c5ff",
-                      "surface-container-highest": "#e1e2ed",
-                      "on-secondary-container": "#586377",
-                      "on-primary": "#ffffff",
-                      "inverse-surface": "#2e3039",
-                      "secondary-fixed-dim": "#bcc7de",
-                      "secondary": "#545f73",
-                      "background": "#faf8ff",
-                      "on-background": "#191b23",
-                      "surface-variant": "#e1e2ed",
-                      "surface-tint": "#0053db",
-                      "surface-container-low": "#f3f3fe",
-                      "on-primary-container": "#eeefff",
-                      "on-error-container": "#93000a",
-                      "inverse-primary": "#b4c5ff",
-                      "surface-container": "#ededf9",
-                      "on-primary-fixed": "#00174b",
-                      "surface-bright": "#faf8ff",
-                      "on-tertiary-fixed": "#360f00",
-                      "surface-container-lowest": "#ffffff",
-                      "secondary-fixed": "#d8e3fb",
-                      "surface-container-high": "#e7e7f3",
-                      "error-container": "#ffdad6",
-                      "on-surface-variant": "#434655",
-                      "outline": "#737686",
-                      "primary": "#004ac6",
-                      "on-tertiary": "#ffffff",
-                      "inverse-on-surface": "#f0f0fb",
-                      "secondary-container": "#d5e0f8",
-                      "on-secondary-fixed-variant": "#3c475a",
-                      "primary-fixed": "#dbe1ff",
-                      "surface-dim": "#d9d9e5"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.125rem",
-                      "lg": "0.25rem",
-                      "xl": "0.5rem",
-                      "full": "0.75rem"
-              },
-              "spacing": {
-                      "stack-md": "1rem",
-                      "sidebar-width": "260px",
-                      "gutter": "1.5rem",
-                      "stack-sm": "0.5rem",
-                      "stack-lg": "1.5rem",
-                      "margin-page": "2rem"
-              }
-            }
-          }
-        }
-    </script>
 </head>
 <body class="bg-background text-on-surface">
-<!-- Side Navigation Bar -->
-<aside class="fixed top-0 right-0 h-full w-[260px] bg-secondary-fixed-dim dark:bg-on-surface border-l border-outline-variant z-50 flex flex-col overflow-y-auto sidebar-scroll">
-<div class="p-6 flex flex-col gap-1">
-<div class="flex items-center gap-3 mb-6">
-<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">store</span>
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline docked full-width top-0 sticky z-50">
+<nav class="flex flex-row-reverse justify-between items-center px-margin-page h-16 w-full">
+<!-- Brand Logo -->
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">
+                Khaled Store
+            </div>
+<!-- Navigation Links (Desktop) -->
+<div class="hidden md:flex flex-row-reverse gap-stack-lg items-center">
+<a class="font-title-lg text-title-lg text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">اتصل بنا</a>
+<a class="font-title-lg text-title-lg text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">العروض</a>
+<a class="font-title-lg text-title-lg text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">الفئات</a>
+<a class="font-title-lg text-title-lg text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">المنتجات</a>
+<a class="font-title-lg text-title-lg text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary" href="#">الرئيسية</a>
 </div>
-<div>
-<h1 class="font-headline-md text-headline-md font-bold text-on-secondary-fixed">متجر خالد</h1>
-<p class="text-[12px] text-on-secondary-fixed-variant opacity-70">لوحة الإدارة</p>
+<!-- Action Icons -->
+<div class="flex flex-row items-center gap-stack-md">
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">person</span>
+</button>
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors relative">
+<span class="material-symbols-outlined text-primary">shopping_cart</span>
+<span class="absolute top-1 right-1 bg-error text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
+</button>
 </div>
-</div>
-<nav class="flex flex-col gap-1">
-<a class="text-on-secondary-fixed-variant px-4 py-3 flex items-center gap-3 hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-body-md text-body-md">لوحة القيادة</span>
-</a>
-<a class="text-on-secondary-fixed-variant px-4 py-3 flex items-center gap-3 hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
-<span class="material-symbols-outlined">inventory_2</span>
-<span class="font-body-md text-body-md">المنتجات</span>
-</a>
-<a class="text-on-secondary-fixed-variant px-4 py-3 flex items-center gap-3 hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
-<span class="material-symbols-outlined">shopping_cart</span>
-<span class="font-body-md text-body-md">الطلبات</span>
-</a>
-<a class="bg-secondary-container text-primary border-r-4 border-primary px-4 py-3 flex items-center gap-3 transition-colors" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
-<span class="font-body-md text-body-md font-bold">الشحن</span>
-</a>
-<a class="text-on-secondary-fixed-variant px-4 py-3 flex items-center gap-3 hover:bg-surface-container-high transition-colors active:scale-95 duration-150" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-body-md text-body-md">الإعدادات</span>
-</a>
 </nav>
-</div>
-</aside>
-<!-- Top Navigation Bar -->
-<header class="fixed top-0 left-0 right-[260px] h-16 bg-surface border-b border-outline-variant z-40 flex items-center justify-between px-gutter shadow-sm">
-<div class="flex items-center gap-4">
-<h2 class="font-title-lg text-title-lg font-bold text-primary">إدارة الشحن</h2>
-</div>
-<div class="flex items-center gap-4">
-<div class="relative hidden md:block">
-<input class="bg-surface-container-low border border-outline-variant rounded-full px-10 py-1.5 text-body-sm w-64 focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="بحث عن طلب أو شحنة..." type="text"/>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-</div>
-<div class="flex items-center gap-2">
-<button class="hover:bg-surface-container-low rounded-full p-2 transition-all active:opacity-80">
-<span class="material-symbols-outlined text-primary">notifications</span>
-</button>
-<button class="hover:bg-surface-container-low rounded-full p-2 transition-all active:opacity-80">
-<span class="material-symbols-outlined text-primary">dark_mode</span>
-</button>
-<div class="h-8 w-8 rounded-full bg-secondary-fixed overflow-hidden border border-outline-variant">
-<img alt="صورة المستخدم الشخصية" data-alt="A professional headshot of a middle-aged male executive with a kind smile, set against a blurred corporate office background. The lighting is soft and flattering, reflecting a clean, high-end business aesthetic consistent with a professional retail management platform. The overall mood is trustworthy and authoritative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-99dE3pBSPCu2zU7z_s29bYDnADiEHFUPO2GQlDfNP8BIn7oSggT7cyrrmhiB_rLHThqXU0ZXfIwzGr95ncfhhMJqurJZAY34CpuOi5DHHYozyzzz7fdJtRWLlp99EzJgRcaqf6-Bz_F8heibg98vNtC5ID39AqpQHvNlvx5ZO8WMSKS0LQEWSjY4LCEbIBcOyllk3XaYN66u7r9rPgEOAn_1SB3ce4_XDhUC8-oWOl2_ScaD_VWGjEHBwEWHqpfYoyBPJ4FKSjQ"/>
-</div>
-</div>
-</div>
 </header>
-<!-- Main Content Area -->
-<main class="mr-[260px] mt-16 p-margin-page">
-<div class="max-w-4xl mx-auto">
-<!-- Header Actions -->
-<div class="flex items-center justify-between mb-8">
+<main class="min-h-screen">
+<!-- Success Hero Section -->
+<section class="bg-[#f0fdf4] py-16 px-margin-page text-center">
+<div class="max-w-2xl mx-auto flex flex-col items-center">
+<div class="w-32 h-32 bg-[#10b981] rounded-full flex items-center justify-center mb-6 shadow-lg animate-bounce">
+<span class="material-symbols-outlined text-white text-6xl" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-[#065f46] mb-4">
+                    تم إرسال طلبك بنجاح! 🎉
+                </h1>
+<p class="font-body-md text-body-md text-[#166534] max-w-md">
+                    شكراً لتسوقك من متجر خالد. طلبك الآن قيد المعالجة وسنقوم بإرسال التحديثات إليك تباعاً.
+                </p>
+</div>
+</section>
+<div class="max-w-5xl mx-auto px-margin-page -mt-10 pb-20">
+<!-- Order Highlights & Quick Message -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="md:col-span-2 space-y-gutter">
+<!-- Order Info Card -->
+<div class="bg-surface-container-lowest p-stack-lg rounded-xl shadow-sm border border-outline-variant flex flex-wrap justify-between items-center gap-stack-md">
 <div>
-<h1 class="text-[28px] font-bold text-on-surface">إضافة طريقة شحن</h1>
-<p class="text-on-surface-variant font-body-sm text-body-sm mt-1">تحديد خيارات الشحن وتكلفتها لعملائك</p>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">رقم الطلب</p>
+<p class="font-headline-md text-headline-md text-primary-container font-bold">#ORD-4521</p>
 </div>
-<button class="flex items-center gap-2 text-primary font-bold hover:underline transition-all">
-<span class="material-symbols-outlined">arrow_back</span>
-<span>العودة للقائمة</span>
-</button>
+<div>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">المبلغ الإجمالي</p>
+<p class="font-title-lg text-title-lg text-on-surface">201.25 SAR</p>
 </div>
-<!-- Main Form Card -->
-<div class="bg-white rounded-xl shadow-sm border border-outline-variant overflow-hidden mb-8">
-<div class="p-6 border-b border-outline-variant bg-surface-container-lowest">
-<h3 class="text-title-lg font-bold flex items-center gap-2">
-<span class="material-symbols-outlined text-primary">local_shipping</span>
-                        تفاصيل الطريقة الأساسية
-                    </h3>
+<div>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">طريقة الدفع</p>
+<p class="font-title-lg text-title-lg text-on-surface">الدفع عند الاستلام</p>
 </div>
-<div class="p-8 space-y-8">
-<!-- Basic Info Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div class="space-y-2">
-<label class="block text-label-md font-label-md text-on-surface-variant">اسم الطريقة</label>
-<input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all text-body-md" placeholder="مثال: شحن عادي، توصيل سريع" type="text"/>
-</div>
-<div class="space-y-2">
-<label class="block text-label-md font-label-md text-on-surface-variant">نوع الطريقة</label>
-<select class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all text-body-md appearance-none" id="methodType">
-<option value="flat">سعر ثابت (Flat Rate)</option>
-<option value="free">شحن مجاني (Free Shipping)</option>
-<option value="weight">حسب الوزن (Weight-based)</option>
-</select>
-</div>
-<div class="space-y-2">
-<label class="block text-label-md font-label-md text-on-surface-variant">شركة الشحن</label>
-<select class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all text-body-md">
-<option>Aramex</option>
-<option>SMSA Express</option>
-<option>DHL</option>
-<option>توصيل محلي</option>
-</select>
-</div>
-<div class="space-y-2">
-<label class="block text-label-md font-label-md text-on-surface-variant">وقت التوصيل المتوقع</label>
-<input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all text-body-md" placeholder="مثال: 3-5 أيام عمل" type="text"/>
+<div>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-1">رقم الجوال</p>
+<p class="font-title-lg text-title-lg text-on-surface" dir="ltr">+966 50 123 4567</p>
 </div>
 </div>
-<!-- Flat Rate Section -->
-<div class="bg-surface-container-low p-6 rounded-xl space-y-4 border border-outline-variant" id="flatRateSettings">
-<h4 class="font-bold text-primary flex items-center gap-2">
-<span class="material-symbols-outlined">payments</span>
-                            إعدادات الشحن الثابت
-                        </h4>
-<div class="max-w-xs space-y-2">
-<label class="block text-label-md font-label-md text-on-surface-variant">مبلغ الشحن (SAR)</label>
-<div class="relative">
-<input class="w-full bg-white border border-outline-variant rounded-lg pr-4 pl-12 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all text-body-md" placeholder="0.00" type="number"/>
-<span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold text-sm">ر.س</span>
+<!-- Confirmation Message Box -->
+<div class="bg-primary-fixed p-stack-md rounded-lg border border-primary-fixed-dim flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary-container text-3xl">chat_bubble</span>
+<p class="font-body-md text-body-md text-on-primary-fixed-variant">
+                            سنتواصل معك قريباً لتأكيد الطلب عبر الهاتف أو الواتساب
+                        </p>
 </div>
+<!-- Order Details Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="p-stack-md border-b border-outline-variant bg-surface-container-low">
+<h2 class="font-headline-sm text-headline-sm">تفاصيل الطلب</h2>
 </div>
-</div>
-<!-- Free Shipping Section (Collapsible Logic via JS) -->
-<div class="bg-surface-container-low p-6 rounded-xl space-y-6 border border-outline-variant" id="freeShippingSettings">
-<div class="flex items-center justify-between">
-<h4 class="font-bold text-primary flex items-center gap-2">
-<span class="material-symbols-outlined">redeem</span>
-                                إعدادات الشحن المجاني
-                            </h4>
-<label class="relative inline-flex items-center cursor-pointer">
-<input class="sr-only peer" id="freeToggle" type="checkbox"/>
-<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 opacity-50 pointer-events-none transition-opacity duration-300" id="freeContent">
-<div class="space-y-2">
-<label class="block text-label-md font-label-md text-on-surface-variant">الحد الأدنى للطلب (SAR)</label>
-<input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all text-body-md" placeholder="مثال: 500" type="number"/>
-</div>
-<div class="space-y-2">
-<label class="block text-label-md font-label-md text-on-surface-variant">كود الخصم المرتبط (اختياري)</label>
-<input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all text-body-md" placeholder="مثال: FREE2024" type="text"/>
-</div>
-</div>
-</div>
-<!-- Weight Based Settings -->
-<div class="space-y-4" id="weightBasedSettings">
-<div class="flex items-center justify-between">
-<h4 class="font-bold text-primary flex items-center gap-2">
-<span class="material-symbols-outlined">scale</span>
-                                إعدادات الشحن حسب الوزن
-                            </h4>
-<button class="bg-secondary-container text-primary-fixed-dim bg-primary px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
-<span class="material-symbols-outlined text-sm">add</span>
-                                إضافة نطاق جديد
-                            </button>
-</div>
-<div class="overflow-x-auto rounded-lg border border-outline-variant">
-<table class="w-full text-right border-collapse">
+<div class="overflow-x-auto">
+<table class="w-full text-right">
 <thead>
-<tr class="bg-surface-container">
-<th class="px-6 py-3 text-label-md font-bold text-on-surface border-b border-outline-variant">من (كجم)</th>
-<th class="px-6 py-3 text-label-md font-bold text-on-surface border-b border-outline-variant">إلى (كجم)</th>
-<th class="px-6 py-3 text-label-md font-bold text-on-surface border-b border-outline-variant">التكلفة (SAR)</th>
-<th class="px-6 py-3 text-label-md font-bold text-on-surface border-b border-outline-variant text-center">إجراءات</th>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">المنتج</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant text-center">الكمية</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant text-left">السعر</th>
 </tr>
 </thead>
-<tbody>
+<tbody class="divide-y divide-outline-variant">
 <tr class="hover:bg-surface-container-low transition-colors">
-<td class="px-6 py-4 border-b border-outline-variant">0</td>
-<td class="px-6 py-4 border-b border-outline-variant">1</td>
-<td class="px-6 py-4 border-b border-outline-variant">25.00</td>
-<td class="px-6 py-4 border-b border-outline-variant text-center">
-<button class="text-error hover:bg-error-container rounded-full p-1.5 transition-all">
-<span class="material-symbols-outlined">delete</span>
-</button>
+<td class="px-6 py-4 flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded bg-surface-variant flex-shrink-0">
+<img alt="منتج" class="w-full h-full object-cover rounded" data-alt="A premium quality red cotton t-shirt neatly folded on a white minimalist background. The lighting is bright and clean, emphasizing the soft texture of the fabric. The overall aesthetic is professional and high-end retail, matching a modern e-commerce product photography style with neutral tones and soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzerytkk7_NoShz4d9hoRSMeuTPeYgvUxlAqF0SSLmN81MzCkFPKDzQ0kkbiOAMtzS0n70ZZId62abBdK0FhERzdudLESp796Yv1XDTcAkyzFPEzL-PZR48SqCqj99-yw42AAzCsAb_CmczmzlP_wmbN-t-kqRkd78OVr9rSjpwMQYXdHXOPzYoMDFQFuTJQXiCdsz5SxeJBatLQoKsHDnsF7bsq84_iL1gov1WiWUHizITqiqOEE23CKvfNpabUvR5B6L43a_qVI"/>
+</div>
+<span class="font-body-md text-body-md">تیشيرت قطني أحمر L</span>
 </td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="px-6 py-4 border-b border-outline-variant">1.01</td>
-<td class="px-6 py-4 border-b border-outline-variant">5</td>
-<td class="px-6 py-4 border-b border-outline-variant">45.00</td>
-<td class="px-6 py-4 border-b border-outline-variant text-center">
-<button class="text-error hover:bg-error-container rounded-full p-1.5 transition-all">
-<span class="material-symbols-outlined">delete</span>
-</button>
-</td>
+<td class="px-6 py-4 font-body-md text-body-md text-center">1</td>
+<td class="px-6 py-4 font-body-md text-body-md text-left">150.00 SAR</td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="bg-surface-container-low p-stack-lg space-y-stack-sm border-t border-outline-variant">
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>المجموع الفرعي:</span>
+<span>150.00 SAR</span>
 </div>
-<!-- Toggles Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-outline-variant">
-<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-primary">receipt_long</span>
-<div>
-<p class="font-bold text-on-surface">تفعيل الضريبة</p>
-<p class="text-[12px] text-on-surface-variant">تطبيق ضريبة القيمة المضافة على الشحن</p>
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>تكلفة الشحن:</span>
+<span>25.00 SAR</span>
 </div>
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>الضريبة (15%):</span>
+<span>26.25 SAR</span>
 </div>
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox"/>
-<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
-</div>
-<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-primary">visibility</span>
-<div>
-<p class="font-bold text-on-surface">الحالة</p>
-<p class="text-[12px] text-on-surface-variant">ظهور الطريقة للعملاء في المتجر</p>
-</div>
-</div>
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox"/>
-<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
+<div class="flex justify-between font-title-lg text-title-lg text-primary pt-stack-sm border-t border-outline-variant">
+<span>الإجمالي النهائي:</span>
+<span class="font-bold">201.25 SAR</span>
 </div>
 </div>
 </div>
-<!-- Form Footer -->
-<div class="p-6 bg-surface-container-low border-t border-outline-variant flex items-center justify-end gap-4">
-<button class="px-8 py-2.5 rounded-lg border border-outline text-on-surface-variant hover:bg-surface-container-high transition-all font-bold">إلغاء</button>
-<button class="px-10 py-2.5 rounded-lg bg-primary text-white hover:opacity-90 active:scale-95 transition-all shadow-sm font-bold flex items-center gap-2">
-<span class="material-symbols-outlined">save</span>
-                        حفظ الطريقة
-                    </button>
+</div>
+<!-- Sidebar Info: Address & Actions -->
+<div class="space-y-gutter">
+<!-- Delivery Address Card -->
+<div class="bg-surface-container-lowest p-stack-lg rounded-xl shadow-sm border border-outline-variant">
+<div class="flex items-center gap-stack-sm mb-stack-md text-primary">
+<span class="material-symbols-outlined">local_shipping</span>
+<h3 class="font-title-lg text-title-lg">عنوان التوصيل</h3>
+</div>
+<div class="space-y-stack-sm font-body-md text-body-md text-on-surface">
+<p class="font-bold">محمد الفلاني</p>
+<p>الرياض</p>
+<p>حي النخيل، شارع الملك فهد</p>
+<p class="text-on-surface-variant" dir="ltr">+966 50 123 4567</p>
 </div>
 </div>
-<!-- Bento Styled Help Cards -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-<div class="bg-primary/5 p-5 rounded-xl border border-primary/20 flex flex-col gap-3">
-<span class="material-symbols-outlined text-primary bg-primary/10 w-fit p-2 rounded-lg">info</span>
-<h5 class="font-bold text-on-surface text-sm">نصيحة للشحن</h5>
-<p class="text-[12px] text-on-surface-variant leading-relaxed">أظهرت الدراسات أن توفير خيار "الشحن المجاني" يزيد من نسبة إتمام الطلبات بنسبة 30%.</p>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-stack-md">
+<button class="w-full bg-primary-container text-white py-4 px-stack-lg rounded-lg font-title-lg text-title-lg hover:opacity-90 transition-all flex items-center justify-center gap-stack-sm shadow-md">
+<span class="material-symbols-outlined">shopping_bag</span>
+                            متابعة التسوق
+                        </button>
+<button class="w-full bg-white border-2 border-outline-variant text-on-surface-variant py-4 px-stack-lg rounded-lg font-title-lg text-title-lg hover:bg-surface-variant transition-all flex items-center justify-center gap-stack-sm" onclick="window.print()">
+<span class="material-symbols-outlined">print</span>
+                            طباعة الطلب
+                        </button>
 </div>
-<div class="bg-secondary/5 p-5 rounded-xl border border-secondary/20 flex flex-col gap-3">
-<span class="material-symbols-outlined text-secondary bg-secondary/10 w-fit p-2 rounded-lg">speed</span>
-<h5 class="font-bold text-on-surface text-sm">التوصيل السريع</h5>
-<p class="text-[12px] text-on-surface-variant leading-relaxed">يفضل العملاء استلام طلباتهم في غضون يومين إلى ثلاثة أيام كحد أقصى.</p>
+<!-- Map/Location Visualization -->
+<div class="rounded-xl overflow-hidden h-48 relative border border-outline-variant grayscale opacity-70 hover:grayscale-0 transition-all duration-500">
+<img alt="الرياض" class="w-full h-full object-cover" data-alt="A stylized, high-contrast overhead map view of a modern urban city district in Riyadh, Saudi Arabia. The map features clean lines and a professional minimalist aesthetic, using a muted color palette of grays, soft blues, and subtle whites. The layout highlights major boulevards and residential grids, conveying a sense of efficient logistics and local delivery reach." data-location="الرياض" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMN5oPD5ptgDLrVUmijkDI3GeXu0a7kt6ZV7hMrB6-Ap-yaInSwOM9GPxiGY0yPKpODrvjLBGKGyg-Q_KbA9i5MrUvBUpI8SlTBxyBQcrXhE3IthfEK2-RdoZmG19tqW5suAym7gVeNb1uJor_eoTwetVeFA_4OO0_tr2KteuS41RbGLWCYa1gilQ6lqnzTEWfb08uWp7YSCmhxowOi6bOOhbJQLsp1ciJTK-DEypmlmtpmauWWld4cbKaa0szM_iKAnBXhzm-JnI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/40 to-transparent flex items-end p-stack-md">
+<p class="text-white font-label-md text-label-md">جاري التحضير للشحن إلى الرياض</p>
 </div>
-<div class="bg-tertiary/5 p-5 rounded-xl border border-tertiary/20 flex flex-col gap-3">
-<span class="material-symbols-outlined text-tertiary bg-tertiary/10 w-fit p-2 rounded-lg">security</span>
-<h5 class="font-bold text-on-surface text-sm">التأمين والضمان</h5>
-<p class="text-[12px] text-on-surface-variant leading-relaxed">تأكد من تفعيل خيار تتبع الشحنة مع شركات الشحن المختارة لضمان رضا العميل.</p>
+</div>
 </div>
 </div>
 </div>
 </main>
+<!-- Footer -->
+<footer class="bg-on-surface dark:bg-surface-container-lowest text-surface dark:text-on-surface border-t border-outline-variant">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-stack-lg px-margin-page py-stack-lg w-full text-right">
+<!-- Brand Info -->
+<div class="space-y-stack-md">
+<h2 class="font-headline-sm text-headline-sm text-surface dark:text-on-surface">متجر خالد</h2>
+<p class="font-body-sm text-body-sm text-surface-variant dark:text-on-surface-variant">أفضل تجربة تسوق إلكترونية في المملكة، جودة عالية وخدمة عملاء استثنائية.</p>
+</div>
+<!-- Quick Links -->
+<div>
+<h3 class="font-title-lg text-title-lg mb-stack-md">روابط سريعة</h3>
+<ul class="space-y-stack-sm font-body-sm text-body-sm text-surface-variant dark:text-on-surface-variant">
+<li><a class="hover:text-primary-fixed-dim transition-colors" href="#">عن المتجر</a></li>
+<li><a class="hover:text-primary-fixed-dim transition-colors" href="#">سياسة الخصوصية</a></li>
+<li><a class="hover:text-primary-fixed-dim transition-colors" href="#">الشروط والأحكام</a></li>
+</ul>
+</div>
+<!-- Support -->
+<div>
+<h3 class="font-title-lg text-title-lg mb-stack-md">الدعم</h3>
+<ul class="space-y-stack-sm font-body-sm text-body-sm text-surface-variant dark:text-on-surface-variant">
+<li><a class="hover:text-primary-fixed-dim transition-colors" href="#">الأسئلة الشائعة</a></li>
+<li><a class="hover:text-primary-fixed-dim transition-colors" href="#">الدعم الفني</a></li>
+</ul>
+</div>
+<!-- Social -->
+<div>
+<h3 class="font-title-lg text-title-lg mb-stack-md">تواصل معنا</h3>
+<div class="flex gap-stack-md">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">share</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">mail</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">call</span>
+</div>
+</div>
+</div>
+<div class="border-t border-outline/20 px-margin-page py-6 text-center font-body-sm text-body-sm text-surface-variant">
+            © 2024 متجر خالد. جميع الحقوق محفوظة.
+        </div>
+</footer>
 <script>
-        // Toggle logic for Free Shipping sections
-        const freeToggle = document.getElementById('freeToggle');
-        const freeContent = document.getElementById('freeContent');
-
-        freeToggle.addEventListener('change', () => {
-            if (freeToggle.checked) {
-                freeContent.classList.remove('opacity-50', 'pointer-events-none');
-            } else {
-                freeContent.classList.add('opacity-50', 'pointer-events-none');
-            }
+        // Simple micro-interaction for buttons
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', () => button.classList.add('scale-95'));
+            button.addEventListener('mouseup', () => button.classList.remove('scale-95'));
+            button.addEventListener('mouseleave', () => button.classList.remove('scale-95'));
         });
 
-        // Dynamic section display based on method type
-        const methodType = document.getElementById('methodType');
-        const flatRateSection = document.getElementById('flatRateSettings');
-        const weightBasedSection = document.getElementById('weightBasedSettings');
-
-        methodType.addEventListener('change', (e) => {
-            const val = e.target.value;
-            if (val === 'flat') {
-                flatRateSection.style.display = 'block';
-                weightBasedSection.style.display = 'none';
-            } else if (val === 'weight') {
-                flatRateSection.style.display = 'none';
-                weightBasedSection.style.display = 'block';
-            } else {
-                flatRateSection.style.display = 'none';
-                weightBasedSection.style.display = 'none';
-            }
+        // Trigger confetti-like animation placeholder
+        window.addEventListener('load', () => {
+            console.log("Order confirmed animation ready.");
         });
-
-        // Initial setup for default selection
-        window.onload = () => {
-            weightBasedSection.style.display = 'none';
-        };
     </script>
 </body></html>

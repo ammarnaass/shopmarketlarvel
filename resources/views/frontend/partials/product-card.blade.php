@@ -14,7 +14,7 @@
     <a href="{{ route('shop.show', $product->slug) }}" class="block relative overflow-hidden">
         <div class="product-card-image">
             @if($image)
-                <img src="{{ asset('storage/' . $image->path) }}" alt="{{ $image->alt ?? $product->name }}" loading="lazy">
+                <img src="{{ asset('storage/' . $image->image) }}" alt="{{ $image->alt ?? $product->name }}" loading="lazy">
             @else
                 <div class="w-full h-full flex items-center justify-center text-gray-300">
                     <span class="material-symbols-outlined text-4xl">image</span>

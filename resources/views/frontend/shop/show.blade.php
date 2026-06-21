@@ -48,9 +48,10 @@
 </style>
 @endpush
 
+@section('content')
 <div class="bg-gray-50 product-detail"
      x-data="instantBuyForm()"
-     x-init='init(@json($product->id), @json($product->name), @json($product->price), @json($product->final_price), @json($product->sale_price), @json($imageList), @json($product->stock), @json($product->sku), @json($product->weight ?? 0), @json($countries), @json($defaultCountry), @json($defaultState), @json($countrySymbol), @json($authUserData))'>
+     x-init='setup(@json($product->id), @json($product->name), @json($product->price), @json($product->final_price), @json($product->sale_price), @json($imageList), @json($product->stock), @json($product->sku), @json($product->weight ?? 0), @json($countries), @json($defaultCountry), @json($defaultState), @json($countrySymbol), @json($authUserData))'>
 
     {{-- ============ BREADCRUMB ============ --}}
     <div class="bg-white border-b">
@@ -333,12 +334,14 @@
                                            placeholder="محمد">
                                 </div>
                             </div>
+                            @if(site('instant_show_email', '1') === '1')
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">البريد الإلكتروني</label>
-                                <input type="email" name="email" x-model="form.email"
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">البريد الإلكتروني {{ site('instant_req_email', '0') === '1' ? '*' : '(اختياري)' }}</label>
+                                <input type="email" name="email" x-model="form.email" {{ site('instant_req_email', '0') === '1' ? 'required' : '' }}
                                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
                                        placeholder="example@mail.com">
                             </div>
+                            @endif
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">رقم الهاتف *</label>
                                 <div class="flex gap-1" dir="ltr">
@@ -368,9 +371,10 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @if(site('instant_show_state', '1') === '1')
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">الولاية / المحافظة</label>
-                                <select name="state_code" x-model="stateCode"
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">الولاية / المحافظة {{ site('instant_req_state', '0') === '1' ? '*' : '' }}</label>
+                                <select name="state_code" x-model="stateCode" {{ site('instant_req_state', '0') === '1' ? 'required' : '' }}
                                         class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm bg-white">
                                     <option value="">— اختر —</option>
                                     <template x-for="(name, code) in currentStates" :key="code">
@@ -378,30 +382,35 @@
                                     </template>
                                 </select>
                             </div>
+                            @endif
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">المدينة *</label>
                                 <input type="text" name="city" required x-model="city" @input.debounce.400ms="recalculate()"
                                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
                                        placeholder="الخرطوم">
                             </div>
+                            @if(site('instant_show_district', '1') === '1')
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">الحي / المنطقة</label>
-                                <input type="text" name="district" x-model="form.district"
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">الحي / المنطقة {{ site('instant_req_district', '0') === '1' ? '*' : '' }}</label>
+                                <input type="text" name="district" x-model="form.district" {{ site('instant_req_district', '0') === '1' ? 'required' : '' }}
                                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
                                        placeholder="الرياض">
                             </div>
+                            @endif
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">العنوان التفصيلي *</label>
                                 <textarea name="address" required x-model="form.address" rows="2"
                                           class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
                                           placeholder="الشارع، رقم المبنى، علامة مميزة..."></textarea>
                             </div>
+                            @if(site('instant_show_zip', '1') === '1')
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">الرمز البريدي</label>
-                                <input type="text" name="zip" x-model="form.zip"
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">الرمز البريدي {{ site('instant_req_zip', '0') === '1' ? '*' : '' }}</label>
+                                <input type="text" name="zip" x-model="form.zip" {{ site('instant_req_zip', '0') === '1' ? 'required' : '' }}
                                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
                                        placeholder="11111">
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -506,6 +515,7 @@
                             طريقة الدفع
                         </h2>
                         <div class="space-y-2">
+                            @if(site('instant_enable_bank_transfer', '0') === '1')
                             <label class="flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition"
                                    :class="paymentMethod === 'cod' ? 'border-green-600 bg-green-50' : 'border-gray-200 hover:border-gray-400'">
                                 <input type="radio" name="payment_method" value="cod" x-model="paymentMethod" @change="recalculate()"
@@ -526,10 +536,21 @@
                                 </div>
                                 <i class="fas fa-university text-blue-600"></i>
                             </label>
+                            @else
+                            <input type="hidden" name="payment_method" value="cod">
+                            <div class="flex items-center gap-3 p-3 border-2 border-green-600 bg-green-50 rounded-lg">
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm">الدفع عند الاستلام</div>
+                                    <div class="text-xs text-gray-500">ادفع نقداً عند الاستلام</div>
+                                </div>
+                                <i class="fas fa-money-bill-wave text-green-600"></i>
+                            </div>
+                            @endif
                         </div>
                     </div>
 
                     {{-- ===== Notes ===== --}}
+                    @if(site('instant_show_notes', '1') === '1')
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
                             <i class="fas fa-note-sticky text-blue-600"></i>
@@ -539,8 +560,10 @@
                                   class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
                                   placeholder="أي ملاحظات خاصة بالطلب..."></textarea>
                     </div>
+                    @endif
 
                     {{-- ===== Coupon ===== --}}
+                    @if(site('instant_show_coupon', '1') === '1')
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
                             <i class="fas fa-ticket text-blue-600"></i>
@@ -568,6 +591,7 @@
                             </p>
                         </template>
                     </div>
+                    @endif
 
                     {{-- ===== Order Summary (live) ===== --}}
                     <div class="summary-card border-2 border-green-200 rounded-2xl p-5">
@@ -673,6 +697,7 @@
         </div>
     @endif
 </div>
+@endsection
 
 @push('scripts')
 <script>
@@ -765,10 +790,23 @@ function instantBuyForm() {
         },
 
         get canSubmit() {
-            return this.city && this.form.first_name && this.form.last_name && this.form.phone && this.form.address;
+            const reqEmail = {{ site('instant_req_email', '0') === '1' ? 'true' : 'false' }};
+            const reqState = {{ site('instant_req_state', '0') === '1' ? 'true' : 'false' }};
+            const reqDistrict = {{ site('instant_req_district', '0') === '1' ? 'true' : 'false' }};
+            const reqZip = {{ site('instant_req_zip', '0') === '1' ? 'true' : 'false' }};
+
+            if (!this.city || !this.form.first_name || !this.form.last_name || !this.form.phone || !this.form.address) {
+                return false;
+            }
+            if (reqEmail && !this.form.email) return false;
+            if (reqState && !this.stateCode) return false;
+            if (reqDistrict && !this.form.district) return false;
+            if (reqZip && !this.form.zip) return false;
+
+            return true;
         },
 
-        init(id, name, basePrice, finalPrice, salePrice, images, stock, sku, weight, countries, defaultCountry, defaultState, defaultSymbol, authUser) {
+        setup(id, name, basePrice, finalPrice, salePrice, images, stock, sku, weight, countries, defaultCountry, defaultState, defaultSymbol, authUser) {
             this.product.id = id;
             this.product.name = name;
             this.product.basePrice = parseFloat(basePrice) || 0;

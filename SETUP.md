@@ -376,6 +376,7 @@ Content-Type: application/json
 
 ```bash
 cd C:\Users\amarn\ecommerce
+cd D:\ecommerce
 C:\php83\php.exe artisan serve --host=127.0.0.1 --port=8000
 ```
 

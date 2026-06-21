@@ -486,7 +486,64 @@
     }
 
     .sidebar-link.active {
-        @apply bg-secondary dark:bg-secondary-fixed-dim border-l-4 border-primary text-on-primary-fixed-variant;
+        @apply bg-secondary dark:bg-secondary-fixed-dim border-r-4 border-primary text-on-primary-fixed-variant;
+    }
+
+    /* Status badges with dot indicator (uiux pattern) */
+    .status-badge {
+        @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm border;
+    }
+
+    .status-badge-active {
+        @apply bg-green-50 text-green-700 border-green-200;
+    }
+
+    .status-badge-inactive {
+        @apply bg-red-50 text-red-700 border-red-200;
+    }
+
+    .status-badge-warning {
+        @apply bg-amber-50 text-amber-700 border-amber-200;
+    }
+
+    .status-dot {
+        @apply w-1.5 h-1.5 rounded-full;
+    }
+
+    /* Bento grid card (uiux pattern) */
+    .bento-card {
+        @apply bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6;
+    }
+
+    .bento-card-header {
+        @apply flex items-center gap-2 mb-6 pb-4 border-b border-outline-variant;
+    }
+
+    /* Page header with breadcrumb (uiux pattern) */
+    .page-header {
+        @apply flex flex-col md:flex-row md:items-center justify-between gap-4 mb-stack-lg;
+    }
+
+    .page-header-title {
+        @apply text-xl sm:text-2xl font-bold text-on-surface;
+    }
+
+    .page-header-breadcrumb {
+        @apply flex text-xs text-on-surface-variant gap-2 mt-1;
+    }
+
+    .page-header-breadcrumb a {
+        @apply hover:text-primary;
+    }
+
+    /* Filter bar (uiux _2 pattern) */
+    .filter-bar {
+        @apply bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant flex flex-wrap items-center gap-4;
+    }
+
+    /* Status banner (uiux _3 pattern) */
+    .status-banner {
+        @apply bg-surface-container-lowest shadow-sm rounded-2xl p-6 flex flex-wrap items-center justify-between gap-6 border-r-4 border-primary;
     }
 
     /* Notification dot */

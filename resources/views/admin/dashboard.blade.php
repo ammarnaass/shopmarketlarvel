@@ -157,15 +157,9 @@
         </div>
         <div class="mt-4 pt-4 border-t border-outline-variant/30 flex flex-wrap gap-3 text-sm">
             <span class="text-on-surface-variant">تقارير سريعة:</span>
-            <a href="#" class="text-primary hover:underline">مبيعات اليوم</a>
-            <a href="#" class="text-primary hover:underline">مبيعات الأسبوع</a>
-            <a href="#" class="text-primary hover:underline">مبيعات الشهر</a>
-            @if($stats['instant_buy_orders'] > 0)
-                <span class="badge badge-primary">
-                    <span class="material-symbols-outlined text-sm">bolt</span>
-                    {{ $stats['instant_buy_orders'] }} طلب فوري
-                </span>
-            @endif
+            <a href="{{ route('admin.orders.index') }}" class="text-primary hover:underline">مبيعات اليوم</a>
+            <a href="{{ route('admin.orders.index') }}" class="text-primary hover:underline">مبيعات الأسبوع</a>
+            <a href="{{ route('admin.orders.index') }}" class="text-primary hover:underline">مبيعات الشهر</a>
         </div>
     </div>
 </div>
@@ -190,7 +184,7 @@
                         <th>المنتج</th>
                         <th>المبلغ</th>
                         <th>الحالة</th>
-                        @if($stats['instant_buy_orders'] > 0)<th>النوع</th>@endif
+
                     </tr>
                 </thead>
                 <tbody>
@@ -227,15 +221,7 @@
                                     {{ $order->status_name }}
                                 </span>
                             </td>
-                            @if($stats['instant_buy_orders'] > 0)
-                                <td>
-                                    @if($order->is_instant_buy)
-                                        <span class="badge badge-primary">فوري</span>
-                                    @else
-                                        <span class="text-on-surface-variant text-xs">عادي</span>
-                                    @endif
-                                </td>
-                            @endif
+
                         </tr>
                     @empty
                         <tr><td colspan="6" class="px-4 py-8 text-center text-on-surface-variant">لا توجد طلبات</td></tr>
