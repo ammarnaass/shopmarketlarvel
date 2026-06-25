@@ -214,19 +214,19 @@ php artisan serve
 
 ## ⚙️ إعدادات المتجر وقاعدة البيانات
 
-### التحويل إلى قاعدة بيانات MySQL 8 (للإنتاج)
-1. قم بإنشاء قاعدة بيانات فارغة في خادم MySQL الخاص بك:
-   ```sql
-   CREATE DATABASE amar_store CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+### التحويل إلى MariaDB (للإنتاج)
+1. شغّل MariaDB عبر Docker (أو استخدم خادم MariaDB/MySQL موجود):
+   ```bash
+   docker compose up -d mariadb
    ```
 2. قم بتعديل القيم التالية في ملف التكوين `.env`:
    ```env
-   DB_CONNECTION=mysql
+   DB_CONNECTION=mariadb
    DB_HOST=127.0.0.1
    DB_PORT=3306
    DB_DATABASE=amar_store
-   DB_USERNAME=your_username
-   DB_PASSWORD=your_password
+   DB_USERNAME=amar
+   DB_PASSWORD=amar_pass_2026
    ```
 3. أعد تشغيل الهجرات والبيانات الأساسية:
    ```bash
