@@ -46,8 +46,8 @@
 * **Frontend Logic:** Alpine.js (للتفاعلات الخفيفة والنوافذ المنبثقة) & AJAX (لمحرك الحساب الفوري)
 * **Icons:** Font Awesome 6.5 Pro
 * **Typography:** خطوط Cairo و Tajawal و Inter المتناسقة مع واجهات RTL
-* **Database:** SQLite (بيئة التطوير الافتراضية) / MySQL 8.0 & MariaDB (بيئة الإنتاج)
-* **Cache & Queues:** Database Driver (الافتراضي) مع دعم التحول إلى Redis
+* **Database:** SQLite (بيئة التطوير الافتراضية) / MariaDB 11.4 (بيئة الإنتاج عبر Docker)
+* **Cache & Queues:** Redis 7.4 (Session, Cache, Queue — عبر Docker)
 
 ---
 
@@ -66,12 +66,75 @@
 
 ---
 
+## 🐳 بيئة Docker (MariaDB + Redis)
+
+المشروع يستخدم Docker لتشغيل **MariaDB 11.4** و **Redis 7.4** كخدمات أساسية.
+
+### تشغيل الخدمات
+
+```bash
+# تشغيل MariaDB و Redis في الخلفية
+docker compose up -d
+
+# التأكد من أنهما يعملان
+docker compose ps
+
+# إيقاف الخدمات
+docker compose down
+
+# إيقاف مع حذف البيانات (volumes)
+docker compose down -v
+```
+
+### الإعدادات المطابقة في `.env`
+
+```env
+# MariaDB
+DB_CONNECTION=mariadb
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=amar_store
+DB_USERNAME=amar
+DB_PASSWORD=amar_pass_2026
+
+# Redis
+REDIS_CLIENT=predis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=null
+REDIS_DB=0
+REDIS_CACHE_DB=1
+REDIS_SESSION_DB=2
+REDIS_QUEUE_DB=3
+
+# تفعيل Redis للسشن والكاش والطوابير
+SESSION_DRIVER=redis
+CACHE_STORE=redis
+QUEUE_CONNECTION=redis
+```
+
+### الخدمات والمنافذ
+
+| الخدمة | الحاوية | المنفذ الداخلي | المنفذ المضيف |
+|:---:|:---:|:---:|:---:|
+| MariaDB 11.4 | `amar-mariadb` | 3306 | 3306 |
+| Redis 7.4 | `amar-redis` | 6379 | 6379 |
+
+### redis-cli
+
+```bash
+docker exec -it amar-redis redis-cli
+```
+
+---
+
 ## 🛠️ خطوات التثبيت والتشغيل السريع
 
 ### 1. المتطلبات البرمجية
 * تثبيت PHP 8.3+ مع إضافات (`pdo_sqlite`, `pdo_mysql`, `mbstring`, `openssl`, `intl`).
 * تثبيت Composer 2.x.
 * تثبيت Node.js (للتحكم في تجميع الأصول).
+* تثبيت Docker (لتشغيل MariaDB و Redis).
 
 ### 2. إعداد مجلد المشروع وحزم PHP
 ```bash
@@ -151,19 +214,19 @@ php artisan serve
 
 ## ⚙️ إعدادات المتجر وقاعدة البيانات
 
-### التحويل إلى قاعدة بيانات MySQL 8 (للإنتاج)
-1. قم بإنشاء قاعدة بيانات فارغة في خادم MySQL الخاص بك:
-   ```sql
-   CREATE DATABASE amar_store CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+### التحويل إلى MariaDB (للإنتاج)
+1. شغّل MariaDB عبر Docker (أو استخدم خادم MariaDB/MySQL موجود):
+   ```bash
+   docker compose up -d mariadb
    ```
 2. قم بتعديل القيم التالية في ملف التكوين `.env`:
    ```env
-   DB_CONNECTION=mysql
+   DB_CONNECTION=mariadb
    DB_HOST=127.0.0.1
    DB_PORT=3306
    DB_DATABASE=amar_store
-   DB_USERNAME=your_username
-   DB_PASSWORD=your_password
+   DB_USERNAME=amar
+   DB_PASSWORD=amar_pass_2026
    ```
 3. أعد تشغيل الهجرات والبيانات الأساسية:
    ```bash
