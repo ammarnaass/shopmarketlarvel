@@ -1,8 +1,8 @@
-@extends('admin.layout')
+﻿@extends('admin.layout')
 
-@section('title', 'إدارة المنتجات')
+@section('title', __t('admin.products.title'))
 
-@section('page_title', 'إدارة المنتجات')
+@section('page_title', __t('admin.products.title'))
 
 @section('content')
 @php
@@ -16,12 +16,12 @@
 <!-- Header Section -->
 <div class="flex justify-between items-center mb-8">
     <div>
-        <h1 class="font-headline-md text-headline-md font-bold text-on-surface">إدارة المنتجات</h1>
-        <p class="text-on-surface-variant font-body-sm text-body-sm mt-1">نظرة عامة والتحكم في مخزون متجرك بالكامل</p>
+        <h1 class="font-headline-md text-headline-md font-bold text-on-surface">{{ __t('admin.products.title') }}</h1>
+        <p class="text-on-surface-variant font-body-sm text-body-sm mt-1">{{ __t('admin.products.subtitle') }}</p>
     </div>
     <a href="{{ route('admin.products.create') }}" class="bg-primary text-white px-6 py-2.5 rounded-xl font-label-md text-label-md flex items-center gap-2 hover:bg-primary-container active:scale-95 transition-all shadow-sm">
         <span class="material-symbols-outlined text-lg">add_circle</span>
-        إضافة منتج جديد
+        {{ __t('admin.products.add_new') }}
     </a>
 </div>
 
@@ -30,37 +30,37 @@
     <form method="GET" action="{{ route('admin.products.index') }}" class="flex flex-wrap items-center gap-4 w-full">
         <div class="flex-1 min-w-[200px]">
             <div class="relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="بحث باسم المنتج أو SKU..."
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __t('common.search') }}"
                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl pr-10 pl-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary text-label-md transition-all outline-none"/>
                 <span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant text-xl">search</span>
             </div>
         </div>
         <div class="flex items-center gap-3 flex-wrap">
-            <span class="text-label-md font-bold text-on-surface-variant">تصفية حسب:</span>
+            <span class="text-label-md font-bold text-on-surface-variant">{{ __t('common.filter') }}:</span>
             <select name="category_id" class="bg-surface-container-low border border-outline-variant/30 rounded-lg text-body-sm pr-10 pl-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none cursor-pointer">
-                <option value="">كل التصنيفات</option>
+                <option value="">{{ __t('common.all') }}</option>
                 @foreach($categories as $cat)
                     <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                 @endforeach
             </select>
             <select name="status" class="bg-surface-container-low border border-outline-variant/30 rounded-lg text-body-sm pr-10 pl-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none cursor-pointer">
-                <option value="">كل الحالات</option>
-                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>نشط</option>
-                <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>غير نشط</option>
-                <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>مسودة</option>
+                <option value="">{{ __t('common.all') }}</option>
+                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>{{ __t('common.active') }}</option>
+                <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>{{ __t('common.inactive') }}</option>
+                <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>{{ __t('admin.products.draft') }}</option>
             </select>
         </div>
         <div class="flex items-center gap-2">
             <button type="submit" class="px-4 py-2 bg-surface-container-high text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container-highest transition-colors flex items-center gap-2">
                 <span class="material-symbols-outlined text-lg">filter_list</span>
-                تصفية
+                {{ __t('common.filter') }}
             </button>
             <a href="{{ route('admin.products.export') }}" class="px-4 py-2 border border-outline-variant text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center gap-2">
                 <span class="material-symbols-outlined text-lg">ios_share</span>
-                تصدير
+                {{ __t('common.export') }}
             </a>
             @if(request()->hasAny(['search', 'status', 'category_id']))
-                <a href="{{ route('admin.products.index') }}" class="text-outline text-sm px-3 py-2 hover:text-on-surface transition-colors">إعادة تعيين</a>
+                <a href="{{ route('admin.products.index') }}" class="text-outline text-sm px-3 py-2 hover:text-on-surface transition-colors">{{ __t('admin.products.reset') }}</a>
             @endif
         </div>
     </form>
@@ -77,14 +77,14 @@
                         <th class="p-4 w-12 text-center">
                             <input class="rounded text-primary focus:ring-primary h-4 w-4 cursor-pointer" type="checkbox" id="selectAll"/>
                         </th>
-                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">الصورة</th>
-                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">الاسم</th>
-                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">SKU</th>
-                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">السعر</th>
-                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">المخزون</th>
-                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">التصنيف</th>
-                        <th class="p-4 font-label-md text-label-md text-on-surface-variant text-center">الحالة</th>
-                        <th class="p-4 font-label-md text-label-md text-on-surface-variant text-center">إجراءات</th>
+                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.products.image') }}</th>
+                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.products.name') }}</th>
+                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.products.sku') }}</th>
+                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.products.price') }}</th>
+                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.products.stock') }}</th>
+                        <th class="p-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.products.category') }}</th>
+                        <th class="p-4 font-label-md text-label-md text-on-surface-variant text-center">{{ __t('common.status') }}</th>
+                        <th class="p-4 font-label-md text-label-md text-on-surface-variant text-center">{{ __t('common.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-outline-variant/20">
@@ -127,7 +127,7 @@
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold
                                     {{ $product->stock < 10 ? 'bg-error-container text-on-error-container' : 'bg-emerald-50 text-emerald-700 border border-emerald-200' }}">
                                     <span class="w-1.5 h-1.5 rounded-full {{ $product->stock < 10 ? 'bg-error' : 'bg-emerald-500' }}"></span>
-                                    {{ $product->stock }} قطعة
+                                    {{ $product->stock }} {{ __t('admin.products.pieces') }}
                                 </span>
                             </td>
                             <td class="p-4">
@@ -149,27 +149,27 @@
                                             @case('draft') bg-amber-500 @break
                                         @endswitch"></span>
                                     @switch($product->status)
-                                        @case('active') نشط @break
-                                        @case('inactive') غير نشط @break
-                                        @case('draft') مسودة @break
+                                        @case('active') {{ __t('common.active') }} @break
+                                        @case('inactive') {{ __t('common.inactive') }} @break
+                                        @case('draft') {{ __t('admin.products.draft') }} @break
                                     @endswitch
                                 </span>
                             </td>
                             <td class="p-4 text-center">
                                 <div class="flex items-center justify-center gap-1">
-                                    <a href="{{ route('admin.products.gallery', $product) }}" class="p-1.5 text-outline hover:text-primary transition-colors" title="المعرض">
+                                    <a href="{{ route('admin.products.gallery', $product) }}" class="p-1.5 text-outline hover:text-primary transition-colors" title="{{ __t('admin.products.gallery') }}">
                                         <span class="material-symbols-outlined text-[20px]">photo_library</span>
                                     </a>
-                                    <a href="{{ route('admin.products.show', $product) }}" class="p-1.5 text-outline hover:text-primary transition-colors" title="عرض">
+                                    <a href="{{ route('admin.products.show', $product) }}" class="p-1.5 text-outline hover:text-primary transition-colors" title="{{ __t('common.preview') }}">
                                         <span class="material-symbols-outlined text-[20px]">visibility</span>
                                     </a>
-                                    <a href="{{ route('admin.products.edit', $product) }}" class="p-1.5 text-outline hover:text-primary transition-colors" title="تعديل">
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="p-1.5 text-outline hover:text-primary transition-colors" title="{{ __t('common.edit') }}">
                                         <span class="material-symbols-outlined text-[20px]">edit</span>
                                     </a>
-                                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟')">
+                                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" class="inline" onsubmit="return confirm('{{ __t('admin.products.delete_confirm') }}')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="p-1.5 text-outline hover:text-error transition-colors" title="حذف">
+                                        <button type="submit" class="p-1.5 text-outline hover:text-error transition-colors" title="{{ __t('common.delete') }}">
                                             <span class="material-symbols-outlined text-[20px]">delete</span>
                                         </button>
                                     </form>
@@ -180,8 +180,8 @@
                         <tr>
                             <td colspan="9" class="p-12 text-center text-on-surface-variant bg-surface-container-lowest">
                                 <span class="material-symbols-outlined text-4xl text-outline mb-2 block">inventory_2</span>
-                                <p class="text-on-surface-variant font-body-md">لا توجد منتجات مطابقة لخيارات التصفية</p>
-                                <a href="{{ route('admin.products.create') }}" class="text-primary hover:underline text-sm mt-2 inline-block">إضافة منتج جديد</a>
+                                <p class="text-on-surface-variant font-body-md">{{ __t('admin.products.no_products') }}</p>
+                                <a href="{{ route('admin.products.create') }}" class="text-primary hover:underline text-sm mt-2 inline-block">{{ __t('admin.products.add_new') }}</a>
                             </td>
                         </tr>
                     @endforelse
@@ -191,7 +191,7 @@
 
         <!-- Pagination Footer -->
         <div class="p-4 flex justify-between items-center bg-surface-container-low border-t border-outline-variant">
-            <span class="text-body-sm text-on-surface-variant font-medium">عرض {{ $products->count() }} من أصل {{ $totalProducts }} منتج</span>
+            <span class="text-body-sm text-on-surface-variant font-medium">{{ __t('admin.products.showing_count') }} {{ $products->count() }} {{ __t('admin.products.of_total') }} {{ $totalProducts }} {{ __t('admin.products.products_label') }}</span>
             @if($products->hasPages())
                 <div>
                     {{ $products->withQueryString()->links() }}
@@ -204,28 +204,28 @@
     <div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-on-surface text-surface-container-lowest px-6 py-3 rounded-full shadow-2xl flex items-center gap-6 z-50 transform translate-y-24 transition-transform duration-300" id="bulk-toolbar">
         <div class="flex items-center gap-2 border-l border-white/20 pl-4">
             <span class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold" id="selection-count">0</span>
-            <span class="font-label-md text-label-md">منتجات محددة</span>
+            <span class="font-label-md text-label-md">{{ __t('admin.products.selected_products') }}</span>
         </div>
         <div class="flex items-center gap-4">
             <button type="submit" name="action" value="activate" class="flex items-center gap-1.5 hover:text-primary transition-colors font-label-md text-label-md bg-transparent border-none text-surface-container-lowest cursor-pointer">
                 <span class="material-symbols-outlined text-lg">check_circle</span>
-                تفعيل
+                {{ __t('common.active') }}
             </button>
             <button type="submit" name="action" value="deactivate" class="flex items-center gap-1.5 hover:text-primary transition-colors font-label-md text-label-md bg-transparent border-none text-surface-container-lowest cursor-pointer">
                 <span class="material-symbols-outlined text-lg">block</span>
-                تعطيل
+                {{ __t('common.inactive') }}
             </button>
             <button type="submit" name="action" value="feature" class="flex items-center gap-1.5 hover:text-warning transition-colors font-label-md text-label-md bg-transparent border-none text-surface-container-lowest cursor-pointer">
                 <span class="material-symbols-outlined text-lg">star</span>
-                تمييز
+                {{ __t('admin.products.feature') }}
             </button>
             <button type="submit" name="action" value="unfeature" class="flex items-center gap-1.5 hover:text-warning transition-colors font-label-md text-label-md bg-transparent border-none text-surface-container-lowest cursor-pointer">
                 <span class="material-symbols-outlined text-lg">star_half</span>
-                إلغاء التمييز
+                {{ __t('admin.products.unfeature') }}
             </button>
-            <button type="submit" name="action" value="delete" onclick="return confirm('هل أنت متأكد من تنفيذ الحذف على المنتجات المحددة؟')" class="flex items-center gap-1.5 hover:text-error transition-colors font-label-md text-label-md bg-transparent border-none text-surface-container-lowest cursor-pointer">
+            <button type="submit" name="action" value="delete" onclick="return confirm('{{ __t('admin.products.delete_confirm') }}')" class="flex items-center gap-1.5 hover:text-error transition-colors font-label-md text-label-md bg-transparent border-none text-surface-container-lowest cursor-pointer">
                 <span class="material-symbols-outlined text-lg">delete</span>
-                حذف
+                {{ __t('common.delete') }}
             </button>
         </div>
         <button type="button" class="text-white/60 hover:text-white bg-transparent border-none cursor-pointer" onclick="clearSelection()">
@@ -238,28 +238,28 @@
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
     <div class="bg-primary-container/5 p-5 rounded-xl border border-primary/10 flex flex-col justify-between h-32">
         <div class="flex justify-between items-center">
-            <span class="text-sm font-medium text-primary">إجمالي المنتجات</span>
+            <span class="text-sm font-medium text-primary">{{ __t('admin.products.total_products') }}</span>
             <span class="material-symbols-outlined text-primary">inventory_2</span>
         </div>
         <span class="text-[32px] font-bold text-on-background">{{ number_format($totalProducts) }}</span>
     </div>
     <div class="bg-green-50 p-5 rounded-xl border border-green-100 flex flex-col justify-between h-32">
         <div class="flex justify-between items-center">
-            <span class="text-sm font-medium text-green-700">المنتجات النشطة</span>
+            <span class="text-sm font-medium text-green-700">{{ __t('admin.products.active_products') }}</span>
             <span class="material-symbols-outlined text-green-700">check_circle</span>
         </div>
         <span class="text-[32px] font-bold text-green-800">{{ number_format($activeCount) }}</span>
     </div>
     <div class="bg-red-50 p-5 rounded-xl border border-red-100 flex flex-col justify-between h-32">
         <div class="flex justify-between items-center">
-            <span class="text-sm font-medium text-red-700">مخزون منخفض</span>
+            <span class="text-sm font-medium text-red-700">{{ __t('admin.products.low_stock') }}</span>
             <span class="material-symbols-outlined text-red-700">error</span>
         </div>
         <span class="text-[32px] font-bold text-red-800">{{ number_format($lowStockCount) }}</span>
     </div>
     <div class="bg-surface-container-high p-5 rounded-xl border border-outline-variant flex flex-col justify-between h-32">
         <div class="flex justify-between items-center">
-            <span class="text-sm font-medium text-on-surface-variant">قيمة المخزون الإجمالية</span>
+            <span class="text-sm font-medium text-on-surface-variant">{{ __t('admin.products.total_stock_value') }}</span>
             <span class="material-symbols-outlined text-on-surface-variant">account_balance_wallet</span>
         </div>
         <span class="text-[32px] font-bold text-on-background">{{ number_format($totalStockValue, 0) }} {{ currentCurrencySymbol() }}</span>

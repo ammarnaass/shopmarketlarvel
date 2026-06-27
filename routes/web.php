@@ -9,7 +9,28 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\Api\ShippingApiController;
 use Illuminate\Support\Facades\Route;
+
+// Language switch (no prefix, no middleware)
+Route::get('/lang/{locale}', function (string $locale) {
+    $locale = in_array($locale, ['ar', 'en', 'fr']) ? $locale : config('ecommerce.languages.default', 'ar');
+    app(\App\Services\TranslationService::class)->setLocale($locale);
+    return back();
+})->name('lang.switch')->whereIn('locale', ['ar', 'en', 'fr']);
+
+// Redirect bare paths (no locale prefix) to locale-prefixed versions
+$redirectPaths = ['/admin', '/login', '/register', '/cart', '/checkout', '/orders', '/track', '/shop', '/wishlist'];
+foreach ($redirectPaths as $path) {
+    Route::get($path . '/{any?}', function () use ($path) {
+        $locale = session('locale', app()->getLocale()) ?: config('ecommerce.languages.default', 'ar');
+        $suffix = request()->path() !== ltrim($path, '/') ? '/' . substr(request()->path(), strlen(ltrim($path, '/')) + 1) : '';
+        return redirect($locale . $path . $suffix, 301);
+    })->where('any', '.*');
+}
+
+// Locale-prefixed routes
+Route::prefix('{locale?}')->whereIn('locale', ['ar', 'en', 'fr'])->middleware('locale')->group(function () {
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -87,9 +108,16 @@ Route::middleware('auth')->group(function () {
 Route::get('/instant', [InstantBuyController::class, 'create'])->name('instant.create');
 Route::get('/instant/{slug}', [InstantBuyController::class, 'create'])->name('instant.buy');
 Route::post('/instant/calculate', [InstantBuyController::class, 'calculate'])->name('instant.calculate');
+Route::post('/instant/shipping-options', [InstantBuyController::class, 'shippingOptions'])->name('instant.shipping-options');
 Route::post('/instant/coupon', [InstantBuyController::class, 'validateCoupon'])->name('instant.coupon');
 Route::post('/instant/submit', [InstantBuyController::class, 'submit'])->name('instant.submit');
 Route::get('/order/{orderNumber}/thanks', [InstantBuyController::class, 'thankyou'])->name('instant.thankyou');
+
+// Embedded Instant Buy (on product page)
+Route::post('/instant-buy/calculate', [App\Http\Controllers\InstantBuyOrderController::class, 'calculate'])->name('instant-buy.calculate');
+Route::post('/instant-buy/shipping-options', [App\Http\Controllers\InstantBuyOrderController::class, 'shippingOptions'])->name('instant-buy.shipping-options');
+Route::post('/instant-buy/coupon', [App\Http\Controllers\InstantBuyOrderController::class, 'validateCoupon'])->name('instant-buy.coupon');
+Route::post('/instant-buy/submit', [App\Http\Controllers\InstantBuyOrderController::class, 'submit'])->name('instant-buy.submit');
 
 // Admin
 Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.')->group(function () {
@@ -155,6 +183,12 @@ Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.
     Route::post('/shipping/labels/{label}/tracking', [App\Http\Controllers\Admin\ShippingController::class, 'addTrackingUpdate'])->name('shipping.label.tracking');
     Route::get('/shipping/labels/{label}/pdf', [App\Http\Controllers\Admin\ShippingController::class, 'printLabel'])->name('shipping.label.pdf');
     Route::post('/shipping/bulk-ship', [App\Http\Controllers\Admin\ShippingController::class, 'bulkShip'])->name('shipping.bulkShip');
+    // Pickup Offices
+    Route::get('/shipping/pickups/create', [App\Http\Controllers\Admin\ShippingController::class, 'createPickup'])->name('shipping.pickup.create');
+    Route::post('/shipping/pickups', [App\Http\Controllers\Admin\ShippingController::class, 'storePickup'])->name('shipping.pickup.store');
+    Route::get('/shipping/pickups/{pickup}/edit', [App\Http\Controllers\Admin\ShippingController::class, 'editPickup'])->name('shipping.pickup.edit');
+    Route::put('/shipping/pickups/{pickup}', [App\Http\Controllers\Admin\ShippingController::class, 'updatePickup'])->name('shipping.pickup.update');
+    Route::delete('/shipping/pickups/{pickup}', [App\Http\Controllers\Admin\ShippingController::class, 'destroyPickup'])->name('shipping.pickup.destroy');
 
     // Payments
     Route::get('/payments', [App\Http\Controllers\Admin\PaymentController::class, 'index'])->name('payments.index');
@@ -162,6 +196,7 @@ Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.
     // Currencies
     Route::get('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'index'])->name('currencies.index');
     Route::post('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'update'])->name('currencies.update');
+    Route::post('/currencies/rates', [App\Http\Controllers\Admin\CurrencyController::class, 'updateRates'])->name('currencies.rates.update');
 
     // Reports
     Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
@@ -171,9 +206,39 @@ Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.
     Route::post('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/remove-image', [App\Http\Controllers\Admin\SettingsController::class, 'removeImage'])->name('settings.removeImage');
 
+    // Languages
+    Route::prefix('languages')->name('languages.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\LanguageController::class, 'index'])->name('index');
+        Route::get('/{language}/edit', [App\Http\Controllers\Admin\LanguageController::class, 'edit'])->name('edit');
+        Route::post('/{language}', [App\Http\Controllers\Admin\LanguageController::class, 'update'])->name('update');
+        Route::post('/{language}/toggle-active', [App\Http\Controllers\Admin\LanguageController::class, 'toggleActive'])->name('toggle-active');
+        Route::post('/{language}/set-default', [App\Http\Controllers\Admin\LanguageController::class, 'setDefault'])->name('set-default');
+        Route::get('/translations', [App\Http\Controllers\Admin\LanguageController::class, 'translations'])->name('translations');
+        Route::post('/translations/bulk-update', [App\Http\Controllers\Admin\LanguageController::class, 'bulkUpdateTranslations'])->name('translations.bulk-update');
+        Route::post('/translations/create', [App\Http\Controllers\Admin\LanguageController::class, 'createTranslation'])->name('translations.create');
+        Route::post('/translations/{translation}', [App\Http\Controllers\Admin\LanguageController::class, 'updateTranslation'])->name('translations.update');
+        Route::delete('/translations/{translation}', [App\Http\Controllers\Admin\LanguageController::class, 'deleteTranslation'])->name('translations.delete');
+        Route::get('/settings', [App\Http\Controllers\Admin\LanguageController::class, 'settings'])->name('settings');
+        Route::post('/{language}/settings', [App\Http\Controllers\Admin\LanguageController::class, 'updateSettings'])->name('update-settings');
+    });
+
     // Customize
     Route::get('/customize', [App\Http\Controllers\Admin\CustomizeController::class, 'index'])->name('customize.index');
     Route::post('/customize', [App\Http\Controllers\Admin\CustomizeController::class, 'update'])->name('customize.update');
     Route::post('/customize/reset', [App\Http\Controllers\Admin\CustomizeController::class, 'reset'])->name('customize.reset');
     Route::post('/customize/remove-image', [App\Http\Controllers\Admin\CustomizeController::class, 'removeImage'])->name('customize.removeImage');
-});
+
+    // Instant Buy Settings
+    Route::prefix('instant-buy')->name('instant-buy.')->group(function () {
+        Route::get('/settings', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'index'])->name('settings');
+        Route::post('/settings/general', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'updateGeneral'])->name('settings.general');
+        Route::post('/settings/colors', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'updateColors'])->name('settings.colors');
+        Route::post('/settings/fields', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'updateFields'])->name('settings.fields');
+        Route::post('/settings/buttons', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'updateButtons'])->name('settings.buttons');
+        Route::post('/settings/success', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'updateSuccess'])->name('settings.success');
+        Route::post('/settings/reset', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'resetToDefaults'])->name('settings.reset');
+        Route::get('/orders', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'orders'])->name('orders');
+        Route::post('/orders/{order}/status', [App\Http\Controllers\Admin\InstantBuySettingsController::class, 'updateOrderStatus'])->name('orders.update-status');
+    });
+}); // end admin group
+}); // end locale prefix group

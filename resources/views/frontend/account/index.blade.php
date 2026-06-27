@@ -1,7 +1,7 @@
 @extends('frontend.layout')
 
-@section('title', 'حسابي - ' . site('store_name'))
-@section('description', 'إدارة حسابك الشخصي في ' . site('store_name'))
+@section('title', __t('account.title') . ' - ' . site('store_name'))
+@section('description', __t('account.manage_account') . ' ' . site('store_name'))
 
 @section('content')
 @php
@@ -13,13 +13,13 @@
         <nav class="flex items-center gap-2 text-sm text-white/80 mb-4">
             <a href="{{ route('home') }}" class="hover:text-white transition flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs">home</span>
-                الرئيسية
+                {{ __t('nav.home') }}
             </a>
             <span class="material-symbols-outlined text-[10px] text-white/50">chevron_right</span>
-            <span class="text-white font-medium">حسابي</span>
+            <span class="text-white font-medium">{{ __t('account.title') }}</span>
         </nav>
-        <h1 class="text-3xl md:text-4xl font-extrabold mb-2">حسابي</h1>
-        <p class="text-white/90">إدارة بياناتك الشخصية، عناوينك، وكلمات المرور</p>
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-2">{{ __t('account.title') }}</h1>
+        <p class="text-white/90">{{ __t('account.manage_desc') }}</p>
     </div>
 </section>
 
@@ -64,23 +64,23 @@
                 <nav class="p-3 space-y-1">
                     <button @click="tab='profile'" :class="tab==='profile' ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-gray-700 hover:bg-gray-50'" class="w-full text-right px-3 py-2.5 rounded-lg text-sm transition flex items-center gap-2">
                         <span class="material-symbols-outlined text-xs w-4">person</span>
-                        البيانات الشخصية
+                        {{ __t('account.profile') }}
                     </button>
                     <button @click="tab='addresses'" :class="tab==='addresses' ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-gray-700 hover:bg-gray-50'" class="w-full text-right px-3 py-2.5 rounded-lg text-sm transition flex items-center gap-2">
                         <span class="material-symbols-outlined text-xs w-4">location_on</span>
-                        العناوين
+                        {{ __t('account.addresses') }}
                     </button>
                     <button @click="tab='password'" :class="tab==='password' ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-gray-700 hover:bg-gray-50'" class="w-full text-right px-3 py-2.5 rounded-lg text-sm transition flex items-center gap-2">
                         <span class="material-symbols-outlined text-xs w-4">lock</span>
-                        كلمة المرور
+                        {{ __t('account.password_section') }}
                     </button>
                     <a href="{{ route('orders.index') }}" class="w-full text-right px-3 py-2.5 rounded-lg text-sm transition flex items-center gap-2 text-gray-700 hover:bg-gray-50">
                         <span class="material-symbols-outlined text-xs w-4">inventory_2</span>
-                        طلباتي ({{ $user->orders->count() }})
+                        {{ __t('nav.my_orders') }} ({{ $user->orders->count() }})
                     </a>
                     <a href="{{ route('wishlist.index') }}" class="w-full text-right px-3 py-2.5 rounded-lg text-sm transition flex items-center gap-2 text-gray-700 hover:bg-gray-50">
                         <span class="material-symbols-outlined text-xs w-4">favorite</span>
-                        المفضلة
+                        {{ __t('nav.wishlist') }}
                     </a>
                 </nav>
             </div>
@@ -94,7 +94,7 @@
                 <div class="card-header">
                     <h2 class="font-bold text-lg flex items-center gap-2">
                         <span class="material-symbols-outlined text-brand-600">person</span>
-                        البيانات الشخصية
+                        {{ __t('account.profile') }}
                     </h2>
                 </div>
                 <div class="card-body p-5">
@@ -102,19 +102,19 @@
                         @csrf @method('PUT')
                         <div class="grid md:grid-cols-2 gap-4">
                             <div>
-                                <label class="form-label">الاسم الكامل <span class="text-rose-500">*</span></label>
+                                <label class="form-label">{{ __t('account.name') }} <span class="text-rose-500">*</span></label>
                                 <input type="text" name="name" value="{{ old('name', $user->name) }}" required
                                        class="form-input @error('name') form-input-error @enderror">
                                 @error('name')<p class="form-error">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label class="form-label">البريد الإلكتروني <span class="text-rose-500">*</span></label>
+                                <label class="form-label">{{ __t('account.email') }} <span class="text-rose-500">*</span></label>
                                 <input type="email" name="email" value="{{ old('email', $user->email) }}" required
                                        class="form-input @error('email') form-input-error @enderror">
                                 @error('email')<p class="form-error">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label class="form-label">الدولة <span class="text-rose-500">*</span></label>
+                                <label class="form-label">{{ __t('common.country') }} <span class="text-rose-500">*</span></label>
                                 <select name="country_code" class="form-input appearance-none">
                                     @foreach($countries as $code => $info)
                                         <option value="{{ $code }}" {{ $user->country_code == $code ? 'selected' : '' }}>
@@ -124,12 +124,12 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="form-label">الولاية / المحافظة</label>
+                                <label class="form-label">{{ __t('common.state') }}</label>
                                 <input type="text" name="state_code" value="{{ old('state_code', $user->state_code) }}"
                                        class="form-input">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="form-label">رقم الهاتف <span class="text-rose-500">*</span></label>
+                                <label class="form-label">{{ __t('account.phone') }} <span class="text-rose-500">*</span></label>
                                 <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" required
                                        class="form-input @error('phone') form-input-error @enderror">
                                 @error('phone')<p class="form-error">{{ $message }}</p>@enderror
@@ -138,7 +138,7 @@
                         <div class="mt-5 flex justify-end">
                             <button type="submit" class="btn-primary">
                                 <span class="material-symbols-outlined">save</span>
-                                حفظ التغييرات
+                                {{ __t('account.save') }}
                             </button>
                         </div>
                     </form>
@@ -150,7 +150,7 @@
                 <div class="card-header flex items-center justify-between">
                     <h2 class="font-bold text-lg flex items-center gap-2">
                         <span class="material-symbols-outlined text-brand-600">location_on</span>
-                        عناويني
+                        {{ __t('account.addresses') }}
                     </h2>
                     <span class="badge badge-gray">{{ $user->addresses->count() }}</span>
                 </div>
@@ -158,7 +158,7 @@
                     @if($user->addresses->isEmpty())
                         <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-8 text-center mb-5">
                             <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">map</span>
-                            <p class="text-gray-500">لا توجد عناوين محفوظة</p>
+                            <p class="text-gray-500">{{ __t('account.no_addresses') }}</p>
                         </div>
                     @else
                         <div class="space-y-3 mb-5">
@@ -175,7 +175,7 @@
                                                     {{ $addr->name }}
                                                     <span class="text-xs text-gray-500 font-normal">({{ $addr->phone }})</span>
                                                     @if($addr->is_default)
-                                                        <span class="badge badge-primary text-[10px]"><span class="material-symbols-outlined text-[8px]">check</span>افتراضي</span>
+                                                        <span class="badge badge-primary text-[10px]"><span class="material-symbols-outlined text-[8px]">check</span>{{ __t('common.default') }}</span>
                                                     @endif
                                                 </div>
                                                 <div class="text-sm text-gray-600 mt-1">{{ $addr->full_address }}</div>
@@ -185,12 +185,12 @@
                                             @if(!$addr->is_default)
                                                 <form method="POST" action="{{ route('account.address.default', $addr) }}">
                                                     @csrf
-                                                    <button class="text-xs text-brand-600 hover:underline font-semibold">اجعله افتراضي</button>
+                                                    <button class="text-xs text-brand-600 hover:underline font-semibold">{{ __t('account.set_default') }}</button>
                                                 </form>
                                             @endif
-                                            <form method="POST" action="{{ route('account.address.destroy', $addr) }}" onsubmit="return confirm('حذف هذا العنوان؟')">
+                                            <form method="POST" action="{{ route('account.address.destroy', $addr) }}" onsubmit="return confirm('{{ __t('account.confirm_delete') }}')">
                                                 @csrf @method('DELETE')
-                                                <button class="text-xs text-rose-600 hover:underline font-semibold">حذف</button>
+                                                <button class="text-xs text-rose-600 hover:underline font-semibold">{{ __t('common.delete') }}</button>
                                             </form>
                                         </div>
                                     </div>
@@ -202,30 +202,30 @@
                     <details class="group rounded-xl border-2 border-dashed border-gray-200 hover:border-brand-300 transition">
                         <summary class="cursor-pointer px-4 py-3 font-semibold text-brand-600 flex items-center gap-2 list-none">
                             <span class="material-symbols-outlined">add_circle</span>
-                            إضافة عنوان جديد
+                            {{ __t('account.add_address') }}
                         </summary>
                         <form method="POST" action="{{ route('account.address.store') }}" class="mt-3 p-4 border-t border-gray-100 grid md:grid-cols-2 gap-3">
                             @csrf
-                            <input type="text" name="name" placeholder="الاسم" required class="form-input text-sm">
-                            <input type="text" name="phone" placeholder="الهاتف" required class="form-input text-sm">
+                            <input type="text" name="name" placeholder="{{ __t('account.name_placeholder') }}" required class="form-input text-sm">
+                            <input type="text" name="phone" placeholder="{{ __t('account.phone_placeholder') }}" required class="form-input text-sm">
                             <select name="country_code" class="form-input text-sm appearance-none">
                                 @foreach($countries as $code => $info)
                                     <option value="{{ $code }}" {{ ($user->country_code ?? 'SD') == $code ? 'selected' : '' }}>{{ $info['name'] }}</option>
                                 @endforeach
                             </select>
-                            <input type="text" name="state_code" placeholder="الولاية (اختياري)" class="form-input text-sm">
-                            <input type="text" name="city" placeholder="المدينة" required class="form-input text-sm">
-                            <input type="text" name="district" placeholder="الحي (اختياري)" class="form-input text-sm">
-                            <input type="text" name="zip" placeholder="الرمز البريدي" class="form-input text-sm md:col-span-2">
-                            <textarea name="address" placeholder="العنوان التفصيلي" required class="form-input text-sm md:col-span-2" rows="2"></textarea>
+                            <input type="text" name="state_code" placeholder="{{ __t('account.state_placeholder') }}" class="form-input text-sm">
+                            <input type="text" name="city" placeholder="{{ __t('account.city_placeholder') }}" required class="form-input text-sm">
+                            <input type="text" name="district" placeholder="{{ __t('account.district_placeholder') }}" class="form-input text-sm">
+                            <input type="text" name="zip" placeholder="{{ __t('account.zip_placeholder') }}" class="form-input text-sm md:col-span-2">
+                            <textarea name="address" placeholder="{{ __t('account.address_placeholder') }}" required class="form-input text-sm md:col-span-2" rows="2"></textarea>
                             <label class="md:col-span-2 flex items-center gap-2 text-sm cursor-pointer">
                                 <input type="checkbox" name="is_default" value="1" class="form-checkbox">
-                                <span>اجعله افتراضي</span>
+                                <span>{{ __t('account.set_default') }}</span>
                             </label>
                             <div class="md:col-span-2">
                                 <button type="submit" class="btn-primary btn-block">
                                 <span class="material-symbols-outlined">save</span>
-                                    حفظ العنوان
+                                    {{ __t('common.save') }}
                                 </button>
                             </div>
                         </form>
@@ -238,14 +238,14 @@
                 <div class="card-header">
                     <h2 class="font-bold text-lg flex items-center gap-2">
                         <span class="material-symbols-outlined text-brand-600">lock</span>
-                        تغيير كلمة المرور
+                        {{ __t('account.password_section') }}
                     </h2>
                 </div>
                 <div class="card-body p-5">
                     <form method="POST" action="{{ route('account.password') }}" class="space-y-4 max-w-md">
                         @csrf @method('PUT')
                         <div>
-                            <label class="form-label">كلمة المرور الحالية <span class="text-rose-500">*</span></label>
+                            <label class="form-label">{{ __t('account.current_password') }} <span class="text-rose-500">*</span></label>
                             <div class="relative">
                                 <input type="password" name="current_password" required
                                        class="form-input pl-11 @error('current_password') form-input-error @enderror">
@@ -254,17 +254,17 @@
                             @error('current_password')<p class="form-error">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="form-label">كلمة المرور الجديدة <span class="text-rose-500">*</span></label>
+                            <label class="form-label">{{ __t('account.new_password') }} <span class="text-rose-500">*</span></label>
                             <div class="relative">
                                 <input type="password" name="password" required minlength="6"
                                        class="form-input pl-11 @error('password') form-input-error @enderror">
                                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">lock</span>
                             </div>
                             @error('password')<p class="form-error">{{ $message }}</p>@enderror
-                            <p class="form-help"><span class="material-symbols-outlined text-xs ml-1">info</span>يجب أن تكون 6 أحرف على الأقل</p>
+                            <p class="form-help"><span class="material-symbols-outlined text-xs ml-1">info</span>{{ __t('account.password_hint') }}</p>
                         </div>
                         <div>
-                            <label class="form-label">تأكيد كلمة المرور الجديدة <span class="text-rose-500">*</span></label>
+                            <label class="form-label">{{ __t('account.confirm_password') }} <span class="text-rose-500">*</span></label>
                             <div class="relative">
                                 <input type="password" name="password_confirmation" required minlength="6"
                                        class="form-input pl-11">
@@ -274,7 +274,7 @@
                         <div class="pt-2">
                             <button type="submit" class="btn-primary">
                                 <span class="material-symbols-outlined">shield</span>
-                                تحديث كلمة المرور
+                                {{ __t('common.update') }}
                             </button>
                         </div>
                     </form>

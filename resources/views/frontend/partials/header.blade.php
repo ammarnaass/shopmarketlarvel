@@ -4,7 +4,7 @@
         $topBarColor = site('top_bar_text_color', '#ffffff');
         $topBarText = site('top_bar_text');
         if (empty($topBarText)) {
-            $topBarText = 'شحن مجاني فوق ' . config('ecommerce.shipping.free_threshold', 500) . ' ' . currentCurrencySymbol();
+            $topBarText = __t('topbar.free_shipping', ['amount' => config('ecommerce.shipping.free_threshold', 500), 'symbol' => currentCurrencySymbol()]);
         }
         $topBarLink = site('top_bar_link');
     @endphp
@@ -25,21 +25,21 @@
                 @endif
                 <span class="hidden sm:flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-sm">payments</span>
-                    <span>الدفع عند الاستلام</span>
+                    <span>{{ __t('topbar.cod') }}</span>
                 </span>
             </div>
             <div class="flex items-center gap-4">
                 {{-- Theme toggle --}}
                 <button @click="$store.theme.toggle()"
                         class="hover:opacity-80 transition flex items-center"
-                        :title="$store.theme.dark ? 'الوضع النهاري' : 'الوضع الليلي'"
+                        :title="$store.theme.dark ? '{{ __t('topbar.day_mode') }}' : '{{ __t('topbar.night_mode') }}'"
                         style="color: {{ $topBarColor }}">
                     <span class="material-symbols-outlined text-base" x-text="$store.theme.dark ? 'light_mode' : 'dark_mode'"></span>
                 </button>
                 <span class="opacity-35">|</span>
-                <a href="{{ route('track') }}" class="hover:opacity-80 transition text-sm" style="color: {{ $topBarColor }}">تتبع طلبك</a>
+                <a href="{{ route('track') }}" class="hover:opacity-80 transition text-sm" style="color: {{ $topBarColor }}">{{ __t('topbar.track_order') }}</a>
                 <span class="opacity-35">|</span>
-                <a href="{{ route('page.show', 'faq') }}" class="hover:opacity-80 transition text-sm" style="color: {{ $topBarColor }}">المساعدة</a>
+                <a href="{{ route('page.show', ['slug' => 'faq']) }}" class="hover:opacity-80 transition text-sm" style="color: {{ $topBarColor }}">{{ __t('topbar.help') }}</a>
             </div>
         </div>
     </div>
@@ -69,23 +69,23 @@
             {{-- Desktop Navigation --}}
             <nav class="hidden md:flex items-center gap-4">
                 @if(site('nav_show_home', '1') === '1')
-                    <a class="font-body-md text-sm transition-colors {{ request()->routeIs('home') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('home') }}">الرئيسية</a>
+                    <a class="font-body-md text-sm transition-colors {{ request()->routeIs('home') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('home') }}">{{ __t('nav.home') }}</a>
                 @endif
                 @if(site('nav_show_products', '1') === '1')
-                    <a class="font-body-md text-sm transition-colors {{ request()->routeIs('shop.index') && !request('featured') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('shop.index') }}">المنتجات</a>
+                    <a class="font-body-md text-sm transition-colors {{ request()->routeIs('shop.index') && !request('featured') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('shop.index') }}">{{ __t('nav.products') }}</a>
                 @endif
                 @if(site('nav_show_categories', '1') === '1')
                     {{-- Dynamic category links --}}
                     @foreach(($navCategories ?? collect())->take((int)site('nav_categories_limit', 3)) as $cat)
-                        <a class="font-body-md text-sm transition-colors {{ request()->is('category/'.$cat->slug) ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('shop.category', $cat->slug) }}">{{ $cat->name }}</a>
+                        <a class="font-body-md text-sm transition-colors {{ request()->is('category/'.$cat->slug) ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('shop.category', ['slug' => $cat->slug]) }}">{{ $cat->name }}</a>
                     @endforeach
                 @endif
                 {{-- Dynamic page links --}}
                 @foreach(($navPages ?? collect()) as $page)
-                    <a class="font-body-md text-sm transition-colors {{ request()->is('page/'.$page->slug) ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('page.show', $page->slug) }}">{{ $page->title }}</a>
+                    <a class="font-body-md text-sm transition-colors {{ request()->is('page/'.$page->slug) ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('page.show', ['slug' => $page->slug]) }}">{{ $page->title }}</a>
                 @endforeach
                 @if(site('nav_show_contact', '1') === '1')
-                    <a class="font-body-md text-sm transition-colors {{ request()->is('page/contact') || request()->is('contact') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('page.show', 'contact') }}">اتصل بنا</a>
+                    <a class="font-body-md text-sm transition-colors {{ request()->is('page/contact') || request()->is('contact') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('page.show', ['slug' => 'contact']) }}">{{ __t('nav.contact') }}</a>
                 @endif
             </nav>
         </div>
@@ -102,7 +102,7 @@
                        @input.debounce.300ms="_search(); show()"
                        @focus="show()"
                        @keydown.escape="close()"
-                       placeholder="ابحث عن منتج..."
+                       placeholder="{{ __t('nav.search_placeholder') }}"
                        class="w-full pr-10 pl-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                        autocomplete="off">
             </form>
@@ -134,18 +134,44 @@
             <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                 <button @click="open = !open" type="button"
                         class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform flex items-center gap-1 text-base hover:bg-gray-100 rounded-full"
-                        title="تغيير العملة">
+                        title="{{ __t('topbar.change_currency') }}">
                     <span class="text-xs font-semibold">{{ countryCurrency(session('selected_country', 'SD')) }}</span>
                 </button>
                 <div x-show="open" x-transition
                      class="absolute left-0 mt-2 w-44 bg-white border border-outline-variant rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
                     @php $countries = config('ecommerce.countries', []); @endphp
                     @foreach($countries as $code => $info)
-                        <a href="{{ route('currency.switch', $code) }}"
+                        <a href="{{ route('currency.switch', ['code' => $code]) }}"
                            class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-sm {{ session('selected_country', 'SD') === $code ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-gray-700' }}">
                             <span class="text-base font-bold w-8 text-center">{{ $info['currency_symbol'] ?? '' }}</span>
                             <span class="flex-1">{{ $info['name'] ?? $code }}</span>
                             <span class="text-xs text-gray-400">{{ $code }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Language Switcher --}}
+            <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                <button @click="open = !open" type="button"
+                        class="flex items-center gap-1.5 px-2 py-1.5 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+                        title="{{ __t('nav.language') }}">
+                    @php $currentLang = $languages->firstWhere('code', current_locale()); @endphp
+                    <span>{{ $currentLang->flag ?? '' }}</span>
+                    <span class="uppercase">{{ current_locale() }}</span>
+                    <span class="material-symbols-outlined text-base transition-transform" :class="open ? 'rotate-180' : ''">expand_more</span>
+                </button>
+                <div x-show="open" x-transition
+                     class="absolute left-0 mt-2 w-44 bg-white border border-outline-variant rounded-xl shadow-lg z-50 overflow-hidden">
+                    @foreach($languages ?? collect() as $lang)
+                        <a href="{{ route('lang.switch', ['locale' => $lang->code]) }}"
+                           class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-sm transition-colors {{ current_locale() === $lang->code ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-gray-700' }}">
+                            <span class="text-lg">{{ $lang->flag ?? '🏳️' }}</span>
+                            <span class="flex-1">{{ $lang->native_name }}</span>
+                            <span class="text-xs text-gray-400 uppercase">{{ $lang->code }}</span>
+                            @if($lang->is_default)
+                                <span class="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">{{ __t('common.default') }}</span>
+                            @endif
                         </a>
                     @endforeach
                 </div>
@@ -190,14 +216,14 @@
                         </div>
                         <div class="py-1">
                             <a href="{{ route('account.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
-                                <span class="material-symbols-outlined w-4">person</span> حسابي
+                                <span class="material-symbols-outlined w-4">person</span> {{ __t('nav.my_account') }}
                             </a>
                             <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
-                                <span class="material-symbols-outlined w-4">inventory_2</span> طلباتي
+                                <span class="material-symbols-outlined w-4">inventory_2</span> {{ __t('nav.my_orders') }}
                             </a>
                             @if(auth()->user()->isAdmin() || auth()->user()->isManager())
                                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
-                                    <span class="material-symbols-outlined w-4">dashboard</span> لوحة التحكم
+                                    <span class="material-symbols-outlined w-4">dashboard</span> {{ __t('nav.dashboard') }}
                                 </a>
                             @endif
                         </div>
@@ -205,14 +231,14 @@
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="flex items-center gap-3 w-full text-right px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition">
-                                    <span class="material-symbols-outlined w-4">logout</span> تسجيل الخروج
+                                    <span class="material-symbols-outlined w-4">logout</span> {{ __t('nav.logout') }}
                                 </button>
                             </form>
                         </div>
                     </div>
                 </div>
             @else
-                <a href="{{ route('login') }}" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform hover:bg-gray-100 rounded-full" title="حسابي">
+                <a href="{{ route('login') }}" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform hover:bg-gray-100 rounded-full" title="{{ __t('nav.my_account') }}">
                     person
                 </a>
             @endauth
@@ -226,9 +252,9 @@
          class="lg:hidden border-t border-outline-variant bg-white">
         <div class="container-app py-3">
             <form action="{{ route('shop.index') }}" method="GET" class="relative">
-                <input type="text" name="q" placeholder="ابحث عن منتج..." class="w-full pr-10 pl-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-sm">
+                <input type="text" name="q" placeholder="{{ __t('nav.search_placeholder') }}" class="w-full pr-10 pl-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-sm">
                 <span class="material-symbols-outlined absolute top-1/2 -translate-y-1/2 right-4 text-gray-400">search</span>
-                <button type="submit" class="absolute left-1 top-1 bottom-1 px-4 btn-primary rounded-full text-xs">بحث</button>
+                <button type="submit" class="absolute left-1 top-1 bottom-1 px-4 btn-primary rounded-full text-xs">{{ __t('nav.search_submit') }}</button>
             </form>
         </div>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use App\Services\TranslationService;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -11,7 +12,9 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton(TranslationService::class, function () {
+            return new TranslationService();
+        });
     }
 
     public function boot(): void
@@ -52,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('admin.layout', function ($view) {
             $stats = [
                 'pending_orders' => \App\Models\Order::where('status', 'pending')->count(),
+                'pending_instant_orders' => \App\Models\InstantBuyOrder::where('status', 'new')->count(),
             ];
             $view->with('stats', $stats);
         });

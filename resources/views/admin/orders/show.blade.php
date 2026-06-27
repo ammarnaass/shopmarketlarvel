@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
-@section('title', 'طلب ' . $order->order_number)
+@section('title', __t('admin.orders.details') . ' ' . $order->order_number)
 
-@section('page_title', 'طلب #' . $order->order_number)
+@section('page_title', __t('admin.orders.details') . ' #' . $order->order_number)
 
 @section('content')
 @push('styles')
@@ -19,15 +19,15 @@
 <div class="flex items-center justify-between mb-6">
     <div>
         <nav class="flex gap-2 text-outline text-sm mb-1">
-            <a href="{{ route('admin.orders.index') }}" class="hover:text-primary transition-colors">الطلبات</a>
+            <a href="{{ route('admin.orders.index') }}" class="hover:text-primary transition-colors">{{ __t('admin.orders.title') }}</a>
             <span>/</span>
             <span class="text-primary font-bold">#{{ $order->order_number }}</span>
         </nav>
         <h3 class="text-xl font-bold text-on-surface flex items-center gap-2">
-            تفاصيل الطلب #{{ $order->order_number }}
+            {{ __t('admin.orders.details') }} #{{ $order->order_number }}
             @if($order->is_instant_buy)
                 <span class="px-2 py-0.5 bg-tertiary-fixed text-tertiary text-[10px] rounded-lg font-bold flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">bolt</span> طلب فوري
+                    <span class="material-symbols-outlined text-[14px]">bolt</span> {{ __t('admin.orders.instant_order') }}
                 </span>
             @endif
         </h3>
@@ -35,7 +35,7 @@
     <div class="flex gap-3">
         <a href="{{ route('admin.orders.index') }}" class="px-5 py-2.5 bg-surface text-primary border border-primary rounded-xl text-sm font-medium hover:bg-primary/5 transition-all flex items-center gap-2 active:scale-95">
             <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-            العودة لقائمة الطلبات
+            {{ __t('admin.orders.back_to_list') }}
         </a>
     </div>
 </div>
@@ -59,16 +59,16 @@
         <div>
             <div class="flex items-center gap-3">
                 <span class="px-3 py-1 bg-primary text-white text-[12px] font-bold rounded-full">{{ $order->status_name }}</span>
-                <span class="text-outline text-sm">{{ $order->created_at->format('d/m/Y الساعة H:i') }}</span>
+                <span class="text-outline text-sm">{{ $order->created_at->format('d/m/Y') }} {{ __t('admin.orders.at_time') }} {{ $order->created_at->format('H:i') }}</span>
             </div>
             <p class="text-on-surface-variant text-sm mt-1">
-                @if($order->status === 'pending') الطلب جاهز للمراجعة وتأكيد الشحن مع العميل.
-                @elseif($order->status === 'confirmed') تم تأكيد الطلب وجاري تجهيزه.
-                @elseif($order->status === 'processing') الطلب قيد التجهيز.
-                @elseif($order->status === 'shipped') تم شحن الطلب.
-                @elseif($order->status === 'delivered') تم توصيل الطلب بنجاح.
-                @elseif($order->status === 'cancelled') تم إلغاء الطلب.
-                @else حالة الطلب: {{ $order->status_name }}
+                @if($order->status === 'pending') {{ __t('admin.orders.status_pending_desc') }}
+                @elseif($order->status === 'confirmed') {{ __t('admin.orders.status_confirmed_desc') }}
+                @elseif($order->status === 'processing') {{ __t('admin.orders.status_processing_desc') }}
+                @elseif($order->status === 'shipped') {{ __t('admin.orders.status_shipped_desc') }}
+                @elseif($order->status === 'delivered') {{ __t('admin.orders.status_delivered_desc') }}
+                @elseif($order->status === 'cancelled') {{ __t('admin.orders.status_cancelled_desc') }}
+                @else {{ __t('admin.orders.status_label') }}: {{ $order->status_name }}
                 @endif
             </p>
         </div>
@@ -85,10 +85,10 @@
                 </select>
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white pointer-events-none">expand_more</span>
             </div>
-            <input type="text" name="note" placeholder="سبب التغيير..." class="px-4 py-2.5 bg-white text-on-surface border border-outline-variant rounded-xl text-sm placeholder:text-outline focus:ring-2 focus:ring-primary outline-none">
+            <input type="text" name="note" placeholder="{{ __t('admin.orders.change_reason') }}..." class="px-4 py-2.5 bg-white text-on-surface border border-outline-variant rounded-xl text-sm placeholder:text-outline focus:ring-2 focus:ring-primary outline-none">
             <button type="submit" class="px-4 py-2.5 bg-primary-container text-white rounded-xl text-sm font-medium hover:opacity-90 transition-all flex items-center gap-2 active:scale-95">
                 <span class="material-symbols-outlined text-[20px]">sync</span>
-                تحديث
+                {{ __t('common.update') }}
             </button>
         </form>
 
@@ -97,17 +97,17 @@
         @if($shippingLabel)
             <a href="{{ route('admin.shipping.label.pdf', $shippingLabel) }}" target="_blank" class="px-4 py-2.5 bg-white text-on-surface border border-outline-variant rounded-xl font-label-md text-label-md hover:bg-surface-container-low transition-all flex items-center gap-2 shadow-sm">
                 <span class="material-symbols-outlined text-[20px]">print</span>
-                طباعة بوليصة الشحن
+                {{ __t('admin.orders.print_label') }}
             </a>
         @endif
 
         @if($order->canBeCancelled())
-            <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من إلغاء هذا الطلب؟')">
+            <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="inline" onsubmit="return confirm('{{ __t('admin.orders.cancel_confirm') }}')">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="px-4 py-2.5 bg-error/10 text-error border border-error/20 rounded-xl font-label-md text-label-md hover:bg-error hover:text-white transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-[20px]">cancel</span>
-                    إلغاء الطلب
+                    {{ __t('admin.orders.cancel_order') }}
                 </button>
             </form>
         @endif
@@ -122,18 +122,18 @@
             <div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
                 <h4 class="font-title-lg text-title-lg flex items-center gap-2 font-bold text-on-surface">
                     <span class="material-symbols-outlined text-primary">shopping_bag</span>
-                    محتويات الطلب
+                    {{ __t('admin.orders.order_contents') }}
                 </h4>
-                <span class="text-outline text-body-sm">{{ $order->items->count() }} منتج</span>
+                <span class="text-outline text-body-sm">{{ $order->items->count() }} {{ __t('admin.orders.product_unit') }}</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-right border-collapse">
                     <thead>
                         <tr class="bg-surface-container-low">
-                            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">المنتج</th>
-                            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">الخيارات</th>
-                            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant text-center">الكمية</th>
-                            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">السعر</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.orders.product') }}</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.orders.options') }}</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant text-center">{{ __t('admin.orders.quantity') }}</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">{{ __t('admin.orders.price') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-outline-variant">
@@ -178,17 +178,17 @@
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-outline-variant/30">
                 <h4 class="font-title-lg text-title-lg mb-6 flex items-center gap-2 border-b border-outline-variant pb-4 font-bold text-on-surface">
                     <span class="material-symbols-outlined text-primary">receipt_long</span>
-                    ملخص التكاليف
+                    {{ __t('admin.orders.cost_summary') }}
                 </h4>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center text-body-md">
-                        <span class="text-on-surface-variant">المجموع الفرعي</span>
+                        <span class="text-on-surface-variant">{{ __t('admin.orders.subtotal') }}</span>
                         <span class="font-medium text-on-surface">{{ number_format($order->subtotal, 0) }} {{ currentCurrencySymbol() }}</span>
                     </div>
                     @if($order->discount > 0)
                         <div class="flex justify-between items-center text-body-md">
                             <span class="text-on-surface-variant flex items-center gap-2">
-                                الخصم 
+                                {{ __t('admin.orders.discount') }} 
                                 @if($order->coupon)
                                     <span class="px-2 py-0.5 bg-tertiary-fixed text-tertiary text-[10px] rounded-lg font-bold">{{ $order->coupon->code }}</span>
                                 @endif
@@ -197,30 +197,30 @@
                         </div>
                     @endif
                     <div class="flex justify-between items-center text-body-md">
-                        <span class="text-on-surface-variant">الشحن</span>
+                        <span class="text-on-surface-variant">{{ __t('admin.orders.shipping_cost') }}</span>
                         <span class="font-medium text-on-surface">{{ number_format($order->shipping_cost, 0) }} {{ currentCurrencySymbol() }}</span>
                     </div>
                     @if($order->tax > 0)
                         <div class="flex justify-between items-center text-body-md">
-                            <span class="text-on-surface-variant">الضرائب</span>
+                            <span class="text-on-surface-variant">{{ __t('admin.orders.tax') }}</span>
                             <span class="font-medium text-on-surface">{{ number_format($order->tax, 0) }} {{ currentCurrencySymbol() }}</span>
                         </div>
                     @endif
                     @if($order->cod_fee > 0)
                         <div class="flex justify-between items-center text-body-md">
-                            <span class="text-on-surface-variant">رسوم COD</span>
+                            <span class="text-on-surface-variant">{{ __t('admin.orders.cod_fee') }}</span>
                             <span class="font-medium text-on-surface">{{ number_format($order->cod_fee, 0) }} {{ currentCurrencySymbol() }}</span>
                         </div>
                     @endif
                     <div class="pt-4 border-t border-dashed border-outline-variant flex justify-between items-center">
-                        <span class="font-headline-sm text-headline-sm text-on-surface font-bold">الإجمالي النهائي</span>
+                        <span class="font-headline-sm text-headline-sm text-on-surface font-bold">{{ __t('admin.orders.grand_total') }}</span>
                         <span class="text-display-lg font-display-lg text-primary font-bold">{{ number_format($order->grand_total, 0) }} {{ currentCurrencySymbol() }}</span>
                     </div>
                     <div class="mt-4 p-3 bg-surface-container-low rounded-xl flex items-center justify-between">
-                        <span class="text-body-sm text-on-surface-variant">طريقة الدفع:</span>
+                        <span class="text-body-sm text-on-surface-variant">{{ __t('admin.orders.payment_method') }}:</span>
                         <span class="font-label-md text-label-md flex items-center gap-1 font-bold text-on-surface">
                             @php $payment = $order->payment->first(); @endphp
-                            {{ $payment->method ?? 'الدفع عند الاستلام' }}
+                            {{ $payment->method ?? __t('admin.orders.cod') }}
                             <span class="material-symbols-outlined text-primary text-[18px]">payments</span>
                         </span>
                     </div>
@@ -231,17 +231,17 @@
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-outline-variant/30">
                 <h4 class="font-title-lg text-title-lg mb-6 flex items-center gap-2 border-b border-outline-variant pb-4 font-bold text-on-surface">
                     <span class="material-symbols-outlined text-primary">distance</span>
-                    بيانات الشحن
+                    {{ __t('admin.orders.shipping_info') }}
                 </h4>
                 <div class="space-y-6">
                     @if($order->shippingCompany)
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-outline text-body-sm mb-1">شركة الشحن</p>
+                                <p class="text-outline text-body-sm mb-1">{{ __t('admin.orders.shipping_company') }}</p>
                                 <div class="flex items-center gap-3">
                                     <span class="font-semibold text-on-surface">{{ $order->shippingCompany->name }}</span>
                                     @if($shippingLabel)
-                                        <a class="text-primary hover:underline text-label-md" href="{{ route('admin.shipping.label.show', $shippingLabel) }}">تتبع الطرد</a>
+                                        <a class="text-primary hover:underline text-label-md" href="{{ route('admin.shipping.label.show', $shippingLabel) }}">{{ __t('admin.orders.track_package') }}</a>
                                     @endif
                                 </div>
                             </div>
@@ -249,7 +249,7 @@
                     @endif
                     @if($order->tracking_number)
                         <div>
-                            <p class="text-outline text-body-sm mb-1">رقم التتبع</p>
+                            <p class="text-outline text-body-sm mb-1">{{ __t('admin.orders.tracking_number') }}</p>
                             <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl border border-outline-variant/30">
                                 <span class="font-mono font-bold tracking-wider text-primary">{{ $order->tracking_number }}</span>
                                 <button onclick="navigator.clipboard.writeText('{{ $order->tracking_number }}')" class="material-symbols-outlined text-outline hover:text-primary transition-colors">content_copy</button>
@@ -258,7 +258,7 @@
                     @endif
                     @if(!$order->shippingCompany && !$order->tracking_number)
                         <div class="text-center py-6">
-                            <p class="text-on-surface-variant text-sm">لا توجد معلومات شحن متاحة للطلب الحالي</p>
+                            <p class="text-on-surface-variant text-sm">{{ __t('admin.orders.no_shipping_info') }}</p>
                         </div>
                     @endif
                 </div>
@@ -269,7 +269,7 @@
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-outline-variant/30">
             <h4 class="font-title-lg text-title-lg mb-8 flex items-center gap-2 font-bold text-on-surface">
                 <span class="material-symbols-outlined text-primary">history_edu</span>
-                سجل تحديثات الطلب
+                {{ __t('admin.orders.update_log') }}
             </h4>
             <div class="relative space-y-8 pr-4">
                 <div class="absolute right-[19px] top-2 bottom-2 w-0.5 bg-outline-variant/50"></div>
@@ -303,17 +303,17 @@
                                 {{ \App\Models\Order::STATUSES[$history->status] ?? $history->status }}
                             </p>
                             <p class="text-on-surface-variant text-body-md mt-1">
-                                {{ $history->note ?? 'تحديث الحالة تلقائياً عبر النظام.' }}
+                                {{ $history->note ?? __t('admin.orders.auto_update_note') }}
                             </p>
                             <p class="text-outline text-[12px] mt-2">
-                                {{ $history->created_at->format('Y-m-d H:i:s') }} • {{ $history->user?->name ?? 'النظام' }}
+                                {{ $history->created_at->format('Y-m-d H:i:s') }} • {{ $history->user?->name ?? __t('admin.orders.system') }}
                             </p>
                         </div>
                     </div>
                 @empty
                     <div class="text-center py-4 opacity-70 text-sm">
                         <span class="material-symbols-outlined text-2xl mb-2 block">history</span>
-                        <p>لا يوجد سجل تغييرات</p>
+                        <p>{{ __t('admin.orders.no_history') }}</p>
                     </div>
                 @endforelse
             </div>
@@ -326,7 +326,7 @@
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-outline-variant/30">
             <h4 class="font-title-lg text-title-lg mb-6 flex items-center gap-2 border-b border-outline-variant/30 pb-4 font-bold text-on-surface">
                 <span class="material-symbols-outlined text-primary">person</span>
-                بيانات العميل
+                {{ __t('admin.orders.customer_info') }}
             </h4>
             <div class="flex flex-col items-center text-center mb-6">
                 <div class="relative mb-4">
@@ -334,7 +334,7 @@
                         <span class="material-symbols-outlined text-primary text-[48px]" style="font-variation-settings: 'FILL' 1;">person</span>
                     </div>
                 </div>
-                <h5 class="font-display-lg text-display-lg text-on-surface font-bold">{{ $order->user?->name ?? $order->shippingAddress?->name ?? 'عميل زائر' }}</h5>
+                <h5 class="font-display-lg text-display-lg text-on-surface font-bold">{{ $order->user?->name ?? $order->shippingAddress?->name ?? __t('admin.orders.guest_customer') }}</h5>
             </div>
             <div class="space-y-4">
                 @php
@@ -345,7 +345,7 @@
                     <div class="flex items-center gap-3 p-3 bg-surface rounded-xl border border-outline-variant/30">
                         <span class="material-symbols-outlined text-primary">call</span>
                         <div>
-                            <p class="text-[11px] text-outline">رقم الجوال</p>
+                            <p class="text-[11px] text-outline">{{ __t('admin.orders.phone') }}</p>
                             <p class="text-body-md font-bold" dir="ltr">{{ $phone }}</p>
                         </div>
                     </div>
@@ -354,7 +354,7 @@
                     <div class="flex items-center gap-3 p-3 bg-surface rounded-xl border border-outline-variant/30 overflow-hidden">
                         <span class="material-symbols-outlined text-primary">mail</span>
                         <div class="overflow-hidden">
-                            <p class="text-[11px] text-outline">البريد الإلكتروني</p>
+                            <p class="text-[11px] text-outline">{{ __t('admin.orders.shipping_email') }}</p>
                             <p class="text-body-md font-bold truncate">{{ $email }}</p>
                         </div>
                     </div>
@@ -368,7 +368,7 @@
                 <div class="flex justify-between items-center mb-6 border-b border-outline-variant pb-4">
                     <h4 class="font-title-lg text-title-lg flex items-center gap-2 font-bold text-on-surface">
                         <span class="material-symbols-outlined text-primary">location_on</span>
-                        عنوان التوصيل
+                        {{ __t('admin.orders.delivery_address') }}
                     </h4>
                 </div>
                 <div class="relative w-full h-32 rounded-xl bg-surface-container-low mb-4 overflow-hidden border border-outline-variant flex items-center justify-center">
@@ -376,11 +376,11 @@
                 </div>
                 <div class="space-y-3">
                     <div>
-                        <p class="text-outline text-body-sm">الاسم المستلم</p>
+                        <p class="text-outline text-body-sm">{{ __t('admin.orders.recipient_name') }}</p>
                         <p class="font-headline-sm text-headline-sm text-on-surface font-bold">{{ $order->shippingAddress->name }}</p>
                     </div>
                     <div>
-                        <p class="text-outline text-body-sm">العنوان</p>
+                        <p class="text-outline text-body-sm">{{ __t('admin.orders.address_label') }}</p>
                         <p class="text-body-md text-on-surface">{{ $order->shippingAddress->address }}</p>
                         <p class="text-sm text-on-surface-variant">{{ $order->shippingAddress->city }}@if($order->shippingAddress->state_name) - {{ $order->shippingAddress->state_name }}@endif</p>
                         <p class="text-sm text-on-surface-variant">{{ $order->shippingAddress->country_name }}</p>
@@ -393,19 +393,19 @@
         <div class="bg-secondary-fixed text-on-secondary-fixed rounded-2xl shadow-sm p-6 border border-outline-variant/30">
             <h4 class="font-title-lg text-title-lg mb-4 flex items-center gap-2 font-bold text-on-surface">
                 <span class="material-symbols-outlined">note_alt</span>
-                ملاحظات داخلية
+                {{ __t('admin.orders.internal_notes') }}
             </h4>
             <form method="POST" action="{{ route('admin.orders.notes.store', $order) }}" class="mb-4">
                 @csrf
-                <textarea name="note" required class="w-full h-24 bg-white/50 border-none rounded-xl p-3 text-body-sm placeholder:text-outline focus:ring-2 focus:ring-primary mb-3 outline-none" placeholder="أضف ملاحظة للموظفين فقط..."></textarea>
+                <textarea name="note" required class="w-full h-24 bg-white/50 border-none rounded-xl p-3 text-body-sm placeholder:text-outline focus:ring-2 focus:ring-primary mb-3 outline-none" placeholder="{{ __t('admin.orders.note_placeholder') }}"></textarea>
                 <div class="flex items-center justify-between gap-3">
                     <label class="flex items-center gap-2 text-xs cursor-pointer">
                         <input type="checkbox" name="is_customer_note" value="1" class="rounded border-outline-variant text-primary focus:ring-primary">
-                        مرئي للعميل
+                        {{ __t('admin.orders.visible_to_customer') }}
                     </label>
                     <button type="submit" class="px-4 py-2 bg-on-secondary-fixed-variant text-white rounded-xl text-sm font-medium hover:opacity-90 transition-all flex items-center gap-2 active:scale-95">
                         <span class="material-symbols-outlined text-[18px]">add</span>
-                        حفظ
+                        {{ __t('admin.orders.save') }}
                     </button>
                 </div>
             </form>
@@ -419,15 +419,15 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-1 flex-wrap">
-                                    <span class="font-semibold text-xs text-on-surface">{{ $note->user?->name ?? 'النظام' }}</span>
+                                    <span class="font-semibold text-xs text-on-surface">{{ $note->user?->name ?? __t('admin.orders.system_label') }}</span>
                                     @if($note->is_customer_note)
-                                        <span class="px-1.5 py-0.5 bg-primary-fixed-dim/30 text-on-secondary-fixed-variant text-[10px] font-bold rounded">مرئي للعميل</span>
+                                        <span class="px-1.5 py-0.5 bg-primary-fixed-dim/30 text-on-secondary-fixed-variant text-[10px] font-bold rounded">{{ __t('admin.orders.visible_to_customer') }}</span>
                                     @endif
                                     <span class="text-xs opacity-70 text-on-surface-variant">{{ $note->created_at->diffForHumans() }}</span>
                                 </div>
                                 <p class="text-sm text-on-surface">{{ $note->note }}</p>
                             </div>
-                            <form action="{{ route('admin.orders.notes.delete', $note) }}" method="POST" class="inline shrink-0" onsubmit="return confirm('هل أنت متأكد من حذف هذه الملاحظة؟')">
+                            <form action="{{ route('admin.orders.notes.delete', $note) }}" method="POST" class="inline shrink-0" onsubmit="return confirm('{{ __t('admin.orders.delete_note_confirm') }}')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="opacity-60 hover:opacity-100 transition-opacity">
@@ -439,7 +439,7 @@
                 @empty
                     <div class="text-center py-4 opacity-70 text-sm">
                         <span class="material-symbols-outlined text-2xl mb-2 block">sticky_note_2</span>
-                        <p>لا توجد ملاحظات داخلية</p>
+                        <p>{{ __t('admin.orders.no_internal_notes') }}</p>
                     </div>
                 @endforelse
             </div>

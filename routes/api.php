@@ -20,6 +20,8 @@ Route::get('/shipping/zones', [ShippingApiController::class, 'zones']);
 Route::post('/shipping/calculate', [ShippingApiController::class, 'calculate']);
 Route::get('/shipping/tracking/{number}', [ShippingApiController::class, 'track']);
 Route::post('/coupons/validate', [CouponApiController::class, 'validate']);
+Route::post('/shipping/available', [ShippingApiController::class, 'available']);
+Route::get('/shipping/offices/{carrier}', [ShippingApiController::class, 'offices']);
 
 // Authenticated
 Route::middleware('auth:sanctum')->group(function () {

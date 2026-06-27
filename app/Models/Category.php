@@ -14,7 +14,9 @@ class Category extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name', 'slug', 'description', 'image', 'icon', 'banner',
+        'name', 'name_en', 'name_fr',
+        'slug', 'description', 'description_en', 'description_fr',
+        'image', 'icon', 'banner',
         'parent_id', 'order', 'status',
         'seo_title', 'seo_description',
     ];
@@ -22,6 +24,36 @@ class Category extends Model
     protected $casts = [
         'order' => 'integer',
     ];
+
+    public function getNameAttribute(): string
+    {
+        $locale = app()->getLocale();
+        return match ($locale) {
+            'en' => $this->attributes['name_en'] ?? $this->attributes['name'],
+            'fr' => $this->attributes['name_fr'] ?? $this->attributes['name'],
+            default => $this->attributes['name'],
+        };
+    }
+
+    public function getDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        return match ($locale) {
+            'en' => $this->attributes['description_en'] ?? $this->attributes['description'],
+            'fr' => $this->attributes['description_fr'] ?? $this->attributes['description'],
+            default => $this->attributes['description'],
+        };
+    }
+
+    public function getLocalizedName(?string $locale = null): string
+    {
+        $locale = $locale ?: app()->getLocale();
+        return match ($locale) {
+            'en' => $this->attributes['name_en'] ?? $this->attributes['name'],
+            'fr' => $this->attributes['name_fr'] ?? $this->attributes['name'],
+            default => $this->attributes['name'],
+        };
+    }
 
     public static function booted(): void
     {

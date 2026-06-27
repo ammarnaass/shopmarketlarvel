@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(LanguageSeeder::class);
+        $this->call(TranslationSeeder::class);
+
         $this->command->info('Seeding roles & permissions...');
         $this->seedRolesAndPermissions();
 

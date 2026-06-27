@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ShippingOfficePickup;
 use App\Models\ShippingZone;
+use App\Services\DynamicShippingService;
 use App\Services\ShippingCalculator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -118,6 +120,58 @@ class ShippingApiController extends Controller
             'estimated_days' => $estimatedDays,
             'options' => $options,
         ]);
+    }
+
+    public function available(Request $request, DynamicShippingService $service): JsonResponse
+    {
+        $data = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'country_code' => 'required|string|size:2',
+            'city' => 'required|string',
+            'delivery_type' => 'nullable|in:home,office',
+        ]);
+
+        $supported = $service->getSupportedDeliveryTypes(
+            $data['product_id'], $data['country_code'], $data['city']
+        );
+        $deliveryType = ($data['delivery_type'] && in_array($data['delivery_type'], $supported))
+            ? $data['delivery_type']
+            : $supported[0];
+
+        $result = $service->getAvailableMethods(
+            $data['product_id'], $data['country_code'], $data['city'], $deliveryType
+        );
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'supported_delivery_types' => $supported,
+                'delivery_type' => $deliveryType,
+                'available_methods' => $result['available'],
+                'unavailable_methods' => $result['unavailable'],
+            ],
+        ]);
+    }
+
+    public function offices(string $carrier): JsonResponse
+    {
+        $offices = ShippingOfficePickup::where('carrier_id', $carrier)
+            ->where('is_active', true)
+            ->get()
+            ->map(fn($o) => [
+                'id' => $o->id,
+                'name' => $o->name,
+                'address' => $o->address,
+                'city' => $o->city,
+                'state' => $o->state,
+                'country_code' => $o->country_code,
+                'latitude' => $o->latitude,
+                'longitude' => $o->longitude,
+                'working_hours' => $o->working_hours,
+                'phone' => $o->phone,
+            ]);
+
+        return response()->json(['success' => true, 'data' => $offices]);
     }
 
     public function track(string $number, ShippingCalculator $calculator): JsonResponse

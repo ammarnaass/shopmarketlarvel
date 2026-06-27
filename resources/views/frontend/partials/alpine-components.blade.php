@@ -37,7 +37,7 @@
                 <span x-text="toast.message" class="flex-1 text-sm font-medium"></span>
                 <button @click="$store.toast.dismiss(toast.id)"
                         class="flex-shrink-0 opacity-60 hover:opacity-100 transition"
-                        aria-label="إغلاق">
+                        aria-label="{{ __t('ui.close') }}">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
@@ -94,6 +94,6 @@
         "
         @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
         class="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-brand-600 to-brand-500 text-white shadow-brand hover:shadow-brand-lg hover:-translate-y-1 transition-all duration-300 flex items-center justify-center"
-        aria-label="العودة لأعلى">
+        aria-label="{{ __t('ui.back_to_top') }}">
     <span class="material-symbols-outlined">expand_less</span>
 </button>

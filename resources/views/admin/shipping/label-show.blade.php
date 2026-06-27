@@ -1,11 +1,11 @@
 @extends('admin.layout')
 
-@section('title', $label ? 'بوليصة شحن: ' . $label->tracking_number : 'إنشاء بوليصة شحن')
+@section('title', $label ? __t('admin.shipping.label') . ': ' . $label->tracking_number : __t('admin.shipping.label_form_title'))
 
 @section('content')
 {{-- Breadcrumb --}}
 <nav class="flex mb-6 text-sm text-gray-500">
-    <a href="{{ route('admin.shipping.index', ['tab' => 'labels']) }}" class="hover:text-blue-600">الشحن</a>
+    <a href="{{ route('admin.shipping.index', ['tab' => 'labels']) }}" class="hover:text-blue-600">{{ __t('admin.shipping.title') }}</a>
     <i class="fas fa-chevron-left mx-2 text-xs mt-1"></i>
     <span class="text-gray-800">{{ $label ? 'بوليصة: ' . $label->tracking_number : 'إنشاء بوليصة' }}</span>
 </nav>
@@ -53,19 +53,19 @@
                 </h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-gray-50 rounded-lg p-3 text-center">
-                        <div class="text-xs text-gray-500 mb-1">رقم التتبع</div>
+                        <div class="text-xs text-gray-500 mb-1">{{ __t('admin.shipping.tracking_number') }}</div>
                         <div class="font-mono font-bold text-sm">{{ $label->tracking_number }}</div>
                     </div>
                     <div class="bg-gray-50 rounded-lg p-3 text-center">
-                        <div class="text-xs text-gray-500 mb-1">شركة الشحن</div>
+                        <div class="text-xs text-gray-500 mb-1">{{ __t('admin.shipping.carrier') }}</div>
                         <div class="font-bold text-sm">{{ $label->carrier?->name ?? '-' }}</div>
                     </div>
                     <div class="bg-gray-50 rounded-lg p-3 text-center">
-                        <div class="text-xs text-gray-500 mb-1">الوزن</div>
+                        <div class="text-xs text-gray-500 mb-1">{{ __t('admin.shipping.weight') }}</div>
                         <div class="font-bold text-sm">{{ $label->weight ? $label->weight . ' كغ' : '-' }}</div>
                     </div>
                     <div class="bg-gray-50 rounded-lg p-3 text-center">
-                        <div class="text-xs text-gray-500 mb-1">التكلفة</div>
+                        <div class="text-xs text-gray-500 mb-1">{{ __t('admin.shipping.cost') }}</div>
                         <div class="font-bold text-sm text-green-700">{{ number_format($label->cost, 2) }} {{ currentCurrencySymbol() }}</div>
                     </div>
                 </div>
@@ -74,9 +74,9 @@
                     <div class="mt-4 bg-blue-50 rounded-lg p-3">
                         <div class="flex items-center justify-between">
                             <div>
-                                <span class="text-xs text-blue-600">الطلب:</span>
+                                <span class="text-xs text-blue-600">{{ __t('admin.shipping.order') }}:</span>
                                 <a href="{{ route('admin.orders.show', $label->order) }}" class="font-bold text-blue-700 hover:underline mr-2">#{{ $label->order->order_number }}</a>
-                                <span class="text-xs text-gray-500">| المبلغ: {{ number_format($label->order->grand_total, 2) }} {{ currentCurrencySymbol() }}</span>
+                                <span class="text-xs text-gray-500">| {{ __t('admin.shipping.amount') }}: {{ number_format($label->order->grand_total, 2) }} {{ currentCurrencySymbol() }}</span>
                             </div>
                             <a href="{{ $label->getTrackingLink() }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
                                 <i class="fas fa-external-link-alt ml-1"></i> تتبع خارجي
@@ -104,7 +104,7 @@
                         @csrf
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
-                                <label class="text-xs text-gray-600">الحالة</label>
+                                <label class="text-xs text-gray-600">{{ __t('admin.shipping.status') }}</label>
                                 <select name="status" class="w-full border rounded px-3 py-2 text-sm" required>
                                     @foreach($statusOptions as $key => $label2)
                                         <option value="{{ $key }}">{{ $label2 }}</option>
@@ -112,11 +112,11 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="text-xs text-gray-600">الموقع</label>
+                                <label class="text-xs text-gray-600">{{ __t('admin.shipping.location') }}</label>
                                 <input type="text" name="location" class="w-full border rounded px-3 py-2 text-sm" placeholder="الرياض - مركز التوزيع">
                             </div>
                             <div>
-                                <label class="text-xs text-gray-600">ملاحظات</label>
+                                <label class="text-xs text-gray-600">{{ __t('admin.shipping.notes') }}</label>
                                 <input type="text" name="description" class="w-full border rounded px-3 py-2 text-sm" placeholder="تم استلام الشحنة">
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                     @empty
                         <div class="text-center py-8 text-gray-400">
                             <i class="fas fa-route text-3xl mb-2"></i>
-                            <p>لا توجد تحديثات تتبع بعد</p>
+                            <p>{{ __t('admin.shipping.no_tracking_updates') }}</p>
                         </div>
                     @endforelse
                 </div>
@@ -163,15 +163,15 @@
         <div class="space-y-6">
             {{-- Status Actions --}}
             <div class="bg-white rounded-xl shadow-sm p-6">
-                <h2 class="font-bold text-lg mb-4">تحديث الحالة</h2>
+                <h2 class="font-bold text-lg mb-4">{{ __t('admin.shipping.update_status') }}</h2>
                 <form action="{{ route('admin.shipping.label.updateStatus', $label) }}" method="POST">
                     @csrf
                     <select name="status" class="w-full border rounded-lg px-4 py-2.5 mb-3 text-sm">
-                        <option value="pending" {{ $label->status === 'pending' ? 'selected' : '' }}>قيد الانتظار</option>
-                        <option value="printed" {{ $label->status === 'printed' ? 'selected' : '' }}>تم الطباعة</option>
-                        <option value="shipped" {{ $label->status === 'shipped' ? 'selected' : '' }}>تم الشحن</option>
+                        <option value="pending" {{ $label->status === 'pending' ? 'selected' : '' }}>{{ __t('admin.shipping.pending') }}</option>
+                        <option value="printed" {{ $label->status === 'printed' ? 'selected' : '' }}>{{ __t('admin.shipping.printed') }}</option>
+                        <option value="shipped" {{ $label->status === 'shipped' ? 'selected' : '' }}>{{ __t('admin.shipping.shipped') }}</option>
                         <option value="delivered" {{ $label->status === 'delivered' ? 'selected' : '' }}>تم التسليم</option>
-                        <option value="returned" {{ $label->status === 'returned' ? 'selected' : '' }}>مرتجع</option>
+                        <option value="returned" {{ $label->status === 'returned' ? 'selected' : '' }}>{{ __t('admin.shipping.returned') }}</option>
                     </select>
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold text-sm">
                         <i class="fas fa-sync ml-1"></i> تحديث الحالة
@@ -181,26 +181,26 @@
 
             {{-- Timeline Info --}}
             <div class="bg-white rounded-xl shadow-sm p-6">
-                <h2 class="font-bold text-lg mb-3">معلومات زمنية</h2>
+                <h2 class="font-bold text-lg mb-3">{{ __t('admin.shipping.time_info') }}</h2>
                 <div class="space-y-2 text-sm">
                     <div class="flex justify-between">
-                        <span class="text-gray-500">تاريخ الإنشاء</span>
+                        <span class="text-gray-500">{{ __t('admin.shipping.created_at') }}</span>
                         <span>{{ $label->created_at->format('Y-m-d H:i') }}</span>
                     </div>
                     @if($label->shipped_at)
                         <div class="flex justify-between">
-                            <span class="text-gray-500">تاريخ الشحن</span>
+                            <span class="text-gray-500">{{ __t('admin.shipping.shipped_at') }}</span>
                             <span>{{ $label->shipped_at->format('Y-m-d H:i') }}</span>
                         </div>
                     @endif
                     @if($label->delivered_at)
                         <div class="flex justify-between">
-                            <span class="text-gray-500">تاريخ التسليم</span>
+                            <span class="text-gray-500">{{ __t('admin.shipping.delivered_at') }}</span>
                             <span>{{ $label->delivered_at->format('Y-m-d H:i') }}</span>
                         </div>
                     @endif
                     <div class="flex justify-between">
-                        <span class="text-gray-500">تحديثات التتبع</span>
+                        <span class="text-gray-500">{{ __t('admin.shipping.tracking_updates') }}</span>
                         <span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs">{{ $label->trackingUpdates->count() }}</span>
                     </div>
                 </div>
@@ -219,16 +219,16 @@
         @csrf
         <div class="bg-white rounded-xl shadow-sm p-6 space-y-4">
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">الطلب *</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __t('admin.shipping.order') }} *</label>
                 <select name="order_id" class="w-full border rounded-lg px-4 py-2.5" required>
-                    <option value="">- اختر الطلب -</option>
+                    <option value="">- {{ __t('admin.shipping.select_order') }} -</option>
                     @foreach($orders as $order)
                         <option value="{{ $order->id }}">#{{ $order->order_number }} - {{ number_format($order->grand_total, 2) }} {{ currentCurrencySymbol() }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">شركة الشحن *</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __t('admin.shipping.carrier') }} *</label>
                 <select name="carrier_id" class="w-full border rounded-lg px-4 py-2.5" required>
                     @foreach($carriers as $carrier)
                         <option value="{{ $carrier->id }}">{{ $carrier->name }}</option>
@@ -237,17 +237,17 @@
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">الوزن (كغ)</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __t('admin.shipping.weight_kg') }}</label>
                     <input type="number" name="weight" step="0.01" min="0" class="w-full border rounded-lg px-4 py-2.5" placeholder="0.5">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">التكلفة ({{ currentCurrencySymbol() }}) *</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __t('admin.shipping.cost') }} ({{ currentCurrencySymbol() }}) *</label>
                     <input type="number" name="cost" step="0.01" min="0" class="w-full border rounded-lg px-4 py-2.5" required placeholder="25.00">
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">رقم التتبع (اختياري - يُولّد تلقائياً)</label>
-                <input type="text" name="tracking_number" class="w-full border rounded-lg px-4 py-2.5" placeholder="سيتم إنشاؤه تلقائياً">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ __t('admin.shipping.tracking_number_optional') }}</label>
+                <input type="text" name="tracking_number" class="w-full border rounded-lg px-4 py-2.5" placeholder="{{ __t('admin.shipping.auto_generated') }}">
             </div>
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold">
                 <i class="fas fa-save ml-1"></i> إنشاء البوليصة

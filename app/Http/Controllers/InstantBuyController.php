@@ -12,6 +12,7 @@ use App\Models\ProductOptionValue;
 use App\Models\ShippingAddress;
 use App\Models\ShippingCompany;
 use App\Models\ShippingZone;
+use App\Services\DynamicShippingService;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -35,7 +36,7 @@ class InstantBuyController extends Controller
         $product = null;
         $productJson = 'null';
         if ($slug) {
-            $product = Product::active()->where('slug', $slug)->with(['images', 'options.values', 'customFields', 'primaryImage'])->firstOrFail();
+            $product = Product::active()->where('slug', $slug)->with(['images', 'options.values', 'customFields', 'primaryImage', 'shippingCompany'])->firstOrFail();
             $productJson = json_encode([
                 'id' => $product->id,
                 'name' => $product->name,
@@ -48,6 +49,8 @@ class InstantBuyController extends Controller
                 'options' => $product->options->mapWithKeys(fn($o) => [$o->id => ['label' => $o->name, 'values' => $o->values->pluck('value', 'id')->toArray()]])->toArray(),
                 'option_adjustments' => $product->options->flatMap(fn($o) => $o->values->pluck('price_adjustment', 'id'))->toArray(),
                 'custom_fields' => $product->customFields->map(fn($f) => ['label' => $f->label, 'type' => $f->type, 'price_effect' => (float) $f->price_effect, 'required' => (bool) $f->required])->toArray(),
+                'shipping_company_id' => $product->shipping_company_id,
+                'shipping_company_name' => $product->shippingCompany?->name,
             ], JSON_UNESCAPED_UNICODE);
         }
 
@@ -57,6 +60,94 @@ class InstantBuyController extends Controller
         $shippingCompanies = ShippingCompany::where('status', 'active')->orderBy('name')->get();
 
         return view('frontend.instant.buy', compact('product', 'productJson', 'countries', 'defaultCountry', 'popularProducts', 'shippingCompanies'));
+    }
+
+    /**
+     * Return available shipping options + supported delivery types for a product + location.
+     */
+    public function shippingOptions(Request $request, DynamicShippingService $shippingService): JsonResponse
+    {
+        $data = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'country_code' => 'required|string|size:2',
+            'city' => 'required|string',
+            'delivery_type' => 'nullable|in:home,office',
+        ]);
+
+        $product = Product::with('shippingCompany')->findOrFail($data['product_id']);
+        $companyId = $product->shipping_company_id;
+        $fixedCompany = $companyId ? ShippingCompany::find($companyId) : null;
+
+        // Supported delivery types
+        $supportedDeliveryTypes = $shippingService->getSupportedDeliveryTypes(
+            $data['product_id'], $data['country_code'], $data['city']
+        );
+        $zoneDeliveryType = $supportedDeliveryTypes[0] ?? 'home';
+
+        $reqDeliveryType = $data['delivery_type'] ?? null;
+        $deliveryType = ($reqDeliveryType && in_array($reqDeliveryType, $supportedDeliveryTypes))
+            ? $reqDeliveryType
+            : $supportedDeliveryTypes[0];
+
+        // Get available methods
+        $result = $shippingService->getAvailableMethods(
+            $data['product_id'], $data['country_code'], $data['city'],
+            $deliveryType, $companyId
+        );
+
+        $options = [];
+        $companies = [];
+
+        foreach ($result['available'] as $item) {
+            $options[] = [
+                'type' => $item['id'] ? 'method_' . $item['id'] : $item['type'],
+                'label' => $item['name'],
+                'method_id' => $item['id'],
+                'company_id' => $item['carrier_id'],
+                'company_name' => $item['carrier'],
+                'zone_id' => $item['zone_id'],
+                'delivery_type' => $item['delivery_type'],
+                'cost' => $item['cost'],
+                'is_free' => $item['is_free'],
+                'estimated_days' => $item['estimated_days'],
+                'is_cod_available' => $item['is_cod_available'],
+                'pickup_location' => $item['pickup_location'],
+            ];
+
+            if ($item['carrier_id'] && !isset($companies[$item['carrier_id']])) {
+                $companies[$item['carrier_id']] = [
+                    'id' => $item['carrier_id'],
+                    'name' => $item['carrier'],
+                ];
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'options' => $options,
+            'companies' => array_values($companies),
+            'fixed_company' => $fixedCompany ? ['id' => $fixedCompany->id, 'name' => $fixedCompany->name] : null,
+            'supported_delivery_types' => $supportedDeliveryTypes,
+            'zone_delivery_type' => $zoneDeliveryType,
+        ]);
+    }
+
+    /**
+     * Calculate cost for a zone given method and delivery type (without weight/subtotal).
+     */
+    private function calculateZoneCost(ShippingZone $zone, string $method, string $deliveryType, float $subtotal = 0, float $weight = 0): float
+    {
+        $costField = match (true) {
+            $deliveryType === 'office' && $method === 'express' => 'office_express_cost',
+            $deliveryType === 'office' => 'office_cost',
+            $deliveryType === 'home' && $method === 'express' => 'home_express_cost',
+            default => 'home_cost',
+        };
+        $cost = $zone->{$costField};
+        if ($cost === null) {
+            $cost = $method === 'express' ? (float) $zone->express_cost : (float) $zone->cost;
+        }
+        return (float) $cost;
     }
 
     /**

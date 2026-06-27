@@ -1,7 +1,7 @@
 @extends('frontend.layout')
 
-@section('title', 'تسجيل جديد - ' . site('store_name'))
-@section('description', 'أنشئ حساباً جديداً في ' . site('store_name'))
+@section('title', __t('auth.register.title') . ' - ' . site('store_name'))
+@section('description', __t('auth.register.description') . ' ' . site('store_name'))
 
 @section('content')
 @php
@@ -17,8 +17,8 @@
                     <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
                         <span class="material-symbols-outlined text-2xl">person_add</span>
                     </div>
-                    <h1 class="text-2xl font-extrabold mb-1">إنشاء حساب جديد</h1>
-                    <p class="text-white/90 text-sm">انضم إلينا واستمتع بتجربة تسوق فريدة</p>
+                    <h1 class="text-2xl font-extrabold mb-1">{{ __t('auth.register.heading') }}</h1>
+                    <p class="text-white/90 text-sm">{{ __t('auth.register.subtitle') }}</p>
                 </div>
 
                 <div class="card-body p-6 md:p-8">
@@ -37,10 +37,10 @@
                         @csrf
 
                         <div>
-                            <label class="form-label">الاسم الكامل <span class="text-rose-500">*</span></label>
+                            <label class="form-label">{{ __t('auth.register.full_name') }} <span class="text-rose-500">*</span></label>
                             <div class="relative">
                                 <input type="text" name="name" value="{{ old('name') }}" required
-                                       placeholder="مثال: محمد عبدالله"
+                                       placeholder="{{ __t('auth.register.full_name_placeholder') }}"
                                        class="form-input pl-11 @error('name') form-input-error @enderror">
                                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">person</span>
                             </div>
@@ -48,7 +48,7 @@
                         </div>
 
                         <div>
-                            <label class="form-label">البريد الإلكتروني <span class="text-rose-500">*</span></label>
+                            <label class="form-label">{{ __t('auth.register.email') }} <span class="text-rose-500">*</span></label>
                             <div class="relative">
                                 <input type="email" name="email" value="{{ old('email') }}" required
                                        placeholder="example@email.com"
@@ -61,7 +61,7 @@
 
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="form-label">الدولة <span class="text-rose-500">*</span></label>
+                                <label class="form-label">{{ __t('auth.register.country') }} <span class="text-rose-500">*</span></label>
                                 <div class="relative">
                                     <select name="country_code" id="country_code" required
                                             onchange="updateStates(this.value)"
@@ -79,10 +79,10 @@
                             </div>
 
                             <div>
-                                <label class="form-label">الولاية / المحافظة</label>
+                                <label class="form-label">{{ __t('auth.register.state') }}</label>
                                 <div class="relative">
                                     <select name="state_code" id="state_code" class="form-input pl-11 appearance-none">
-                                        <option value="">— اختر ولايتك —</option>
+                                        <option value="">{{ __t('auth.register.state_placeholder') }}</option>
                                         @foreach($countries[$defaultCountry]['states'] ?? [] as $code => $name)
                                             <option value="{{ $code }}" {{ old('state_code') == $code ? 'selected' : '' }}>{{ $name }}</option>
                                         @endforeach
@@ -93,7 +93,7 @@
                         </div>
 
                         <div>
-                            <label class="form-label">رقم الهاتف <span class="text-rose-500">*</span></label>
+                                <label class="form-label">{{ __t('auth.register.phone') }} <span class="text-rose-500">*</span></label>
                             <div class="flex gap-2" dir="ltr">
                                 <input type="text" id="dial_code" value="{{ $countries[$defaultCountry]['dial_code'] ?? '' }}"
                                        readonly
@@ -102,13 +102,13 @@
                                        placeholder="5XXXXXXXX"
                                        class="flex-1 form-input text-right @error('phone') form-input-error @enderror">
                             </div>
-                            <p class="form-help"><span class="material-symbols-outlined text-xs ml-1">info</span>أدخل الرقم بدون رمز الدولة</p>
+                            <p class="form-help"><span class="material-symbols-outlined text-xs ml-1">info</span>{{ __t('auth.register.phone_help') }}</p>
                             @error('phone')<p class="form-error">{{ $message }}</p>@enderror
                         </div>
 
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="form-label">كلمة المرور <span class="text-rose-500">*</span></label>
+                                <label class="form-label">{{ __t('auth.register.password') }} <span class="text-rose-500">*</span></label>
                                 <div class="relative">
                                     <input type="password" name="password" required minlength="6"
                                            placeholder="••••••••"
@@ -120,7 +120,7 @@
                             </div>
 
                             <div>
-                                <label class="form-label">تأكيد كلمة المرور <span class="text-rose-500">*</span></label>
+                                <label class="form-label">{{ __t('auth.register.password_confirmation') }} <span class="text-rose-500">*</span></label>
                                 <div class="relative">
                                     <input type="password" name="password_confirmation" required
                                            placeholder="••••••••"
@@ -133,7 +133,7 @@
 
                         <button type="submit" class="btn-primary btn-block btn-lg mt-2 bg-gradient-to-l from-accent-500 to-pink-500 hover:from-accent-600 hover:to-pink-600">
                             <span class="material-symbols-outlined">person_add</span>
-                            إنشاء حساب
+                            {{ __t('auth.register.submit') }}
                         </button>
                     </form>
 
@@ -142,14 +142,14 @@
                             <div class="w-full border-t border-gray-200"></div>
                         </div>
                         <div class="relative flex justify-center text-xs">
-                            <span class="bg-white px-3 text-gray-500">أو</span>
+                            <span class="bg-white px-3 text-gray-500">{{ __t('auth.register.or') }}</span>
                         </div>
                     </div>
 
                     <p class="text-center text-sm text-gray-600">
-                        لديك حساب بالفعل؟
+                        {{ __t('auth.register.has_account') }}
                         <a href="{{ route('login') }}" class="text-brand-600 font-bold hover:underline">
-                            سجل دخولك
+                            {{ __t('auth.register.login') }}
                         </a>
                     </p>
                 </div>
@@ -170,7 +170,7 @@ function updateStates(countryCode) {
     const info = countriesData[countryCode];
     if (!info) return;
     dialEl.value = info.dial_code;
-    stateEl.innerHTML = '<option value="">— اختر ولايتك —</option>';
+    stateEl.innerHTML = '<option value="">' + __t('auth.register.state_placeholder') + '</option>';
     if (info.states) {
         for (const [code, name] of Object.entries(info.states)) {
             const opt = document.createElement('option');

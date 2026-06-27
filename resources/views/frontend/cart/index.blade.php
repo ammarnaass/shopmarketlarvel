@@ -1,6 +1,6 @@
 @extends('frontend.layout')
 
-@section('title', 'سلة التسوق')
+@section('title', __t('cart.page_title'))
 
 @section('content')
 @php
@@ -53,8 +53,8 @@
 
     <h1 class="heading-2 mb-2 flex items-center gap-3">
         <span class="material-symbols-outlined text-brand-600">shopping_cart</span>
-        سلة التسوق
-        <span class="text-base font-normal text-gray-500" x-text="'(' + $store.cart.count + ' منتج)'"></span>
+        {{ __t('cart.title') }}
+        <span class="text-base font-normal text-gray-500" x-text="'(' + $store.cart.count + ' ' + __t('cart.items_count') + ')'"></span>
     </h1>
 
     {{-- Empty state --}}
@@ -64,10 +64,10 @@
                 <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-brand-100 to-accent-100 flex items-center justify-center animate-bounce-slow">
                     <span class="material-symbols-outlined text-5xl text-brand-500">shopping_cart</span>
                 </div>
-                <h2 class="heading-3 mb-2">سلة التسوق فارغة</h2>
-                <p class="text-gray-500 mb-6">لم تقم بإضافة أي منتجات بعد</p>
+                <h2 class="heading-3 mb-2">{{ __t('cart.empty') }}</h2>
+                <p class="text-gray-500 mb-6">{{ __t('cart.empty_desc') }}</p>
                 <a href="{{ route('shop.index') }}" class="btn-primary btn-lg inline-flex">
-                    <span class="material-symbols-outlined">shopping_cart</span> تسوق الآن
+                    <span class="material-symbols-outlined">shopping_cart</span> {{ __t('cart.start_shopping') }}
                 </a>
             </div>
         </div>
@@ -144,7 +144,7 @@
                                     {{-- Remove --}}
                                     <button @click="$store.cart.remove(item.id)"
                                             class="btn-icon text-red-500 hover:bg-red-50"
-                                            title="حذف">
+                                            title="{{ __t('cart.remove') }}">
                                         <span class="material-symbols-outlined">delete</span>
                                     </button>
                                 </div>
@@ -156,11 +156,11 @@
                 {{-- Clear cart --}}
                 <div class="flex justify-between items-center pt-2">
                     <a href="{{ route('shop.index') }}" class="btn btn-ghost text-sm">
-                        <span class="material-symbols-outlined">arrow_forward</span> متابعة التسوق
+                        <span class="material-symbols-outlined">arrow_forward</span> {{ __t('cart.continue_shopping') }}
                     </a>
                     <button @click="$store.cart.clear()"
                             class="text-sm text-red-500 hover:text-red-700 hover:underline flex items-center gap-1.5">
-                        <span class="material-symbols-outlined">delete</span> إفراغ السلة
+                        <span class="material-symbols-outlined">delete</span> {{ __t('cart.clear_cart') }}
                     </button>
                 </div>
             </div>
@@ -171,7 +171,7 @@
                     <div class="card-header">
                         <h3 class="font-bold text-lg flex items-center gap-2">
                             <span class="material-symbols-outlined text-brand-600">receipt</span>
-                            ملخص الطلب
+                            {{ __t('cart.summary') }}
                         </h3>
                     </div>
 
@@ -182,11 +182,11 @@
                                 <span class="material-symbols-outlined text-green-500">local_offer</span>
                                 <div class="flex-1">
                                     <p class="text-sm font-semibold" x-text="$store.cart.coupon.code"></p>
-                                    <p class="text-xs" x-text="$store.cart.coupon.description || ('خصم ' + $store.cart.discount)"></p>
+                                    <p class="text-xs" x-text="$store.cart.coupon.description || ('{{ __t('cart.discount') }} ' + $store.cart.discount)"></p>
                                 </div>
                                 <button @click="$store.cart.removeCoupon()"
                                         class="btn-icon text-red-500 hover:bg-red-50"
-                                        title="إزالة الكوبون">
+                                        title="{{ __t('cart.coupon_removed') }}">
                                     <span class="material-symbols-outlined">close</span>
                                 </button>
                             </div>
@@ -196,19 +196,19 @@
                         <template x-if="!$store.cart.coupon">
                             <form @submit.prevent="$store.cart.applyCoupon(couponCode); couponCode = ''" class="space-y-2">
                                 <label class="form-label">
-                                    <span class="material-symbols-outlined ml-1 text-brand-600">local_offer</span> كود الخصم
+                                    <span class="material-symbols-outlined ml-1 text-brand-600">local_offer</span> {{ __t('cart.coupon_code') }}
                                 </label>
                                 <div class="flex gap-2">
                                     <input type="text"
                                            x-model="couponCode"
-                                           placeholder="أدخل الكود"
+                                           placeholder="{{ __t('cart.coupon_placeholder') }}"
                                            class="form-input flex-1"
                                            :disabled="$store.cart.loading">
                                     <button type="submit"
                                             class="btn-primary"
                                             :disabled="$store.cart.loading || !couponCode">
                                         <span x-show="$store.cart.loading" class="material-symbols-outlined animate-spin">sync</span>
-                                        <span x-show="!$store.cart.loading">تطبيق</span>
+                                        <span x-show="!$store.cart.loading">{{ __t('cart.apply_coupon') }}</span>
                                     </button>
                                 </div>
                             </form>
@@ -219,18 +219,18 @@
                         {{-- Breakdown --}}
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between text-gray-600">
-                                <span>المجموع الفرعي</span>
+                                <span>{{ __t('cart.subtotal') }}</span>
                                 <span class="font-semibold" x-text="$store.cart.formattedSubtotal"></span>
                             </div>
                             <template x-if="$store.cart.discount > 0">
                                 <div class="flex justify-between text-green-600">
-                                    <span>الخصم</span>
+                                    <span>{{ __t('cart.discount') }}</span>
                                     <span class="font-semibold" x-text="'- ' + $store.cart._money($store.cart.discount)"></span>
                                 </div>
                             </template>
                             <div class="flex justify-between text-gray-600">
-                                <span>الشحن</span>
-                                <span class="text-xs text-gray-400">يُحسب عند الطلب</span>
+                                <span>{{ __t('cart.shipping') }}</span>
+                                <span class="text-xs text-gray-400">{{ __t('cart.shipping_calculated') }}</span>
                             </div>
                         </div>
 
@@ -238,24 +238,24 @@
 
                         {{-- Total --}}
                         <div class="flex justify-between items-center">
-                            <span class="font-bold text-lg">الإجمالي</span>
+                            <span class="font-bold text-lg">{{ __t('cart.total') }}</span>
                             <span class="font-extrabold text-2xl gradient-text" x-text="$store.cart.formattedTotal"></span>
                         </div>
 
                         <a href="{{ route('checkout.index') }}" class="btn-primary btn-block btn-lg">
                             <span class="material-symbols-outlined">credit_card</span>
-                            إتمام الطلب
+                            {{ __t('cart.proceed_to_checkout') }}
                         </a>
 
                         {{-- Trust badges --}}
                         <div class="grid grid-cols-2 gap-2 pt-3 text-xs">
                             <div class="flex items-center gap-1.5 text-gray-500">
                                 <span class="material-symbols-outlined text-green-500">shield</span>
-                                <span>دفع آمن</span>
+                                <span>{{ __t('cart.secure_payment') }}</span>
                             </div>
                             <div class="flex items-center gap-1.5 text-gray-500">
                                 <span class="material-symbols-outlined text-brand-500">local_shipping</span>
-                                <span>شحن سريع</span>
+                                <span>{{ __t('cart.fast_shipping') }}</span>
                             </div>
                         </div>
                     </div>

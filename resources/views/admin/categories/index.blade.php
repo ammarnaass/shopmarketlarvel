@@ -1,16 +1,16 @@
 @extends('admin.layout')
 
-@section('title', 'التصنيفات')
+@section('title', __t('admin.categories.title'))
 
 @section('content')
 <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-bold">التصنيفات</h1>
-        <p class="text-on-surface-variant text-sm mt-1">إدارة تصنيفات المنتجات</p>
+        <h1 class="text-3xl font-bold">{{ __t('admin.categories.title') }}</h1>
+        <p class="text-on-surface-variant text-sm mt-1">{{ __t('admin.categories.description') }}</p>
     </div>
     <a href="{{ route('admin.categories.create') }}" class="bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2">
         <span class="material-symbols-outlined">add</span>
-        إضافة تصنيف
+        {{ __t('admin.categories.add_new') }}
     </a>
 </div>
 
@@ -20,12 +20,12 @@
             <thead class="bg-surface-container-low text-on-surface-variant text-xs">
                 <tr>
                     <th class="px-4 py-3 text-right">#</th>
-                    <th class="px-4 py-3 text-right">الاسم</th>
-                    <th class="px-4 py-3 text-right">التصنيف الأب</th>
-                    <th class="px-4 py-3 text-right">الترتيب</th>
-                    <th class="px-4 py-3 text-right">المنتجات</th>
-                    <th class="px-4 py-3 text-right">الحالة</th>
-                    <th class="px-4 py-3 text-right">إجراءات</th>
+                    <th class="px-4 py-3 text-right">{{ __t('admin.categories.name') }}</th>
+                    <th class="px-4 py-3 text-right">{{ __t('admin.categories.parent') }}</th>
+                    <th class="px-4 py-3 text-right">{{ __t('admin.categories.order') }}</th>
+                    <th class="px-4 py-3 text-right">{{ __t('admin.categories.products_count') }}</th>
+                    <th class="px-4 py-3 text-right">{{ __t('common.status') }}</th>
+                    <th class="px-4 py-3 text-right">{{ __t('common.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,7 +55,7 @@
                             @if($cat->parent)
                                 <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-xs">{{ $cat->parent->name }}</span>
                             @else
-                                <span class="text-gray-400">— رئيسي —</span>
+                                <span class="text-gray-400">{{ __t('admin.categories.none') }}</span>
                             @endif
                         </td>
                         <td class="px-4 py-3">{{ $cat->order ?? 0 }}</td>
@@ -66,18 +66,18 @@
                         </td>
                         <td class="px-4 py-3">
                             <span class="px-2 py-1 rounded text-xs {{ $cat->status === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-700' }}">
-                                {{ $cat->status === 'active' ? 'نشط' : 'غير نشط' }}
+                                {{ $cat->status === 'active' ? __t('common.active') : __t('common.inactive') }}
                             </span>
                         </td>
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-2">
-                                <a href="{{ route('admin.categories.edit', $cat) }}" class="text-green-600 hover:text-green-800" title="تعديل">
+                                <a href="{{ route('admin.categories.edit', $cat) }}" class="text-green-600 hover:text-green-800" title="{{ __t('common.edit') }}">
                                     <span class="material-symbols-outlined">edit</span>
                                 </a>
-                                <form action="{{ route('admin.categories.destroy', $cat) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا التصنيف؟')">
+                                <form action="{{ route('admin.categories.destroy', $cat) }}" method="POST" class="inline" onsubmit="return confirm('{{ __t('common.confirm_delete') }}')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800" title="حذف">
+                                    <button type="submit" class="text-red-600 hover:text-red-800" title="{{ __t('common.delete') }}">
                                         <span class="material-symbols-outlined">delete</span>
                                     </button>
                                 </form>
@@ -88,8 +88,8 @@
                     <tr>
                         <td colspan="7" class="px-4 py-12 text-center text-on-surface-variant">
                             <span class="material-symbols-outlined text-4xl text-gray-300 mb-3">label</span>
-                            <p>لا توجد تصنيفات</p>
-                            <a href="{{ route('admin.categories.create') }}" class="text-primary hover:underline text-sm mt-2 inline-block">إضافة أول تصنيف</a>
+                            <p>{{ __t('admin.categories.no_categories') }}</p>
+                            <a href="{{ route('admin.categories.create') }}" class="text-primary hover:underline text-sm mt-2 inline-block">{{ __t('admin.categories.add_new') }}</a>
                         </td>
                     </tr>
                 @endforelse

@@ -1,12 +1,12 @@
 @extends('admin.layout')
 
-@section('title', 'تعديل ' . $coupon->code)
+@section('title', __t('admin.coupons.edit_title') . ' ' . $coupon->code)
 
 @section('content')
 <div class="mb-6">
-    <h1 class="text-3xl font-bold">تعديل الكوبون</h1>
+    <h1 class="text-3xl font-bold">{{ __t('admin.coupons.edit_coupon') }}</h1>
     <p class="text-on-surface-variant text-sm mt-1">
-        <a href="{{ route('admin.coupons.index') }}" class="text-primary hover:underline">الكوبونات</a>
+        <a href="{{ route('admin.coupons.index') }}" class="text-primary hover:underline">{{ __t('admin.coupons.page_title') }}</a>
         <span class="mx-1">/</span>
         <span class="font-mono">{{ $coupon->code }}</span>
     </p>
@@ -16,58 +16,58 @@
     @csrf
     @method('PUT')
     <div class="bg-surface-container-lowest rounded-xl shadow-sm p-5 max-w-3xl">
-        <h2 class="font-bold text-lg mb-4"><span class="material-symbols-outlined text-primary ml-2">confirmation_number</span>معلومات الكوبون</h2>
+        <h2 class="font-bold text-lg mb-4"><span class="material-symbols-outlined text-primary ml-2">confirmation_number</span>{{ __t('admin.coupons.coupon_info') }}</h2>
 
         <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg mb-4 text-sm">
             <span class="material-symbols-outlined text-primary ml-1">info</span>
-            تم استخدام هذا الكوبون <strong>{{ $coupon->used_count }}</strong> مرة
+            {{ __t('admin.coupons.used_count', ['count' => $coupon->used_count]) }}
         </div>
 
         <div class="grid md:grid-cols-2 gap-4">
             <div>
-                <label class="block text-sm font-semibold mb-1">كود الكوبون <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.coupons.code') }} <span class="text-red-500">*</span></label>
                 <input type="text" name="code" value="{{ old('code', $coupon->code) }}" required style="text-transform: uppercase" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 font-mono @error('code') border-red-500 @enderror">
                 @error('code')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold mb-1">النوع <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.coupons.type') }} <span class="text-red-500">*</span></label>
                 <select name="type" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('type') border-red-500 @enderror">
-                    <option value="fixed" {{ old('type', $coupon->type) === 'fixed' ? 'selected' : '' }}>مبلغ ثابت</option>
-                    <option value="percent" {{ old('type', $coupon->type) === 'percent' ? 'selected' : '' }}>نسبة مئوية %</option>
+                    <option value="fixed" {{ old('type', $coupon->type) === 'fixed' ? 'selected' : '' }}>{{ __t('admin.coupons.fixed_amount') }}</option>
+                    <option value="percent" {{ old('type', $coupon->type) === 'percent' ? 'selected' : '' }}>{{ __t('admin.coupons.percent') }}</option>
                 </select>
                 @error('type')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold mb-1">قيمة الخصم <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.coupons.discount_value') }} <span class="text-red-500">*</span></label>
                 <input type="number" name="value" value="{{ old('value', $coupon->value) }}" required min="0" step="0.01" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('value') border-red-500 @enderror">
                 @error('value')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold mb-1">الحد الأدنى للطلب</label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.coupons.min_order') }}</label>
                 <input type="number" name="min_order" value="{{ old('min_order', $coupon->min_order) }}" min="0" step="0.01" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('min_order') border-red-500 @enderror">
                 @error('min_order')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold mb-1">الحد الأقصى للخصم</label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.coupons.max_discount') }}</label>
                 <input type="number" name="max_discount" value="{{ old('max_discount', $coupon->max_discount) }}" min="0" step="0.01" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('max_discount') border-red-500 @enderror">
                 @error('max_discount')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold mb-1">حد الاستخدام</label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.coupons.usage_limit') }}</label>
                 <input type="number" name="usage_limit" value="{{ old('usage_limit', $coupon->usage_limit) }}" min="1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('usage_limit') border-red-500 @enderror">
-                <p class="text-xs text-on-surface-variant mt-1">اتركه فارغاً لاستخدام غير محدود</p>
+                <p class="text-xs text-on-surface-variant mt-1">{{ __t('admin.coupons.unlimited_hint') }}</p>
                 @error('usage_limit')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold mb-1">تاريخ الانتهاء</label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.coupons.expiry_date') }}</label>
                 <input type="date" name="expiry_date" value="{{ old('expiry_date', $coupon->expiry_date ? \Carbon\Carbon::parse($coupon->expiry_date)->format('Y-m-d') : '') }}" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('expiry_date') border-red-500 @enderror">
                 @error('expiry_date')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold mb-1">الحالة <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.coupons.status') }} <span class="text-red-500">*</span></label>
                 <select name="status" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('status') border-red-500 @enderror">
-                    <option value="active" {{ old('status', $coupon->status) === 'active' ? 'selected' : '' }}>نشط</option>
-                    <option value="inactive" {{ old('status', $coupon->status) === 'inactive' ? 'selected' : '' }}>غير نشط</option>
+                    <option value="active" {{ old('status', $coupon->status) === 'active' ? 'selected' : '' }}>{{ __t('admin.common.active') }}</option>
+                    <option value="inactive" {{ old('status', $coupon->status) === 'inactive' ? 'selected' : '' }}>{{ __t('admin.common.inactive') }}</option>
                 </select>
                 @error('status')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
@@ -76,9 +76,9 @@
 
     <div class="mt-6 flex items-center gap-3">
         <button type="submit" class="bg-primary hover:bg-primary text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined">save</span>تحديث الكوبون
+            <span class="material-symbols-outlined">save</span>{{ __t('admin.coupons.update') }}
         </button>
-        <a href="{{ route('admin.coupons.index') }}" class="bg-gray-200 hover:bg-gray-300 text-on-surface px-6 py-2.5 rounded-lg font-semibold">إلغاء</a>
+        <a href="{{ route('admin.coupons.index') }}" class="bg-gray-200 hover:bg-gray-300 text-on-surface px-6 py-2.5 rounded-lg font-semibold">{{ __t('admin.common.cancel') }}</a>
     </div>
 </form>
 @endsection

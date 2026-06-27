@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -74,6 +75,29 @@ class CurrencyController extends Controller
 
         return redirect()->route('admin.currencies.index')
             ->with('success', 'تم تحديث إعدادات العملة بنجاح (' . $data['currency'] . ' ' . $data['currency_symbol'] . '). تم تحديث ملف .env ومسح الكاش.');
+    }
+
+    public function updateRates(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'rates' => 'required|array',
+            'rates.*' => 'nullable|numeric|min:0|max:999999',
+        ]);
+
+        // Store all rates as a single JSON setting
+        Setting::set('exchange_rates', json_encode($data['rates'], JSON_UNESCAPED_UNICODE), 'currencies');
+
+        // Also update config in-memory so the current request sees the changes
+        $rates = [];
+        foreach ($data['rates'] as $country => $rate) {
+            if (is_numeric($rate) && (float) $rate > 0) {
+                $rates[$country] = (float) $rate;
+            }
+        }
+        Config::set('ecommerce.exchange_rates', $rates);
+
+        return redirect()->route('admin.currencies.index')
+            ->with('success', 'تم تحديث أسعار الصرف بنجاح لـ ' . count($rates) . ' دولة.');
     }
 
     /**

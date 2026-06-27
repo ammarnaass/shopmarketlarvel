@@ -27,11 +27,12 @@ document.addEventListener('alpine:init', () => {
         },
 
         _money(value) {
+            const rate = window.__CONVERSION_RATE__ || 1;
             const symbol = window.__CURRENCY_SYMBOL__ || 'ر.س';
             return new Intl.NumberFormat('ar-SA', {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 2,
-            }).format(value) + ' ' + symbol;
+            }).format(value * rate) + ' ' + symbol;
         },
 
         async add(productId, quantity = 1, options = {}) {

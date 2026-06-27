@@ -1,7 +1,7 @@
 @extends('frontend.layout')
 
-@section('title', 'تم استلام طلبك - ' . site('store_name'))
-@section('description', 'شكراً لطلبك! تم استلام طلبك بنجاح')
+@section('title', __t('instant.thankyou_title') . ' - ' . site('store_name'))
+@section('description', __t('instant.thankyou_meta_description'))
 
 @section('content')
 @php
@@ -31,8 +31,8 @@
         <div class="w-24 h-24 mx-auto mb-5 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center border-2 border-white/30 shadow-2xl animate-bounce-slow">
             <span class="material-symbols-outlined text-5xl text-white">check</span>
         </div>
-        <h1 class="text-3xl md:text-5xl font-extrabold mb-3 text-balance">تم استلام طلبك بنجاح!</h1>
-        <p class="text-white/90 text-lg max-w-xl mx-auto text-pretty">شكراً لتسوقك معنا. سنتواصل معك قريباً لتأكيد الطلب.</p>
+        <h1 class="text-3xl md:text-5xl font-extrabold mb-3 text-balance">{{ __t('instant.thankyou_title') }}</h1>
+        <p class="text-white/90 text-lg max-w-xl mx-auto text-pretty">{{ __t('instant.thankyou_description') }}</p>
     </div>
 </section>
 
@@ -41,11 +41,11 @@
         {{-- Order number --}}
         <div class="card overflow-hidden animate-fade-up">
             <div class="bg-gradient-to-l from-emerald-50 to-teal-50 p-6 text-center">
-                <p class="text-sm text-gray-600 mb-1">رقم الطلب</p>
+                <p class="text-sm text-gray-600 mb-1">{{ __t('instant.order_number') }}</p>
                 <p class="font-mono font-extrabold text-2xl text-gray-800 mb-2">{{ $order->order_number }}</p>
                 <a href="{{ route('track') }}" class="text-sm text-emerald-700 hover:underline inline-flex items-center gap-1">
                     <span class="material-symbols-outlined text-xs">location_on</span>
-                    تتبع طلبك
+                    {{ __t('track.title') }}
                 </a>
             </div>
         </div>
@@ -55,7 +55,7 @@
             <div class="card-header">
                 <h2 class="font-bold text-lg flex items-center gap-2">
                     <span class="material-symbols-outlined text-brand-600">category</span>
-                    تفاصيل الطلب
+                    {{ __t('instant.order_details') }}
                 </h2>
             </div>
             <div class="card-body p-5">
@@ -78,8 +78,8 @@
                                 @endif
                             </div>
                             <div class="text-left flex-shrink-0">
-                                <div class="text-sm text-gray-600">{{ $item->quantity }} × {{ number_format($item->price, 0) }}</div>
-                                <div class="font-bold text-gray-800">{{ number_format($item->total, 0) }} {{ $countrySymbol }}</div>
+                                <div class="text-sm text-gray-600">{{ $item->quantity }} × {{ number_format(convertPrice($item->price), 0) }}</div>
+                                <div class="font-bold text-gray-800">{{ number_format(convertPrice($item->total), 0) }} {{ $countrySymbol }}</div>
                             </div>
                         </div>
                     @endforeach
@@ -87,23 +87,23 @@
 
                 <div class="border-t border-gray-100 pt-4 mt-4 space-y-2 text-sm">
                     <div class="flex justify-between text-gray-600">
-                        <span>المجموع الفرعي</span>
-                        <span class="font-semibold">{{ number_format($order->subtotal, 0) }} {{ $countrySymbol }}</span>
+                        <span>{{ __t('instant.subtotal') }}</span>
+                        <span class="font-semibold">{{ number_format(convertPrice($order->subtotal), 0) }} {{ $countrySymbol }}</span>
                     </div>
                     <div class="flex justify-between text-gray-600">
-                        <span>الشحن</span>
-                        <span class="font-semibold">{{ number_format($order->shipping_cost, 0) }} {{ $countrySymbol }}</span>
+                        <span>{{ __t('instant.shipping') }}</span>
+                        <span class="font-semibold">{{ number_format(convertPrice($order->shipping_cost), 0) }} {{ $countrySymbol }}</span>
                     </div>
                     @if($order->discount > 0)
                         <div class="flex justify-between text-emerald-600">
-                            <span><span class="material-symbols-outlined text-xs ml-1">local_offer</span>الخصم</span>
-                            <span class="font-semibold">-{{ number_format($order->discount, 0) }} {{ $countrySymbol }}</span>
+                            <span><span class="material-symbols-outlined text-xs ml-1">local_offer</span>{{ __t('instant.discount') }}</span>
+                            <span class="font-semibold">-{{ number_format(convertPrice($order->discount), 0) }} {{ $countrySymbol }}</span>
                         </div>
                     @endif
                     <div class="border-t border-gray-100 pt-3 mt-3 flex justify-between items-baseline">
-                        <span class="font-bold text-gray-800 text-base">الإجمالي</span>
+                        <span class="font-bold text-gray-800 text-base">{{ __t('instant.total') }}</span>
                         <span class="font-extrabold text-2xl bg-gradient-to-l from-emerald-600 to-teal-500 bg-clip-text text-transparent">
-                            {{ number_format($order->grand_total, 0) }} {{ $countrySymbol }}
+                            {{ number_format(convertPrice($order->grand_total), 0) }} {{ $countrySymbol }}
                         </span>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                 <div class="card-body p-5">
                     <h3 class="font-bold text-lg mb-3 flex items-center gap-2">
                         <span class="material-symbols-outlined text-brand-600">location_on</span>
-                        عنوان التوصيل
+                        {{ __t('instant.delivery_address') }}
                     </h3>
                     <div class="bg-gradient-to-l from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4">
                         <div class="font-bold text-gray-800">{{ $order->shippingAddress->name }}</div>
@@ -138,28 +138,28 @@
             <div class="card-body p-5">
                 <h3 class="font-bold text-base mb-3 flex items-center gap-2">
                     <span class="material-symbols-outlined text-brand-600">info</span>
-                    الخطوات التالية
+                    {{ __t('instant.next_steps') }}
                 </h3>
                 <ol class="space-y-3">
                     <li class="flex items-start gap-3">
                         <span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold flex-shrink-0">1</span>
                         <div>
-                            <p class="font-semibold text-gray-800 text-sm">تأكيد الطلب</p>
-                            <p class="text-xs text-gray-500">سنتواصل معك خلال 24 ساعة لتأكيد الطلب</p>
+                            <p class="font-semibold text-gray-800 text-sm">{{ __t('instant.step_confirm_title') }}</p>
+                            <p class="text-xs text-gray-500">{{ __t('instant.step_confirm_desc') }}</p>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
                         <span class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold flex-shrink-0">2</span>
                         <div>
-                            <p class="font-semibold text-gray-800 text-sm">التجهيز والشحن</p>
-                            <p class="text-xs text-gray-500">نجهز طلبك ونشحنه في أسرع وقت</p>
+                            <p class="font-semibold text-gray-800 text-sm">{{ __t('instant.step_process_title') }}</p>
+                            <p class="text-xs text-gray-500">{{ __t('instant.step_process_desc') }}</p>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
                         <span class="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-sm font-bold flex-shrink-0">3</span>
                         <div>
-                            <p class="font-semibold text-gray-800 text-sm">التوصيل</p>
-                            <p class="text-xs text-gray-500">سيصلك طلبك في الموعد المحدد</p>
+                            <p class="font-semibold text-gray-800 text-sm">{{ __t('instant.step_delivery_title') }}</p>
+                            <p class="text-xs text-gray-500">{{ __t('instant.step_delivery_desc') }}</p>
                         </div>
                     </li>
                 </ol>
@@ -170,11 +170,11 @@
         <div class="flex flex-col sm:flex-row gap-3 pt-2 animate-fade-up">
             <a href="{{ route('home') }}" class="btn btn-secondary btn-lg flex-1">
                 <span class="material-symbols-outlined">home</span>
-                العودة للرئيسية
+                {{ __t('instant.back_home') }}
             </a>
             <a href="{{ route('shop.index') }}" class="btn-primary btn-lg flex-1">
                 <span class="material-symbols-outlined">shopping_bag</span>
-                متابعة التسوق
+                {{ __t('instant.continue_shopping') }}
             </a>
         </div>
     </div>

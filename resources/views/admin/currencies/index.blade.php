@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'إدارة العملات')
-@section('page_title', 'إدارة العملات')
+@section('title', __t('admin.currencies.title'))
+@section('page_title', __t('admin.currencies.title'))
 
 @section('content')
 @php
@@ -13,16 +13,16 @@
 {{-- Breadcrumbs --}}
 <div class="mb-6">
     <nav class="flex items-center gap-2 text-outline font-label-sm mb-3">
-        <a href="{{ route('admin.dashboard') }}" class="hover:text-primary transition-colors">الرئيسية</a>
+        <a href="{{ route('admin.dashboard') }}" class="hover:text-primary transition-colors">{{ __t('admin.currencies.dashboard') }}</a>
         <span class="material-symbols-outlined text-[16px]">chevron_left</span>
-        <a href="{{ route('admin.settings.index') }}" class="hover:text-primary transition-colors">إعدادات المتجر</a>
+        <a href="{{ route('admin.settings.index') }}" class="hover:text-primary transition-colors">{{ __t('admin.currencies.store_settings') }}</a>
         <span class="material-symbols-outlined text-[16px]">chevron_left</span>
-        <span class="text-primary font-bold">إدارة العملات</span>
+        <span class="text-primary font-bold">{{ __t('admin.currencies.title') }}</span>
     </nav>
     <div class="flex justify-between items-end">
         <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface font-bold">إدارة العملات</h2>
-            <p class="text-on-surface-variant font-body-sm mt-1">تكوين العملات المتاحة، أسعار الصرف، وخيارات العرض في متجرك.</p>
+            <h2 class="font-headline-md text-headline-md text-on-surface font-bold">{{ __t('admin.currencies.title') }}</h2>
+            <p class="text-on-surface-variant font-body-sm mt-1">{{ __t('admin.currencies.description') }}</p>
         </div>
     </div>
 </div>
@@ -32,7 +32,7 @@
     <div class="mb-6 bg-error-container/20 border border-error/30 text-on-error-container p-4 rounded-lg flex items-start gap-4">
         <span class="material-symbols-outlined text-error">error</span>
         <div>
-            <p class="font-semibold mb-1">يرجى تصحيح الأخطاء التالية:</p>
+            <p class="font-semibold mb-1">{{ __t('admin.currencies.fix_errors') }}</p>
             <ul class="text-sm list-disc list-inside space-y-0.5">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -48,67 +48,84 @@
     <div class="col-span-12 lg:col-span-8">
         <div class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm overflow-hidden">
             <div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
-                <h3 class="font-title-lg text-title-lg text-on-surface">العملات المفعلة</h3>
-                <button class="text-primary font-label-md hover:underline flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[18px]">sync</span>
-                    تحديث أسعار الصرف الآن
+                <h3 class="font-title-lg text-title-lg text-on-surface">{{ __t('admin.currencies.active_currencies') }}</h3>
+                <button disabled class="text-outline font-label-md flex items-center gap-1 opacity-60 cursor-not-allowed">
+                    <span class="material-symbols-outlined text-[18px]">sync_disabled</span>
+                    {{ __t('admin.currencies.update_rates_disabled') }}
                 </button>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-right">
-                    <thead>
-                        <tr class="bg-surface-container-low text-on-surface-variant font-label-sm border-b border-outline-variant">
-                            <th class="px-6 py-3 font-semibold">العملة</th>
-                            <th class="px-6 py-3 font-semibold">الرمز</th>
-                            <th class="px-6 py-3 font-semibold">سعر الصرف</th>
-                            <th class="px-6 py-3 font-semibold">الحالة</th>
-                            <th class="px-6 py-3 font-semibold">التحكم</th>
-                        </tr>
-                    </thead>
-                    <tbody class="font-body-sm">
-                        @foreach($currencies as $cur)
-                            <tr class="border-b border-outline-variant hover:bg-surface-container transition-colors {{ $cur['code'] === $storeCurrency ? 'bg-primary-fixed/20' : '' }}">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <span class="w-8 h-6 bg-surface-container-high rounded-sm flex items-center justify-center font-bold text-[10px]">{{ $cur['code'] }}</span>
-                                        <span class="font-medium {{ $cur['code'] === $storeCurrency ? 'text-primary' : '' }}">
-                                            {{ $cur['country_name'] }}
-                                            @if($cur['code'] === $storeCurrency)
-                                                <span class="text-primary-fixed-dim text-xs mr-1">(الأساسية)</span>
-                                            @endif
-                                        </span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-on-surface-variant font-bold">{{ $cur['symbol'] }}</td>
-                                <td class="px-6 py-4 font-mono">{{ number_format($cur['rate_to_usd'] ?? 1, 4) }}</td>
-                                <td class="px-6 py-4">
-                                    @if($cur['code'] === $storeCurrency)
-                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-[11px] font-bold uppercase">نشط</span>
-                                    @else
-                                        <span class="px-2 py-1 bg-outline-variant/30 text-outline rounded-full text-[11px] font-bold uppercase">معطل</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex gap-2">
-                                        <button class="text-primary hover:bg-primary-container/10 p-1 rounded transition-colors" title="تعديل">
-                                            <span class="material-symbols-outlined text-[20px]">edit</span>
-                                        </button>
-                                        @if($cur['code'] === $storeCurrency)
-                                            <button class="text-outline p-1 rounded transition-colors opacity-50 cursor-not-allowed" disabled>
-                                                <span class="material-symbols-outlined text-[20px]">delete</span>
-                                            </button>
-                                        @else
-                                            <button class="text-error hover:bg-error-container/10 p-1 rounded transition-colors" title="حذف">
-                                                <span class="material-symbols-outlined text-[20px]">delete</span>
-                                            </button>
-                                        @endif
-                                    </div>
-                                </td>
+            <form method="POST" action="{{ route('admin.currencies.rates.update') }}">
+                @csrf
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr class="bg-surface-container-low text-on-surface-variant font-label-sm border-b border-outline-variant">
+                                <th class="px-6 py-3 font-semibold">{{ __t('admin.currencies.currency') }}</th>
+                                <th class="px-6 py-3 font-semibold">{{ __t('admin.currencies.symbol') }}</th>
+                                <th class="px-6 py-3 font-semibold">{{ __t('admin.currencies.exchange_rate') }}</th>
+                                <th class="px-6 py-3 font-semibold">{{ __t('common.status') }}</th>
+                                <th class="px-6 py-3 font-semibold">{{ __t('common.actions') }}</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody class="font-body-sm">
+                            @foreach($currencies as $cur)
+                                @php
+                                    $curRate = rateForCountry($cur['country']);
+                                @endphp
+                                <tr class="border-b border-outline-variant hover:bg-surface-container transition-colors {{ $cur['code'] === $storeCurrency ? 'bg-primary-fixed/20' : '' }}">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-8 h-6 bg-surface-container-high rounded-sm flex items-center justify-center font-bold text-[10px]">{{ $cur['code'] }}</span>
+                                            <span class="font-medium {{ $cur['code'] === $storeCurrency ? 'text-primary' : '' }}">
+                                                {{ $cur['country_name'] }}
+                                                @if($cur['code'] === $storeCurrency)
+                                                    <span class="text-primary-fixed-dim text-xs mr-1">({{ __t('admin.currencies.default') }})</span>
+                                                @endif
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-on-surface-variant font-bold">{{ $cur['symbol'] }}</td>
+                                    <td class="px-6 py-4">
+                                        <input type="number" name="rates[{{ $cur['country'] }}]"
+                                               value="{{ number_format($curRate, 4, '.', '') }}"
+                                               step="0.0001" min="0.0001"
+                                               class="w-28 bg-surface-container border border-outline-variant px-2 py-1 rounded text-sm font-mono text-left focus:ring-2 focus:ring-primary outline-none">
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @if($cur['code'] === $storeCurrency)
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-[11px] font-bold uppercase">{{ __t('common.active') }}</span>
+                                        @else
+                                            <span class="px-2 py-1 bg-outline-variant/30 text-outline rounded-full text-[11px] font-bold uppercase">{{ __t('common.inactive') }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex gap-2">
+                                            <button type="button" class="text-primary hover:bg-primary-container/10 p-1 rounded transition-colors" title="{{ __t('common.edit') }}">
+                                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                                            </button>
+                                            @if($cur['code'] === $storeCurrency)
+                                                <button type="button" class="text-outline p-1 rounded transition-colors opacity-50 cursor-not-allowed" disabled>
+                                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                                </button>
+                                            @else
+                                                <button type="button" class="text-error hover:bg-error-container/10 p-1 rounded transition-colors" title="{{ __t('common.delete') }}">
+                                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="px-6 py-4 border-t border-outline-variant flex justify-start">
+                    <button type="submit" class="bg-primary hover:bg-on-primary-fixed-variant text-white font-label-md px-6 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-2 shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        {{ __t('admin.currencies.save_rates') }}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -118,15 +135,15 @@
         <div class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm p-6">
             <div class="flex items-center gap-2 mb-6 text-primary">
                 <span class="material-symbols-outlined">settings_suggest</span>
-                <h3 class="font-title-lg text-title-lg">إعدادات مخصصة</h3>
+                <h3 class="font-title-lg text-title-lg">{{ __t('admin.currencies.custom_settings') }}</h3>
             </div>
-            <p class="text-on-surface-variant font-body-sm mb-4">أدخل القيم يدوياً (لعملة غير مدرجة في الدول)</p>
+            <p class="text-on-surface-variant font-body-sm mb-4">{{ __t('admin.currencies.custom_settings_hint') }}</p>
 
             <form method="POST" action="{{ route('admin.currencies.update') }}" class="space-y-4">
                 @csrf
 
                 <div class="flex flex-col gap-1.5">
-                    <label class="font-label-md text-on-surface">الدولة الافتراضية <span class="text-error">*</span></label>
+                    <label class="font-label-md text-on-surface">{{ __t('admin.currencies.default_country') }} <span class="text-error">*</span></label>
                     <select name="default_country" required class="bg-surface-container-low border border-outline-variant p-2.5 rounded font-body-sm focus:ring-2 focus:ring-primary outline-none @error('default_country') border-error @enderror">
                         @php
                             $supported = config('ecommerce.countries');
@@ -137,37 +154,37 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="text-xs text-on-surface-variant mt-1">تستخدم لجلب العملة ورمز الاتصال تلقائياً</p>
+                    <p class="text-xs text-on-surface-variant mt-1">{{ __t('admin.currencies.default_country_hint') }}</p>
                 </div>
 
                 <div class="flex flex-col gap-1.5">
-                    <label class="font-label-md text-on-surface">كود العملة (ISO 4217) <span class="text-error">*</span></label>
+                    <label class="font-label-md text-on-surface">{{ __t('admin.currencies.currency_code') }} <span class="text-error">*</span></label>
                     <input type="text" name="currency" required maxlength="3" minlength="3"
                            value="{{ old('currency', $storeCurrency) }}"
                            placeholder="SDG, EGP, USD, EUR..."
                            class="bg-surface-container-low border border-outline-variant p-2.5 rounded font-body-sm focus:ring-2 focus:ring-primary outline-none font-mono uppercase @error('currency') border-error @enderror">
-                    <p class="text-xs text-on-surface-variant mt-1">3 أحرف مثل: SDG, EGP, USD</p>
+                    <p class="text-xs text-on-surface-variant mt-1">{{ __t('admin.currencies.currency_code_hint') }}</p>
                 </div>
 
                 <div class="flex flex-col gap-1.5">
-                    <label class="font-label-md text-on-surface">رمز العملة <span class="text-error">*</span></label>
+                    <label class="font-label-md text-on-surface">{{ __t('admin.currencies.currency_symbol_label') }} <span class="text-error">*</span></label>
                     <input type="text" name="currency_symbol" required maxlength="10"
                            value="{{ old('currency_symbol', $storeSymbol) }}"
-                           placeholder="ج.س, $, €, £..."
+                           placeholder="{{ __t('admin.currencies.symbol_placeholder') }}"
                            class="bg-surface-container-low border border-outline-variant p-2.5 rounded font-body-sm focus:ring-2 focus:ring-primary outline-none @error('currency_symbol') border-error @enderror">
-                    <p class="text-xs text-on-surface-variant mt-1">الرمز الذي يظهر بجانب الأسعار</p>
+                    <p class="text-xs text-on-surface-variant mt-1">{{ __t('admin.currencies.currency_symbol_hint') }}</p>
                 </div>
 
                 <div class="flex items-start gap-3 p-3 bg-primary-fixed border border-outline-variant/30 rounded-lg">
                     <span class="material-symbols-outlined text-[18px] text-primary mt-0.5">info</span>
                     <p class="text-xs text-on-primary-fixed-variant">
-                        سيتم تحديث ملف <code class="bg-surface-container-lowest px-1 rounded font-mono">.env</code> تلقائياً بـ <code class="bg-surface-container-lowest px-1 rounded font-mono">STORE_CURRENCY</code> و <code class="bg-surface-container-lowest px-1 rounded font-mono">STORE_CURRENCY_SYMBOL</code> و <code class="bg-surface-container-lowest px-1 rounded font-mono">STORE_DEFAULT_COUNTRY</code> ومسح الكاش.
+                        {{ __t('admin.currencies.env_note') }}
                     </p>
                 </div>
 
                 <button type="submit" class="w-full bg-primary hover:bg-on-primary-fixed-variant text-white font-label-md py-3 rounded-lg transition-all active:scale-95 flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined">save</span>
-                    حفظ الإعدادات
+                    {{ __t('admin.currencies.save_settings') }}
                 </button>
             </form>
         </div>
@@ -176,23 +193,23 @@
         <div class="bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm p-6 overflow-hidden relative">
             <div class="flex items-center gap-2 mb-4 text-tertiary">
                 <span class="material-symbols-outlined">auto_mode</span>
-                <h3 class="font-title-lg text-title-lg">تحديث تلقائي</h3>
+                <h3 class="font-title-lg text-title-lg">{{ __t('admin.currencies.auto_update') }}</h3>
             </div>
-            <p class="text-on-surface-variant font-body-sm mb-4">مزامنة أسعار الصرف تلقائياً كل 24 ساعة لضمان دقة الأسعار العالمية.</p>
+            <p class="text-on-surface-variant font-body-sm mb-4">{{ __t('admin.currencies.auto_update_hint') }}</p>
             <div class="flex items-center justify-between p-3 bg-tertiary-fixed rounded-lg mb-4">
-                <span class="font-label-md text-on-tertiary-fixed font-bold">الحالة: مفعل</span>
+                <span class="font-label-md text-on-tertiary-fixed font-bold">{{ __t('admin.currencies.status_label') }}: {{ __t('common.enabled') }}</span>
                 <div class="w-10 h-5 bg-tertiary rounded-full relative cursor-pointer">
                     <div class="absolute left-1 top-1 w-3 h-3 bg-white rounded-full translate-x-5 transition-transform"></div>
                 </div>
             </div>
             <div class="space-y-3">
                 <div class="flex flex-col gap-1">
-                    <label class="font-label-sm text-outline">مصدر البيانات (API)</label>
+                    <label class="font-label-sm text-outline">{{ __t('admin.currencies.api_source') }}</label>
                     <input class="bg-surface-container-highest border border-outline-variant p-2 rounded font-body-sm text-outline" disabled type="text" value="Fixer.io Standard Plan">
                 </div>
                 <div class="flex items-center gap-2 text-on-surface-variant">
                     <span class="material-symbols-outlined text-[18px]">history</span>
-                    <span class="font-label-sm">آخر تحديث: {{ now()->format('Y-m-d h:i A') }}</span>
+                    <span class="font-label-sm">{{ __t('admin.currencies.last_updated') }}: {{ now()->format('Y-m-d h:i A') }}</span>
                 </div>
             </div>
         </div>
@@ -204,19 +221,19 @@
     <div class="px-6 py-4 border-b border-outline-variant">
         <h3 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">table</span>
-            جدول العملات المدعومة
+            {{ __t('admin.currencies.supported_currencies') }}
         </h3>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-right">
             <thead>
                 <tr class="bg-surface-container-low text-on-surface-variant font-label-sm border-b border-outline-variant">
-                    <th class="px-6 py-3 font-semibold">الرمز</th>
-                    <th class="px-6 py-3 font-semibold">الكود</th>
-                    <th class="px-6 py-3 font-semibold">الدولة</th>
-                    <th class="px-6 py-3 font-semibold">رمز الاتصال</th>
-                    <th class="px-6 py-3 font-semibold">سعر الصرف (تقريبي)</th>
-                    <th class="px-6 py-3 font-semibold">الحالة</th>
+                    <th class="px-6 py-3 font-semibold">{{ __t('admin.currencies.symbol') }}</th>
+                    <th class="px-6 py-3 font-semibold">{{ __t('admin.currencies.code') }}</th>
+                    <th class="px-6 py-3 font-semibold">{{ __t('admin.currencies.country') }}</th>
+                    <th class="px-6 py-3 font-semibold">{{ __t('admin.currencies.dial_code') }}</th>
+                    <th class="px-6 py-3 font-semibold">{{ __t('admin.currencies.exchange_rate_approx') }}</th>
+                    <th class="px-6 py-3 font-semibold">{{ __t('common.status') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -230,14 +247,14 @@
                         <td class="px-6 py-4 font-mono font-bold">{{ $cur['code'] }}</td>
                         <td class="px-6 py-4">{{ $cur['country_name'] }} <span class="text-xs text-on-surface-variant">({{ $cur['country'] }})</span></td>
                         <td class="px-6 py-4 font-mono">{{ $cur['dial_code'] }}</td>
-                        <td class="px-6 py-4 text-xs text-on-surface-variant font-mono">1 USD ≈ {{ number_format($cur['rate_to_usd'] ?? 1, 2) }} {{ $cur['code'] }}</td>
+                        <td class="px-6 py-4 text-xs text-on-surface-variant font-mono">1 USD ≈ {{ number_format(rateForCountry($cur['country']), 4) }} {{ $cur['code'] }}</td>
                         <td class="px-6 py-4">
                             @if($cur['code'] === $storeCurrency)
                                 <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-[11px] font-bold flex items-center gap-0.5 w-fit">
-                                    <span class="material-symbols-outlined text-[12px]">check</span>الافتراضي
+                                    <span class="material-symbols-outlined text-[12px]">check</span>{{ __t('admin.currencies.default') }}
                                 </span>
                             @else
-                                <span class="bg-outline-variant/30 text-outline px-2 py-0.5 rounded text-[11px]">متاح</span>
+                                <span class="bg-outline-variant/30 text-outline px-2 py-0.5 rounded text-[11px]">{{ __t('admin.currencies.available') }}</span>
                             @endif
                         </td>
                     </tr>
@@ -251,36 +268,36 @@
 <div class="mt-6 bg-surface-container-lowest rounded-lg border border-outline-variant shadow-sm p-6">
     <h3 class="font-title-lg text-title-lg text-on-surface mb-4 flex items-center gap-2">
         <span class="material-symbols-outlined text-tertiary">help</span>
-        كيف يعمل نظام العملات؟
+        {{ __t('admin.currencies.how_it_works') }}
     </h3>
     <div class="grid md:grid-cols-2 gap-4">
         <div class="p-4 bg-primary-fixed border border-outline-variant/30 rounded-lg">
             <h4 class="font-bold text-primary mb-2 flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">store</span>
-                العملة الافتراضية
+                {{ __t('admin.currencies.default_currency') }}
             </h4>
-            <p class="text-sm text-on-surface-variant">العملة المعروضة للزوار عند دخولهم المتجر لأول مرة. تُخزَّن في <code class="bg-surface-container-lowest px-1 rounded font-mono">.env</code> كـ <code class="bg-surface-container-lowest px-1 rounded font-mono">STORE_CURRENCY</code>.</p>
+            <p class="text-sm text-on-surface-variant">{{ __t('admin.currencies.default_currency_desc') }}</p>
         </div>
         <div class="p-4 bg-secondary-fixed border border-outline-variant/30 rounded-lg">
             <h4 class="font-bold text-on-secondary-fixed-variant mb-2 flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">language</span>
-                تبديل العملة
+                {{ __t('admin.currencies.switch_currency') }}
             </h4>
-            <p class="text-sm text-on-surface-variant">الزوار يمكنهم تبديل العملة من القائمة في الـ header. التغيير يُحفظ في session ويُنعكس فوراً على كل الأسعار.</p>
+            <p class="text-sm text-on-surface-variant">{{ __t('admin.currencies.switch_currency_desc') }}</p>
         </div>
         <div class="p-4 bg-tertiary-fixed border border-outline-variant/30 rounded-lg">
             <h4 class="font-bold text-on-tertiary-fixed-variant mb-2 flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">calculate</span>
-                حساب الأسعار
+                {{ __t('admin.currencies.price_calculation') }}
             </h4>
-            <p class="text-sm text-on-surface-variant">الأسعار في الـ products تُخزَّن بالـ SDG (الجنيه السوداني). عند تبديل العملة، نعرض السعر بالرمز الجديد دون تحويل رقمي (يستخدم كـ display only).</p>
+            <p class="text-sm text-on-surface-variant">{{ __t('admin.currencies.price_calculation_desc') }}</p>
         </div>
         <div class="p-4 bg-primary-fixed-dim/30 border border-outline-variant/30 rounded-lg">
             <h4 class="font-bold text-on-primary-fixed-variant mb-2 flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">code</span>
-                إضافة عملة جديدة
+                {{ __t('admin.currencies.add_new_currency') }}
             </h4>
-            <p class="text-sm text-on-surface-variant">أضف الدولة في <code class="bg-surface-container-lowest px-1 rounded font-mono">config/ecommerce.php</code> ضمن <code class="bg-surface-container-lowest px-1 rounded font-mono">countries</code>، ثم حدّث العملة من هذه الصفحة.</p>
+            <p class="text-sm text-on-surface-variant">{{ __t('admin.currencies.add_new_currency_desc') }}</p>
         </div>
     </div>
 </div>
@@ -289,9 +306,9 @@
 <div class="mt-6 bg-secondary-fixed text-on-secondary-container p-4 rounded-lg flex items-center gap-4 border border-outline-variant/30">
     <span class="material-symbols-outlined text-[28px]">info</span>
     <div class="flex-1">
-        <h4 class="font-label-md font-bold">إعدادات العملات</h4>
-        <p class="font-body-sm">يمكنك تعديل العملة الافتراضية للمتجر من خلال نموذج الإعدادات المخصصة على اليمين. العملة الأساسية محددة باللون الأزرق في الجدول.</p>
+        <h4 class="font-label-md font-bold">{{ __t('admin.currencies.currency_settings') }}</h4>
+        <p class="font-body-sm">{{ __t('admin.currencies.currency_settings_desc') }}</p>
     </div>
-    <button class="bg-on-secondary-container text-surface-container-lowest px-4 py-1.5 rounded font-label-sm hover:opacity-90 transition-opacity" onclick="this.parentElement.remove()">حسناً</button>
+    <button class="bg-on-secondary-container text-surface-container-lowest px-4 py-1.5 rounded font-label-sm hover:opacity-90 transition-opacity" onclick="this.parentElement.remove()">{{ __t('admin.currencies.ok') }}</button>
 </div>
 @endsection

@@ -1,7 +1,7 @@
 @php
     $countries = config('ecommerce.countries', []);
     $defaultCountry = $countries[config('ecommerce.shipping.default_country', 'SD')] ?? null;
-    $countryName = $defaultCountry['name'] ?? 'السودان';
+    $countryName = $defaultCountry['name'] ?? __t('footer.favorite_store');
 @endphp
 
 {{-- Newsletter section --}}
@@ -18,26 +18,26 @@
         <div class="max-w-3xl mx-auto text-center">
             <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-5 py-2 rounded-full text-sm text-white/90 mb-6 shadow-lg">
                 <span class="material-symbols-outlined text-yellow-300" style="font-size:18px">mail</span>
-                نشرة إخبارية حصرية
+                {{ __t('footer.newsletter') }}
             </div>
-            <h3 class="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">اشترك في نشرتنا البريدية</h3>
-            <p class="text-white/80 mb-8 text-base md:text-lg max-w-xl mx-auto leading-relaxed">احصل على أحدث العروض والخصومات الحصرية مباشرة في بريدك الإلكتروني، ولا تفوّت أي صفقة!</p>
+            <h3 class="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">{{ __t('footer.newsletter_title') }}</h3>
+            <p class="text-white/80 mb-8 text-base md:text-lg max-w-xl mx-auto leading-relaxed">{{ __t('footer.newsletter_desc') }}</p>
             <form class="flex flex-col sm:flex-row max-w-lg mx-auto gap-3 sm:gap-0 shadow-2xl rounded-2xl overflow-hidden" 
-                  onsubmit="event.preventDefault(); typeof showToast !== 'undefined' ? showToast('شكراً لاشتراكك! سنتواصل معك قريباً', 'success') : alert('شكراً!');">
-                <input type="email" required placeholder="أدخل بريدك الإلكتروني..."
+                  onsubmit="event.preventDefault(); typeof showToast !== 'undefined' ? showToast('{{ __t('footer.newsletter_thanks') }}', 'success') : alert('{{ __t('footer.newsletter_thanks_short') }}');">
+                <input type="email" required placeholder="{{ __t('footer.newsletter_placeholder') }}"
                        class="flex-1 min-w-0 px-5 py-4 bg-white text-gray-800 text-sm focus:outline-none border-0 focus:ring-2 focus:ring-inset focus:ring-yellow-400"
                        style="border-radius: 0;">
                 <button type="submit" 
                         class="px-8 py-4 font-bold text-sm whitespace-nowrap flex items-center justify-center gap-2 transition-all duration-200 hover:brightness-110 active:scale-95 cursor-pointer text-white"
                         style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 0;">
                     <span class="material-symbols-outlined" style="font-size:18px">send</span>
-                    اشتراك
+                    {{ __t('footer.newsletter_subscribe') }}
                 </button>
             </form>
             <p class="text-white/50 text-xs mt-4 flex items-center justify-center gap-3">
-                <span>لن نشارك بريدك أبداً</span>
+                <span>{{ __t('footer.newsletter_privacy_1') }}</span>
                 <span class="w-1 h-1 bg-white/30 rounded-full"></span>
-                <span>يمكنك إلغاء الاشتراك في أي وقت</span>
+                <span>{{ __t('footer.newsletter_privacy_2') }}</span>
             </p>
         </div>
     </div>
@@ -60,13 +60,13 @@
                             </div>
                             <div>
                                 <p class="font-extrabold text-xl text-white">{{ site('store_name', config('app.name')) }}</p>
-                                <p class="text-xs text-gray-400">{{ site('store_description', 'متجرك المفضل') }}</p>
+                                <p class="text-xs text-gray-400">{{ site('store_description', __t('footer.favorite_store')) }}</p>
                             </div>
                         </div>
                     @endif
                 </div>
                 <p class="text-sm leading-relaxed mb-6 max-w-md">
-                    {{ site('footer_about', 'متجر إلكتروني متكامل يوفر لك تجربة تسوق فريدة مع شحن سريع ودفع آمن عند الاستلام.') }}
+                    {{ site('footer_about', __t('footer.about_store')) }}
                 </p>
                 <div class="flex gap-2">
                     @if(site('facebook_url'))
@@ -105,31 +105,31 @@
 
             {{-- Quick links --}}
             <div>
-                <h3 class="font-bold text-white mb-4 text-base">روابط سريعة</h3>
+                <h3 class="font-bold text-white mb-4 text-base">{{ __t('footer.quick_links') }}</h3>
                 <ul class="space-y-2.5 text-sm">
                     <li>
                         <a href="{{ route('home') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> الرئيسية
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('nav.home') }}
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('shop.index') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> جميع المنتجات
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('footer.all_products') }}
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('cart.index') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> سلة التسوق
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('nav.cart') }}
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('orders.index') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> طلباتي
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('footer.my_orders') }}
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('wishlist.index') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> المفضلة
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('footer.wishlist') }}
                         </a>
                     </li>
                 </ul>
@@ -137,31 +137,31 @@
 
             {{-- Customer service --}}
             <div>
-                <h3 class="font-bold text-white mb-4 text-base">خدمة العملاء</h3>
+                <h3 class="font-bold text-white mb-4 text-base">{{ __t('footer.customer_service') }}</h3>
                 <ul class="space-y-2.5 text-sm">
                     <li>
-                        <a href="{{ route('page.show', 'return-policy') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> سياسة الإرجاع
+                        <a href="{{ route('page.show', ['slug' => 'return-policy']) }}" class="hover:text-accent-400 transition flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('footer.return_policy') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('page.show', 'shipping') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> الشحن والتوصيل
+                        <a href="{{ route('page.show', ['slug' => 'shipping']) }}" class="hover:text-accent-400 transition flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('footer.shipping_delivery') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('page.show', 'faq') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> الأسئلة الشائعة
+                        <a href="{{ route('page.show', ['slug' => 'faq']) }}" class="hover:text-accent-400 transition flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('footer.faq') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('page.show', 'privacy') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> سياسة الخصوصية
+                        <a href="{{ route('page.show', ['slug' => 'privacy']) }}" class="hover:text-accent-400 transition flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('footer.privacy_policy') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('page.show', 'terms') }}" class="hover:text-accent-400 transition flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> الشروط والأحكام
+                        <a href="{{ route('page.show', ['slug' => 'terms']) }}" class="hover:text-accent-400 transition flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[10px] text-gray-500">chevron_right</span> {{ __t('footer.terms_conditions') }}
                         </a>
                     </li>
                 </ul>
@@ -169,19 +169,19 @@
 
             {{-- Contact --}}
             <div>
-                <h3 class="font-bold text-white mb-4 text-base">تواصل معنا</h3>
+                <h3 class="font-bold text-white mb-4 text-base">{{ __t('footer.contact_us') }}</h3>
                 <ul class="space-y-3 text-sm">
                     <li class="flex items-start gap-3">
                         <span class="material-symbols-outlined text-accent-400 mt-1">phone</span>
                         <div>
-                            <p class="text-gray-400 text-xs">الدعم الفني</p>
+                            <p class="text-gray-400 text-xs">{{ __t('footer.tech_support') }}</p>
                             <a href="tel:{{ site('contact_phone', '+249900000000') }}" class="hover:text-accent-400 transition" dir="ltr">{{ site('contact_phone', '+249 90 000 0000') }}</a>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
                         <span class="material-symbols-outlined text-accent-400 mt-1">mail</span>
                         <div>
-                            <p class="text-gray-400 text-xs">البريد الإلكتروني</p>
+                            <p class="text-gray-400 text-xs">{{ __t('footer.email') }}</p>
                             <a href="mailto:{{ site('contact_email', 'info@amarstore.com') }}" class="hover:text-accent-400 transition">{{ site('contact_email', 'info@amarstore.com') }}</a>
                         </div>
                     </li>
@@ -189,7 +189,7 @@
                         <li class="flex items-start gap-3">
                             <i class="fa-brands fa-whatsapp text-accent-400 mt-1.5 text-base"></i>
                             <div>
-                                <p class="text-gray-400 text-xs">واتساب</p>
+                                <p class="text-gray-400 text-xs">{{ __t('footer.whatsapp') }}</p>
                                 @php
                                     $cwa = preg_replace('/[^0-9]/', '', site('contact_whatsapp'));
                                     $cwa = ltrim($cwa, '0');
@@ -202,7 +202,7 @@
                     <li class="flex items-start gap-3">
                         <span class="material-symbols-outlined text-accent-400 mt-1">location_on</span>
                         <div>
-                            <p class="text-gray-400 text-xs">المقر الرئيسي</p>
+                            <p class="text-gray-400 text-xs">{{ __t('footer.headquarters') }}</p>
                             <p>{{ site('contact_address', $countryName) }}</p>
                         </div>
                     </li>
@@ -210,7 +210,7 @@
                         <li class="flex items-start gap-3">
                             <span class="material-symbols-outlined text-accent-400 mt-1">schedule</span>
                             <div>
-                                <p class="text-gray-400 text-xs">ساعات العمل</p>
+                                <p class="text-gray-400 text-xs">{{ __t('footer.working_hours') }}</p>
                                 <p>{{ site('contact_hours') }}</p>
                             </div>
                         </li>
@@ -227,8 +227,8 @@
                         <span class="material-symbols-outlined">local_shipping</span>
                     </div>
                     <div>
-                        <p class="text-white font-semibold text-xs">شحن مجاني</p>
-                        <p class="text-gray-500 text-xs">فوق {{ config('ecommerce.shipping.free_threshold', 500) }}</p>
+                        <p class="text-white font-semibold text-xs">{{ __t('footer.free_shipping') }}</p>
+                        <p class="text-gray-500 text-xs">{{ __t('footer.free_shipping_desc', ['amount' => config('ecommerce.shipping.free_threshold', 500)]) }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3 text-sm">
@@ -236,8 +236,8 @@
                         <span class="material-symbols-outlined">payments</span>
                     </div>
                     <div>
-                        <p class="text-white font-semibold text-xs">دفع عند الاستلام</p>
-                        <p class="text-gray-500 text-xs">بدون رسوم</p>
+                        <p class="text-white font-semibold text-xs">{{ __t('footer.cod') }}</p>
+                        <p class="text-gray-500 text-xs">{{ __t('footer.cod_desc') }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3 text-sm">
@@ -245,8 +245,8 @@
                         <span class="material-symbols-outlined">undo</span>
                     </div>
                     <div>
-                        <p class="text-white font-semibold text-xs">إرجاع 14 يوم</p>
-                        <p class="text-gray-500 text-xs">سياسة مرنة</p>
+                        <p class="text-white font-semibold text-xs">{{ __t('footer.returns') }}</p>
+                        <p class="text-gray-500 text-xs">{{ __t('footer.returns_desc') }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3 text-sm">
@@ -254,8 +254,8 @@
                         <span class="material-symbols-outlined">headphones</span>
                     </div>
                     <div>
-                        <p class="text-white font-semibold text-xs">دعم 24/7</p>
-                        <p class="text-gray-500 text-xs">دائماً معك</p>
+                        <p class="text-white font-semibold text-xs">{{ __t('footer.support_24_7') }}</p>
+                        <p class="text-gray-500 text-xs">{{ __t('footer.support_always') }}</p>
                     </div>
                 </div>
             </div>
@@ -264,16 +264,16 @@
         {{-- Bottom bar --}}
         <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
             <p class="text-gray-400">
-                © {{ date('Y') }} {{ site('store_name', config('app.name')) }}. {{ site('footer_copyright', 'جميع الحقوق محفوظة') }}.
+                © {{ date('Y') }} {{ site('store_name', config('app.name')) }}. {{ site('footer_copyright', __t('footer.copyright')) }}.
                 <span class="mx-1 text-gray-600">|</span>
-                صُنع بـ <span class="material-symbols-outlined text-accent-500">favorite</span> لخدمتك
+                {{ __t('footer.made_with') }} <span class="material-symbols-outlined text-accent-500">favorite</span> {{ __t('footer.for_you') }}
             </p>
             <div class="flex items-center gap-2">
                 <span class="px-3 py-1.5 bg-gray-800 rounded-lg text-xs inline-flex items-center gap-1">
-                    <span class="material-symbols-outlined text-accent-400">credit_card</span> الدفع عند الاستلام
+                    <span class="material-symbols-outlined text-accent-400">credit_card</span> {{ __t('footer.cod_badge') }}
                 </span>
                 <span class="px-3 py-1.5 bg-gray-800 rounded-lg text-xs inline-flex items-center gap-1">
-                    <span class="material-symbols-outlined text-green-400">shield</span> دفع آمن
+                    <span class="material-symbols-outlined text-green-400">shield</span> {{ __t('footer.secure_payment') }}
                 </span>
             </div>
         </div>

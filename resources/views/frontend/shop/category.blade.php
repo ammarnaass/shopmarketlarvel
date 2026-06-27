@@ -1,7 +1,7 @@
 @extends('frontend.layout')
 
 @section('title', $category->name . ' - ' . site('store_name'))
-@section('description', $category->description ?? 'تصفح منتجات ' . $category->name)
+@section('description', $category->description ?? __t('shop.category.subtitle', ['name' => $category->name]))
 
 @section('content')
 
@@ -12,10 +12,10 @@
         <nav class="flex items-center gap-2 text-sm text-white/80 mb-4">
             <a href="{{ route('home') }}" class="hover:text-white transition flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs">home</span>
-                الرئيسية
+                {{ __t('nav.breadcrumb_home') }}
             </a>
             <span class="material-symbols-outlined text-[10px] text-white/50">chevron_left</span>
-            <a href="{{ route('shop.index') }}" class="hover:text-white transition">المتجر</a>
+            <a href="{{ route('shop.index') }}" class="hover:text-white transition">{{ __t('nav.breadcrumb_shop') }}</a>
             <span class="material-symbols-outlined text-[10px] text-white/50">chevron_left</span>
             <span class="text-white font-medium">{{ $category->name }}</span>
         </nav>
@@ -32,7 +32,7 @@
                 @if($category->description)
                     <p class="text-white/90 text-base">{{ $category->description }}</p>
                 @else
-                    <p class="text-white/90 text-sm">{{ $products->total() }} منتج في هذا التصنيف</p>
+                    <p class="text-white/90 text-sm">{{ __t('shop.category.results', ['count' => $products->total()]) }}</p>
                 @endif
             </div>
         </div>
@@ -48,14 +48,14 @@
                 <div class="flex flex-wrap gap-2 items-center">
                     <span class="text-sm text-gray-600 ml-2 flex items-center gap-1">
                         <span class="material-symbols-outlined text-xs">account_tree</span>
-                        التصنيفات الفرعية:
+                        {{ __t('shop.category.subcategories') }}
                     </span>
-                    <a href="{{ route('shop.category', $category->slug) }}"
+                    <a href="{{ route('shop.category', ['slug' => $category->slug]) }}"
                        class="px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-l from-brand-600 to-accent-500 text-white shadow-sm">
-                        الكل
+                        {{ __t('shop.category.all') }}
                     </a>
                     @foreach($category->children as $child)
-                        <a href="{{ route('shop.category', $child->slug) }}"
+                        <a href="{{ route('shop.category', ['slug' => $child->slug]) }}"
                            class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-50 text-gray-700 hover:bg-gray-100 transition border border-gray-200">
                             {{ $child->name }}
                             <span class="text-xs text-gray-400 mr-1">({{ $child->products()->count() }})</span>
@@ -70,19 +70,19 @@
         {{-- ============ SIDEBAR FILTERS ============ --}}
         <aside class="lg:col-span-1">
             <div class="bg-white border border-outline-variant rounded-xl p-6 h-fit sticky top-24 shadow-sm animate-fade-up">
-                <form method="GET" action="{{ route('shop.category', $category->slug) }}" class="space-y-6">
+                <form method="GET" action="{{ route('shop.category', ['slug' => $category->slug]) }}" class="space-y-6">
                     <div class="flex items-center justify-between pb-4 border-b border-outline-variant">
                         <h2 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2">
                             <span class="material-symbols-outlined text-brand-600">filter_list</span>
-                            الفلاتر
+                            {{ __t('shop.category.filters') }}
                         </h2>
                     </div>
 
                     {{-- Search Input inside sidebar --}}
                     <div>
-                        <h3 class="font-label-md text-label-md mb-3">بحث سريع</h3>
+                        <h3 class="font-label-md text-label-md mb-3">{{ __t('shop.category.quick_search') }}</h3>
                         <div class="relative">
-                            <input type="text" name="q" value="{{ request('q') }}" placeholder="اسم المنتج..."
+                            <input type="text" name="q" value="{{ request('q') }}" placeholder="{{ __t('shop.category.search_placeholder') }}"
                                    class="form-input text-sm pr-9 pl-3 py-2">
                             <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
                         </div>
@@ -91,7 +91,7 @@
                     {{-- Price range filter --}}
                     <div x-data="{ maxPrice: {{ request('max_price', 1000) }} }">
                         <h3 class="font-label-md text-label-md mb-3 flex items-center justify-between">
-                            <span>الحد الأقصى للسعر</span>
+                            <span>{{ __t('shop.category.max_price') }}</span>
                             <span class="text-xs text-brand-600 font-bold" x-text="maxPrice + ' ' + @js(currentCurrencySymbol())"></span>
                         </h3>
                         <div class="px-1">
@@ -106,19 +106,19 @@
 
                     {{-- Color filter --}}
                     <div>
-                        <h3 class="font-label-md text-label-md mb-3">الألوان</h3>
+                        <h3 class="font-label-md text-label-md mb-3">{{ __t('shop.category.colors') }}</h3>
                         <div class="flex flex-wrap gap-2.5">
                             @foreach([
-                                'أحمر' => 'bg-red-600',
-                                'أزرق' => 'bg-blue-600',
-                                'أسود' => 'bg-black',
-                                'أبيض' => 'bg-white border border-outline-variant',
-                                'أصفر' => 'bg-yellow-400',
-                                'أخضر' => 'bg-green-600'
-                            ] as $colorName => $colorClass)
+                                'أحمر' => ['class' => 'bg-red-600', 'label' => __t('shop.category.color.red')],
+                                'أزرق' => ['class' => 'bg-blue-600', 'label' => __t('shop.category.color.blue')],
+                                'أسود' => ['class' => 'bg-black', 'label' => __t('shop.category.color.black')],
+                                'أبيض' => ['class' => 'bg-white border border-outline-variant', 'label' => __t('shop.category.color.white')],
+                                'أصفر' => ['class' => 'bg-yellow-400', 'label' => __t('shop.category.color.yellow')],
+                                'أخضر' => ['class' => 'bg-green-600', 'label' => __t('shop.category.color.green')]
+                            ] as $colorKey => $colorInfo)
                                 <label class="relative cursor-pointer active:scale-95 transition-transform">
-                                    <input type="radio" name="color" value="{{ $colorName }}" {{ request('color') === $colorName ? 'checked' : '' }} class="peer sr-only">
-                                    <span class="inline-block w-7 h-7 rounded-full {{ $colorClass }} shadow-sm transition-all peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-primary" title="{{ $colorName }}"></span>
+                                    <input type="radio" name="color" value="{{ $colorKey }}" {{ request('color') === $colorKey ? 'checked' : '' }} class="peer sr-only">
+                                    <span class="inline-block w-7 h-7 rounded-full {{ $colorInfo['class'] }} shadow-sm transition-all peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-primary" title="{{ $colorInfo['label'] }}"></span>
                                 </label>
                             @endforeach
                         </div>
@@ -126,7 +126,7 @@
 
                     {{-- Size filter --}}
                     <div>
-                        <h3 class="font-label-md text-label-md mb-3">المقاس</h3>
+                        <h3 class="font-label-md text-label-md mb-3">{{ __t('shop.category.size') }}</h3>
                         <div class="space-y-2.5">
                             @foreach([
                                 'S' => 'Small (S)',
@@ -145,7 +145,7 @@
 
                     {{-- Rating filter --}}
                     <div>
-                        <h3 class="font-label-md text-label-md mb-3">التقييم</h3>
+                        <h3 class="font-label-md text-label-md mb-3">{{ __t('shop.category.rating') }}</h3>
                         <div class="space-y-2.5">
                             @foreach([5, 4, 3] as $rating)
                                 <label class="flex items-center gap-3 cursor-pointer group">
@@ -156,7 +156,7 @@
                                         @endfor
                                     </div>
                                     @if($rating < 5)
-                                        <span class="text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">وأكثر</span>
+                                        <span class="text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">{{ __t('shop.category.and_up') }}</span>
                                     @endif
                                 </label>
                             @endforeach
@@ -167,10 +167,10 @@
                     <div class="flex flex-col gap-2 pt-2">
                         <button type="submit" class="w-full bg-primary text-white py-2.5 rounded-lg font-label-md text-label-md hover:bg-primary-container transition-all active:scale-[0.98] shadow-sm flex items-center justify-center gap-1.5">
                             <span class="material-symbols-outlined text-sm">check</span>
-                            تطبيق الفلاتر
+                            {{ __t('shop.category.apply_filters') }}
                         </button>
-                        <a href="{{ route('shop.category', $category->slug) }}" class="w-full text-center border border-outline-variant text-on-surface-variant py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-all block">
-                            إعادة تعيين
+                        <a href="{{ route('shop.category', ['slug' => $category->slug]) }}" class="w-full text-center border border-outline-variant text-on-surface-variant py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container transition-all block">
+                            {{ __t('shop.category.reset_filters') }}
                         </a>
                     </div>
                 </form>
@@ -182,16 +182,16 @@
             {{-- Header Bar --}}
             <div class="bg-white border border-outline-variant rounded-xl p-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-sm">
                 <div>
-                    <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ $category->name }} ({{ $products->total() }} منتج)</h2>
+                    <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ $category->name }} ({{ __t('shop.category.products_count', ['count' => $products->total()]) }})</h2>
                 </div>
                 <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
                     <div class="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant text-sm">
-                        <span class="text-xs text-on-surface-variant font-medium">ترتيب حسب:</span>
+                        <span class="text-xs text-on-surface-variant font-medium">{{ __t('shop.category.sort_by') }}</span>
                         <select onchange="window.location.href = this.value" class="bg-transparent border-none focus:ring-0 text-xs font-bold pr-8 cursor-pointer py-0">
-                            <option value="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'dir' => 'desc']) }}" {{ request('sort') == 'created_at' || !request('sort') ? 'selected' : '' }}>الأحدث</option>
-                            <option value="{{ request()->fullUrlWithQuery(['sort' => 'price', 'dir' => 'asc']) }}" {{ request('sort') == 'price' && request('dir') == 'asc' ? 'selected' : '' }}>السعر: الأقل</option>
-                            <option value="{{ request()->fullUrlWithQuery(['sort' => 'price', 'dir' => 'desc']) }}" {{ request('sort') == 'price' && request('dir') == 'desc' ? 'selected' : '' }}>السعر: الأعلى</option>
-                            <option value="{{ request()->fullUrlWithQuery(['sort' => 'name', 'dir' => 'asc']) }}" {{ request('sort') == 'name' ? 'selected' : '' }}>الاسم</option>
+                            <option value="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'dir' => 'desc']) }}" {{ request('sort') == 'created_at' || !request('sort') ? 'selected' : '' }}>{{ __t('shop.category.sort.newest') }}</option>
+                            <option value="{{ request()->fullUrlWithQuery(['sort' => 'price', 'dir' => 'asc']) }}" {{ request('sort') == 'price' && request('dir') == 'asc' ? 'selected' : '' }}>{{ __t('shop.category.sort.price_low') }}</option>
+                            <option value="{{ request()->fullUrlWithQuery(['sort' => 'price', 'dir' => 'desc']) }}" {{ request('sort') == 'price' && request('dir') == 'desc' ? 'selected' : '' }}>{{ __t('shop.category.sort.price_high') }}</option>
+                            <option value="{{ request()->fullUrlWithQuery(['sort' => 'name', 'dir' => 'asc']) }}" {{ request('sort') == 'name' ? 'selected' : '' }}>{{ __t('shop.category.sort.name') }}</option>
                         </select>
                     </div>
                 </div>
@@ -212,11 +212,11 @@
                         <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gray-100 flex items-center justify-center">
                             <span class="material-symbols-outlined text-5xl text-gray-300">inventory_2</span>
                         </div>
-                        <h3 class="text-2xl font-bold mb-2">لا توجد منتجات</h3>
-                        <p class="text-gray-500 mb-6">لا توجد منتجات مطابقة لخيارات التصفية حالياً</p>
-                        <a href="{{ route('shop.category', $category->slug) }}" class="btn-primary inline-flex">
+                        <h3 class="text-2xl font-bold mb-2">{{ __t('shop.category.no_products') }}</h3>
+                        <p class="text-gray-500 mb-6">{{ __t('shop.category.no_products_desc') }}</p>
+                        <a href="{{ route('shop.category', ['slug' => $category->slug]) }}" class="btn-primary inline-flex">
                             <span class="material-symbols-outlined">grid_view</span>
-                            إعادة ضبط الفلاتر
+                            {{ __t('shop.category.reset_all') }}
                         </a>
                     </div>
                 </div>

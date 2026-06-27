@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>بوليصة شحن - {{ $label->tracking_number }}</title>
+    <title>{{ __t('admin.shipping.label') }} - {{ $label->tracking_number }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 11px; color: #333; }
@@ -29,26 +29,26 @@
         <div class="header">
             <div class="store-name">{{ config('app.name') }}</div>
             <div class="tracking-box">
-                <div style="font-size: 9px; color: #666;">رقم التتبع</div>
+                <div style="font-size: 9px; color: #666;">{{ __t('admin.shipping.tracking_number') }}</div>
                 <div class="tracking-number">{{ $label->tracking_number }}</div>
             </div>
         </div>
 
         <div style="display: flex; gap: 15px;">
             <div class="section" style="flex: 1;">
-                <div class="section-title">بيانات المرسل</div>
-                <div class="row"><span class="label-col">المتجر:</span><span class="value-col">{{ config('app.name') }}</span></div>
-                <div class="row"><span class="label-col">الهاتف:</span><span class="value-col">{{ config('ecommerce.store.phone', '-') }}</span></div>
-                <div class="row"><span class="label-col">العنوان:</span><span class="value-col">{{ config('ecommerce.store.address', '-') }}</span></div>
+                <div class="section-title">{{ __t('admin.shipping.sender_info') }}</div>
+                <div class="row"><span class="label-col">{{ __t('admin.shipping.store') }}:</span><span class="value-col">{{ config('app.name') }}</span></div>
+                <div class="row"><span class="label-col">{{ __t('admin.shipping.phone') }}:</span><span class="value-col">{{ config('ecommerce.store.phone', '-') }}</span></div>
+                <div class="row"><span class="label-col">{{ __t('admin.shipping.address') }}:</span><span class="value-col">{{ config('ecommerce.store.address', '-') }}</span></div>
             </div>
 
             <div class="section" style="flex: 1;">
-                <div class="section-title">بيانات المستلم</div>
+                <div class="section-title">{{ __t('admin.shipping.recipient_info') }}</div>
                 @if($label->order?->shippingAddress)
-                    <div class="row"><span class="label-col">الاسم:</span><span class="value-col">{{ $label->order->shippingAddress->name }}</span></div>
-                    <div class="row"><span class="label-col">الهاتف:</span><span class="value-col">{{ $label->order->shippingAddress->phone }}</span></div>
-                    <div class="row"><span class="label-col">العنوان:</span><span class="value-col">{{ $label->order->shippingAddress->address }}</span></div>
-                    <div class="row"><span class="label-col">المدينة:</span><span class="value-col">{{ $label->order->shippingAddress->city }}</span></div>
+                    <div class="row"><span class="label-col">{{ __t('admin.shipping.name') }}:</span><span class="value-col">{{ $label->order->shippingAddress->name }}</span></div>
+                    <div class="row"><span class="label-col">{{ __t('admin.shipping.phone') }}:</span><span class="value-col">{{ $label->order->shippingAddress->phone }}</span></div>
+                    <div class="row"><span class="label-col">{{ __t('admin.shipping.address') }}:</span><span class="value-col">{{ $label->order->shippingAddress->address }}</span></div>
+                    <div class="row"><span class="label-col">{{ __t('admin.shipping.city') }}:</span><span class="value-col">{{ $label->order->shippingAddress->city }}</span></div>
                 @else
                     <div class="row"><span class="value-col">-</span></div>
                 @endif
@@ -56,24 +56,24 @@
         </div>
 
         <div class="section">
-            <div class="section-title">تفاصيل الشحنة</div>
+            <div class="section-title">{{ __t('admin.shipping.shipment_details') }}</div>
             <div style="display: flex; gap: 20px;">
-                <div class="row"><span class="label-col">الشركة:</span><span class="value-col">{{ $label->carrier?->name ?? '-' }}</span></div>
-                <div class="row"><span class="label-col">الوزن:</span><span class="value-col">{{ $label->weight ? $label->weight . ' كغ' : '-' }}</span></div>
-                <div class="row"><span class="label-col">التكلفة:</span><span class="value-col">{{ number_format($label->cost, 2) }} {{ currentCurrencySymbol() }}</span></div>
-                <div class="row"><span class="label-col">رقم الطلب:</span><span class="value-col">#{{ $label->order?->order_number ?? '-' }}</span></div>
+                <div class="row"><span class="label-col">{{ __t('admin.shipping.carrier') }}:</span><span class="value-col">{{ $label->carrier?->name ?? '-' }}</span></div>
+                <div class="row"><span class="label-col">{{ __t('admin.shipping.weight') }}:</span><span class="value-col">{{ $label->weight ? $label->weight . ' كغ' : '-' }}</span></div>
+                <div class="row"><span class="label-col">{{ __t('admin.shipping.cost') }}:</span><span class="value-col">{{ number_format($label->cost, 2) }} {{ currentCurrencySymbol() }}</span></div>
+                <div class="row"><span class="label-col">{{ __t('admin.shipping.order_number') }}:</span><span class="value-col">#{{ $label->order?->order_number ?? '-' }}</span></div>
             </div>
         </div>
 
         @if($label->order?->items?->count())
             <div class="section">
-                <div class="section-title">المنتجات</div>
+                <div class="section-title">{{ __t('admin.shipping.products') }}</div>
                 <table class="items-table">
                     <thead>
                         <tr>
-                            <th>المنتج</th>
-                            <th>الكمية</th>
-                            <th>السعر</th>
+                            <th>{{ __t('admin.shipping.product') }}</th>
+                            <th>{{ __t('admin.shipping.quantity') }}</th>
+                            <th>{{ __t('admin.shipping.price') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,7 +94,7 @@
         </div>
 
         <div class="footer">
-            تم طباعة هذه البوليصة في {{ now()->format('Y-m-d H:i') }} | {{ config('app.name') }}
+            {{ __t('admin.shipping.printed_at') }} {{ now()->format('Y-m-d H:i') }} | {{ config('app.name') }}
         </div>
     </div>
 </body>

@@ -1,20 +1,20 @@
 @extends('admin.layout')
 
-@section('title', 'تعديل ' . $product->name)
+@section('title', __t('admin.products.edit_product') . ' ' . $product->name)
 
-@section('page_title', 'تعديل المنتج')
+@section('page_title', __t('admin.products.edit_product'))
 
 @section('content')
 <!-- Page Header Actions -->
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-stack-lg">
     <div>
-        <h2 class="font-headline-md text-headline-md font-bold text-on-surface">تعديل المنتج</h2>
+        <h2 class="font-headline-md text-headline-md font-bold text-on-surface">{{ __t('admin.products.edit_product') }}</h2>
         <nav class="flex text-label-sm text-on-surface-variant gap-2 mt-1">
-            <a class="text-primary hover:underline" href="{{ route('admin.products.index') }}">المنتجات</a>
+            <a class="text-primary hover:underline" href="{{ route('admin.products.index') }}">{{ __t('admin.products.page_title') }}</a>
             <span>/</span>
             <a class="text-primary hover:underline" href="{{ route('admin.products.show', $product) }}">{{ $product->name }}</a>
             <span>/</span>
-            <span class="text-outline">تعديل</span>
+            <span class="text-outline">{{ __t('admin.common.edit') }}</span>
         </nav>
     </div>
 </div>
@@ -30,41 +30,41 @@
             <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6">
                 <div class="flex items-center gap-2 mb-6 text-primary">
                     <span class="material-symbols-outlined">info</span>
-                    <h3 class="font-title-lg text-title-lg font-bold">المعلومات العامة</h3>
+                    <h3 class="font-title-lg text-title-lg font-bold">{{ __t('admin.products.general_info') }}</h3>
                 </div>
                 <div class="space-y-5">
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-on-surface-variant">اسم المنتج <span class="text-error">*</span></label>
+                        <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.product_name') }} <span class="text-error">*</span></label>
                         <input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all @error('name') border-error @enderror" 
                                name="name" value="{{ old('name', $product->name) }}" placeholder="مثال: هاتف سامسونج S24 ألترا" type="text" required/>
                         @error('name')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="flex flex-col gap-2">
-                            <label class="font-label-md text-on-surface-variant">رمز SKU</label>
+                            <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.sku_label') }}</label>
                             <input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all font-mono @error('sku') border-error @enderror" 
                                    name="sku" value="{{ old('sku', $product->sku) }}" placeholder="SMSG-S24-U-BLK" type="text"/>
                             @error('sku')<p class="form-error">{{ $message }}</p>@enderror
                         </div>
                         <div class="flex flex-col gap-2">
-                            <label class="font-label-md text-on-surface-variant font-medium text-on-surface">نوع المنتج <span class="text-error">*</span></label>
+                            <label class="font-label-md text-on-surface-variant font-medium text-on-surface">{{ __t('admin.products.type_label') }} <span class="text-error">*</span></label>
                             <select name="type" required class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer">
-                                <option value="simple" {{ old('type', $product->type) === 'simple' ? 'selected' : '' }}>بسيط (Simple)</option>
-                                <option value="variable" {{ old('type', $product->type) === 'variable' ? 'selected' : '' }}>متغير (Variable)</option>
-                                <option value="digital" {{ old('type', $product->type) === 'digital' ? 'selected' : '' }}>رقمي (Digital)</option>
-                                <option value="bundle" {{ old('type', $product->type) === 'bundle' ? 'selected' : '' }}>حزمة (Bundle)</option>
+                                <option value="simple" {{ old('type', $product->type) === 'simple' ? 'selected' : '' }}>{{ __t('admin.products.simple') }}</option>
+                                <option value="variable" {{ old('type', $product->type) === 'variable' ? 'selected' : '' }}>{{ __t('admin.products.variable') }}</option>
+                                <option value="digital" {{ old('type', $product->type) === 'digital' ? 'selected' : '' }}>{{ __t('admin.products.digital') }}</option>
+                                <option value="bundle" {{ old('type', $product->type) === 'bundle' ? 'selected' : '' }}>{{ __t('admin.products.bundle') }}</option>
                             </select>
                             @error('type')<p class="form-error">{{ $message }}</p>@enderror
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-on-surface-variant">الوصف القصير</label>
+                        <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.short_description') }}</label>
                         <textarea class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all @error('short_description') border-error @enderror" 
                                   name="short_description" placeholder="اكتب وصفاً موجزاً للمنتج..." rows="2">{{ old('short_description', $product->short_description) }}</textarea>
                         @error('short_description')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-on-surface-variant">الوصف التفصيلي</label>
+                        <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.description_label') }}</label>
                         <div class="border border-outline-variant rounded-lg overflow-hidden">
                             <div class="bg-surface-container-low px-4 py-2 border-b border-outline-variant flex gap-4">
                                 <span class="material-symbols-outlined text-[20px] text-outline cursor-default">format_bold</span>
@@ -84,11 +84,11 @@
             <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6">
                 <div class="flex items-center gap-2 mb-6 text-primary">
                     <span class="material-symbols-outlined">payments</span>
-                    <h3 class="font-title-lg text-title-lg font-bold">التسعير</h3>
+                    <h3 class="font-title-lg text-title-lg font-bold">{{ __t('admin.products.pricing') }}</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-on-surface-variant">السعر الأساسي <span class="text-error">*</span></label>
+                        <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.base_price') }} <span class="text-error">*</span></label>
                         <div class="relative">
                             <input class="w-full bg-white border border-outline-variant rounded-lg pr-4 pl-12 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all @error('price') border-error @enderror" 
                                    name="price" value="{{ old('price', $product->price) }}" placeholder="0.00" type="number" step="0.01" min="0" required/>
@@ -97,7 +97,7 @@
                         @error('price')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-on-surface-variant">سعر التخفيض (اختياري)</label>
+                        <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.sale_price_label') }}</label>
                         <div class="relative">
                             <input class="w-full bg-white border border-outline-variant rounded-lg pr-4 pl-12 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all @error('sale_price') border-error @enderror" 
                                    name="sale_price" value="{{ old('sale_price', $product->sale_price) }}" placeholder="0.00" type="number" step="0.01" min="0"/>
@@ -112,20 +112,20 @@
             <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6">
                 <div class="flex items-center gap-2 mb-6 text-primary">
                     <span class="material-symbols-outlined">inventory</span>
-                    <h3 class="font-title-lg text-title-lg font-bold">إدارة المخزون</h3>
+                    <h3 class="font-title-lg text-title-lg font-bold">{{ __t('admin.products.inventory') }}</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-on-surface-variant">الكمية المتاحة <span class="text-error">*</span></label>
+                        <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.stock_label') }} <span class="text-error">*</span></label>
                         <input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all @error('stock') border-error @enderror" 
                                name="stock" value="{{ old('stock', $product->stock) }}" type="number" min="0" required/>
                         @error('stock')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-on-surface-variant">الحد الأدنى للتنبيه</label>
+                        <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.min_alert') }}</label>
                         <input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-all" 
                                type="number" value="5" readonly/>
-                        <p class="text-xs text-on-surface-variant">تنبيه تلقائي عند وصول المخزون للحد الأدنى.</p>
+                        <p class="text-xs text-on-surface-variant">{{ __t('admin.products.min_alert_hint') }}</p>
                     </div>
                 </div>
             </section>
@@ -135,10 +135,10 @@
                 <div class="flex items-center justify-between text-primary">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined">tune</span>
-                        <h3 class="font-title-lg text-title-lg font-bold">خيارات ومواصفات المنتج (الألوان، المقاسات، الخ)</h3>
+                        <h3 class="font-title-lg text-title-lg font-bold">{{ __t('admin.products.options_specs') }}</h3>
                     </div>
                     <button type="button" @click="addOption()" class="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1">
-                        <span class="material-symbols-outlined text-sm">add</span>إضافة خيار جديد
+                        <span class="material-symbols-outlined text-sm">add</span>{{ __t('admin.products.add_option') }}
                     </button>
                 </div>
 
@@ -155,17 +155,17 @@
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <select :name="`options[${optIndex}][type]`" x-model="option.type" class="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary outline-none cursor-pointer">
-                                        <option value="select">قائمة منسدلة (Dropdown)</option>
-                                        <option value="radio">أزرار اختيار (Radio)</option>
-                                        <option value="color">خيار ألوان (Color Picker)</option>
-                                        <option value="text">نص يكتبه العميل (Text Input)</option>
-                                        <option value="file">رفع ملف من العميل (File Upload)</option>
+                                        <option value="select">{{ __t('admin.products.dropdown') }}</option>
+                                        <option value="radio">{{ __t('admin.products.radio') }}</option>
+                                        <option value="color">{{ __t('admin.products.color_picker') }}</option>
+                                        <option value="text">{{ __t('admin.products.text_input') }}</option>
+                                        <option value="file">{{ __t('admin.products.file_upload') }}</option>
                                     </select>
                                     <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-on-surface-variant">
                                         <input type="checkbox" :name="`options[${optIndex}][required]`" x-model="option.required" class="w-4 h-4 text-primary rounded">
-                                        <span>مطلوب</span>
+                                        <span>{{ __t('admin.products.required') }}</span>
                                     </label>
-                                    <button type="button" @click="removeOption(optIndex)" class="text-error hover:bg-error/10 p-1.5 rounded-lg transition" title="حذف الخيار">
+                                    <button type="button" @click="removeOption(optIndex)" class="text-error hover:bg-error/10 p-1.5 rounded-lg transition" title="{{ __t('admin.products.delete_option') }}">
                                         <span class="material-symbols-outlined text-[20px]">delete</span>
                                     </button>
                                 </div>
@@ -174,9 +174,9 @@
                             <!-- Option Values Section (Only for selectable types) -->
                             <div x-show="['select', 'radio', 'color'].includes(option.type)" class="space-y-3">
                                 <div class="flex items-center justify-between text-xs font-bold text-on-surface-variant">
-                                    <span>القيم المتاحة للخيارات:</span>
+                                    <span>{{ __t('admin.products.option_values') }}</span>
                                     <button type="button" @click="addValue(optIndex)" class="text-primary hover:underline flex items-center gap-0.5">
-                                        <span class="material-symbols-outlined text-xs">add_circle</span>إضافة قيمة جديدة
+                                        <span class="material-symbols-outlined text-xs">add_circle</span>{{ __t('admin.products.add_value') }}
                                     </button>
                                 </div>
 
@@ -210,7 +210,7 @@
                                         </div>
                                     </template>
                                     <div x-show="option.values.length === 0" class="text-center py-4 bg-gray-50/30 border border-dashed rounded-lg text-xs text-on-surface-variant">
-                                        لا توجد قيم بعد. انقر على "إضافة قيمة جديدة" للبدء.
+                                        {{ __t('admin.products.no_values') }}
                                     </div>
                                 </div>
                             </div>
@@ -219,8 +219,8 @@
 
                     <div x-show="options.length === 0" class="text-center py-8 border border-dashed border-outline-variant/60 rounded-xl text-sm text-on-surface-variant">
                         <span class="material-symbols-outlined text-4xl text-outline-variant mb-2">tune</span>
-                        <p>لا توجد خيارات مضافة لهذا المنتج حالياً.</p>
-                        <p class="text-xs text-outline mt-1">يمكنك إضافة ألوان ومقاسات ومواصفات مخصصة لتمكين العملاء من اختيارها.</p>
+                        <p>{{ __t('admin.products.no_options') }}</p>
+                        <p class="text-xs text-outline mt-1">{{ __t('admin.products.no_options_hint') }}</p>
                     </div>
                 </div>
             </section>
@@ -230,10 +230,10 @@
                 <div class="flex items-center justify-between text-primary">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined">edit_note</span>
-                        <h3 class="font-title-lg text-title-lg font-bold">حقول مخصصة مطلوبة من المشتري عند الطلب</h3>
+                        <h3 class="font-title-lg text-title-lg font-bold">{{ __t('admin.products.custom_fields') }}</h3>
                     </div>
                     <button type="button" @click="addField()" class="text-xs bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1">
-                        <span class="material-symbols-outlined text-sm">add</span>إضافة حقل مخصص
+                        <span class="material-symbols-outlined text-sm">add</span>{{ __t('admin.products.add_field') }}
                     </button>
                 </div>
 
@@ -242,22 +242,22 @@
                         <div class="grid grid-cols-12 gap-3 items-center bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/50 shadow-sm relative">
                             <!-- Field Label -->
                             <div class="col-span-12 md:col-span-4 flex flex-col gap-1">
-                                <label class="text-xs text-on-surface-variant font-bold">اسم الحقل (مثال: الاسم للكتابة، لون التطريز)</label>
-                                <input type="text" :name="`custom_fields[${fIndex}][label]`" x-model="field.label" required placeholder="اسم الحقل المطلوب من العميل" class="w-full bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-xs focus:ring-1 focus:ring-primary outline-none">
+                                <label class="text-xs text-on-surface-variant font-bold">{{ __t('admin.products.field_name') }}</label>
+                                <input type="text" :name="`custom_fields[${fIndex}][label]`" x-model="field.label" required placeholder="{{ __t('admin.products.field_name_placeholder') }}" class="w-full bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-xs focus:ring-1 focus:ring-primary outline-none">
                             </div>
                             <!-- Field Type -->
                             <div class="col-span-6 md:col-span-3 flex flex-col gap-1">
-                                <label class="text-xs text-on-surface-variant font-bold">نوع الحقل</label>
+                                <label class="text-xs text-on-surface-variant font-bold">{{ __t('admin.products.field_type') }}</label>
                                 <select :name="`custom_fields[${fIndex}][type]`" x-model="field.type" class="w-full bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-xs focus:ring-1 focus:ring-primary outline-none cursor-pointer">
-                                    <option value="text">حقل نصي قصير (Text)</option>
-                                    <option value="textarea">حقل نصي طويل (Textarea)</option>
-                                    <option value="number">رقم (Number)</option>
-                                    <option value="file">تحميل ملف/صورة (File Upload)</option>
+                                    <option value="text">{{ __t('admin.products.text_field') }}</option>
+                                    <option value="textarea">{{ __t('admin.products.textarea_field') }}</option>
+                                    <option value="number">{{ __t('admin.products.number_field') }}</option>
+                                    <option value="file">{{ __t('admin.products.file_field') }}</option>
                                 </select>
                             </div>
                             <!-- Price Effect -->
                             <div class="col-span-6 md:col-span-3 flex flex-col gap-1">
-                                <label class="text-xs text-on-surface-variant font-bold">تكلفة إضافية عند التعبئة</label>
+                                <label class="text-xs text-on-surface-variant font-bold">{{ __t('admin.products.extra_cost') }}</label>
                                 <div class="relative font-mono">
                                     <input type="number" :name="`custom_fields[${fIndex}][price_effect]`" x-model="field.price_effect" step="0.01" placeholder="مثال: 15.00" class="w-full bg-white border border-outline-variant rounded-lg pl-6 pr-3 py-1.5 text-xs focus:ring-1 focus:ring-primary outline-none">
                                     <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] text-outline">{{ currentCurrencySymbol() }}</span>
@@ -267,9 +267,9 @@
                             <div class="col-span-12 md:col-span-2 flex items-center justify-between md:justify-end gap-4 mt-2 md:mt-0 pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
                                 <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-on-surface-variant">
                                     <input type="checkbox" :name="`custom_fields[${fIndex}][required]`" x-model="field.required" class="w-4 h-4 text-primary rounded">
-                                    <span>مطلوب</span>
+                                    <span>{{ __t('admin.products.required') }}</span>
                                 </label>
-                                <button type="button" @click="removeField(fIndex)" class="text-error hover:bg-error/10 p-1.5 rounded-lg transition" title="حذف الحقل">
+                                <button type="button" @click="removeField(fIndex)" class="text-error hover:bg-error/10 p-1.5 rounded-lg transition" title="{{ __t('admin.products.delete_field') }}">
                                     <span class="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
                             </div>
@@ -278,8 +278,8 @@
 
                     <div x-show="fields.length === 0" class="text-center py-6 border border-dashed border-outline-variant/60 rounded-xl text-sm text-on-surface-variant">
                         <span class="material-symbols-outlined text-3xl text-outline-variant mb-2">edit_note</span>
-                        <p>لا توجد حقول مخصصة مطلوبة من العميل حالياً.</p>
-                        <p class="text-xs text-outline mt-1">مثل طلب كتابة اسم خاص على المنتج، أو تحميل شعار العميل.</p>
+                        <p>{{ __t('admin.products.no_custom_fields') }}</p>
+                        <p class="text-xs text-outline mt-1">{{ __t('admin.products.no_custom_fields_hint') }}</p>
                     </div>
                 </div>
             </section>
@@ -291,16 +291,16 @@
             <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6">
                 <div class="flex items-center gap-2 mb-6 text-on-surface">
                     <span class="material-symbols-outlined">visibility</span>
-                    <h3 class="font-title-lg text-title-lg font-bold">الحالة والظهور</h3>
+                    <h3 class="font-title-lg text-title-lg font-bold">{{ __t('admin.products.status_visibility') }}</h3>
                 </div>
                 <div class="space-y-6">
                     <div class="flex flex-col gap-2">
-                        <label class="font-label-md text-on-surface-variant">حالة المنتج <span class="text-error">*</span></label>
+                        <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.status_label') }} <span class="text-error">*</span></label>
                         <div class="relative">
                             <select name="status" required class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2.5 font-bold text-primary focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer">
-                                <option value="active" {{ old('status', $product->status) === 'active' ? 'selected' : '' }}>نشط (Active)</option>
-                                <option value="inactive" {{ old('status', $product->status) === 'inactive' ? 'selected' : '' }}>غير نشط (Inactive)</option>
-                                <option value="draft" {{ old('status', $product->status) === 'draft' ? 'selected' : '' }}>مسودة (Draft)</option>
+                                <option value="active" {{ old('status', $product->status) === 'active' ? 'selected' : '' }}>{{ __t('admin.common.active') }}</option>
+                                <option value="inactive" {{ old('status', $product->status) === 'inactive' ? 'selected' : '' }}>{{ __t('admin.common.inactive') }}</option>
+                                <option value="draft" {{ old('status', $product->status) === 'draft' ? 'selected' : '' }}>{{ __t('admin.products.draft_status') }}</option>
                             </select>
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
                         </div>
@@ -310,7 +310,7 @@
                         <label class="flex items-center gap-3 cursor-pointer group">
                             <input type="checkbox" name="featured" value="1" {{ old('featured', $product->featured) ? 'checked' : '' }}
                                    class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary cursor-pointer"/>
-                            <span class="text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">منتج مميز (Featured)</span>
+                            <span class="text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">{{ __t('admin.products.featured_label') }}</span>
                             <span class="material-symbols-outlined text-sm text-warning" style="font-variation-settings:'FILL' 1">star</span>
                         </label>
                     </div>
@@ -321,17 +321,84 @@
             <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6">
                 <div class="flex items-center gap-2 mb-6 text-on-surface">
                     <span class="material-symbols-outlined">category</span>
-                    <h3 class="font-title-lg text-title-lg font-bold">التصنيف</h3>
+                    <h3 class="font-title-lg text-title-lg font-bold">{{ __t('admin.products.main_category') }}</h3>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label class="font-label-md text-on-surface-variant">التصنيف الرئيسي <span class="text-error">*</span></label>
+                    <label class="font-label-md text-on-surface-variant">{{ __t('admin.products.category_label') }} <span class="text-error">*</span></label>
                     <select name="category_id" required class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer">
-                        <option value="">— اختر تصنيفاً —</option>
+                        <option value="">— {{ __t('admin.products.select_category') }} —</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                         @endforeach
                     </select>
                     @error('category_id')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+            </section>
+
+            <!-- Shipping Company Card -->
+            @if(isset($shippingCompanies) && $shippingCompanies->count() > 0)
+            <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6">
+                <div class="flex items-center gap-2 mb-6 text-on-surface">
+                    <span class="material-symbols-outlined">local_shipping</span>
+                    <h3 class="font-title-lg text-title-lg font-bold">شركة الشحن الافتراضية</h3>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-label-md text-on-surface-variant">شركة الشحن المفضلة لهذا المنتج (اختياري)</label>
+                    <select name="shipping_company_id" class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer">
+                        <option value="">— تلقائي (اختيار النظام) —</option>
+                        @foreach($shippingCompanies as $company)
+                            <option value="{{ $company->id }}" {{ old('shipping_company_id', $product->shipping_company_id) == $company->id ? 'selected' : '' }}>{{ $company->name }}</option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-on-surface-variant mt-1">عند تعيين شركة شحن، ستظهر طرق الشحن الخاصة بها فقط للعميل عند الطلب الفوري.</p>
+                </div>
+            </section>
+            @endif
+
+            @php $sr = $product->shippingRule; @endphp
+            <section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-6">
+                <div class="flex items-center gap-2 mb-4 text-on-surface">
+                    <span class="material-symbols-outlined">package_2</span>
+                    <h3 class="font-title-lg text-title-lg font-bold">إعدادات الشحن</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="font-label-md text-on-surface-variant text-xs">الوزن (كجم)</label>
+                            <input type="number" name="weight" step="0.001" min="0"
+                                   value="{{ old('weight', $product->weight ?? '') }}"
+                                   class="w-full bg-white border border-outline-variant rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="font-label-md text-on-surface-variant text-xs">الحد الأقصى للوزن</label>
+                            <input type="number" name="product_shipping_rules[max_weight]" step="0.01" min="0"
+                                   value="{{ old('product_shipping_rules.max_weight', $sr->max_weight ?? '') }}"
+                                   class="w-full bg-white border border-outline-variant rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="font-label-md text-on-surface-variant text-xs">الأولوية</label>
+                        <input type="number" name="product_shipping_rules[priority]" min="0" max="999"
+                               value="{{ old('product_shipping_rules.priority', $sr->priority ?? '0') }}"
+                               class="w-full bg-white border border-outline-variant rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-outline-variant/30">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="product_shipping_rules[fragile]" value="1" {{ old('product_shipping_rules.fragile', $sr->fragile ?? false) ? 'checked' : '' }}
+                                   class="w-4 h-4 text-primary rounded">
+                            <span class="text-sm text-on-surface-variant">قابل للكسر (Fragile)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="product_shipping_rules[hazardous]" value="1" {{ old('product_shipping_rules.hazardous', $sr->hazardous ?? false) ? 'checked' : '' }}
+                                   class="w-4 h-4 text-primary rounded">
+                            <span class="text-sm text-on-surface-variant">مواد خطرة (Hazardous)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="product_shipping_rules[requires_signature]" value="1" {{ old('product_shipping_rules.requires_signature', $sr->requires_signature ?? false) ? 'checked' : '' }}
+                                   class="w-4 h-4 text-primary rounded">
+                            <span class="text-sm text-on-surface-variant">توقيع عند الاستلام</span>
+                        </label>
+                    </div>
                 </div>
             </section>
 

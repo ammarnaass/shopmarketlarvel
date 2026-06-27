@@ -9,7 +9,7 @@
     $symbol = $symbol ?? currentCurrencySymbol();
 @endphp
 
-<div class="product-card group cursor-pointer" onclick="window.location='{{ route('shop.show', $product->slug) }}'">
+<div class="product-card group cursor-pointer" onclick="window.location='{{ route('shop.show', ['slug' => $product->slug]) }}'">
     {{-- Image --}}
     <div class="relative overflow-hidden">
         <div class="product-card-image">
@@ -31,16 +31,16 @@
             @endif
             @if($isNew)
                 <span class="badge badge-info shadow-md">
-                    <span class="material-symbols-outlined text-[10px]">bolt</span> جديد
+                    <span class="material-symbols-outlined text-[10px]">bolt</span> {{ __t('product.new') }}
                 </span>
             @endif
             @if($isOutOfStock)
                 <span class="badge badge-danger shadow-md">
-                    <span class="material-symbols-outlined text-[10px]">close</span> نفد
+                    <span class="material-symbols-outlined text-[10px]">close</span> {{ __t('product.out_of_stock') }}
                 </span>
             @elseif($isLowStock)
                 <span class="badge badge-warning shadow-md">
-                    <span class="material-symbols-outlined text-[10px]">local_fire_department</span> {{ $product->stock }} متبقي
+                    <span class="material-symbols-outlined text-[10px]">local_fire_department</span> {{ __t('product.remaining', ['count' => $product->stock]) }}
                 </span>
             @endif
         </div>
@@ -51,7 +51,7 @@
                 <form action="{{ route('wishlist.store') }}" method="POST" class="inline">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <button type="submit" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-accent-500 hover:text-white transition shadow-lg" title="إضافة للمفضلة">
+                    <button type="submit" onclick="event.stopPropagation()" class="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center hover:bg-accent-500 hover:text-white transition shadow-lg" title="{{ __t('product.add_to_wishlist') }}">
                         <span class="material-symbols-outlined text-sm">favorite</span>
                     </button>
                 </form>
@@ -101,12 +101,12 @@
         <div class="flex items-end justify-between gap-2 mt-2">
             <div>
                 <p class="text-lg font-extrabold gradient-text">
-                    {{ number_format($product->price, 2) }}
+                    {{ number_format(convertPrice($product->price), 2) }}
                     <span class="text-xs font-normal text-gray-500">{{ $symbol }}</span>
                 </p>
                 @if($hasDiscount)
                     <p class="text-xs text-gray-400 line-through">
-                        {{ number_format($product->compare_price, 2) }} {{ $symbol }}
+                        {{ number_format(convertPrice($product->compare_price), 2) }} {{ $symbol }}
                     </p>
                 @endif
             </div>
@@ -119,7 +119,7 @@
                 <button type="submit" onclick="event.stopPropagation()"
                         class="w-10 h-10 rounded-xl {{ $isOutOfStock ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-brand-50 text-brand-600 hover:bg-brand-500 hover:text-white' }} flex items-center justify-center transition-all duration-200 shadow-sm"
                         {{ $isOutOfStock ? 'disabled' : '' }}
-                        title="{{ $isOutOfStock ? 'نفد المخزون' : 'أضف للسلة' }}">
+                        title="{{ $isOutOfStock ? __t('product.out_of_stock_label') : __t('product.add_to_cart') }}">
                     @if($isOutOfStock)
                         <span class="material-symbols-outlined text-sm">block</span>
                     @else

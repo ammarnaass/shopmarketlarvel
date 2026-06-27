@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -16,9 +17,11 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'category_id', 'name', 'slug', 'description', 'short_description',
+        'category_id', 'name', 'name_en', 'name_fr',
+        'slug', 'description', 'description_en', 'description_fr',
+        'short_description', 'short_description_en', 'short_description_fr',
         'price', 'sale_price', 'sku', 'stock', 'type', 'weight', 'length', 'width', 'height',
-        'low_stock_threshold',
+        'low_stock_threshold', 'shipping_company_id',
         'status', 'featured', 'seo_title', 'seo_description',
     ];
 
@@ -49,6 +52,11 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function shippingCompany(): BelongsTo
+    {
+        return $this->belongsTo(ShippingCompany::class, 'shipping_company_id');
     }
 
     public function images(): HasMany
@@ -91,6 +99,11 @@ class Product extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function shippingRule(): HasOne
+    {
+        return $this->hasOne(ProductShippingRule::class);
+    }
+
     public function scopeActive(Builder $q): Builder
     {
         return $q->where('status', 'active');
@@ -129,5 +142,45 @@ class Product extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function getNameAttribute(): string
+    {
+        $locale = app()->getLocale();
+        return match ($locale) {
+            'en' => $this->attributes['name_en'] ?? $this->attributes['name'],
+            'fr' => $this->attributes['name_fr'] ?? $this->attributes['name'],
+            default => $this->attributes['name'],
+        };
+    }
+
+    public function getDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        return match ($locale) {
+            'en' => $this->attributes['description_en'] ?? $this->attributes['description'],
+            'fr' => $this->attributes['description_fr'] ?? $this->attributes['description'],
+            default => $this->attributes['description'],
+        };
+    }
+
+    public function getShortDescriptionAttribute(): ?string
+    {
+        $locale = app()->getLocale();
+        return match ($locale) {
+            'en' => $this->attributes['short_description_en'] ?? $this->attributes['short_description'],
+            'fr' => $this->attributes['short_description_fr'] ?? $this->attributes['short_description'],
+            default => $this->attributes['short_description'],
+        };
+    }
+
+    public function getLocalizedName(?string $locale = null): string
+    {
+        $locale = $locale ?: app()->getLocale();
+        return match ($locale) {
+            'en' => $this->attributes['name_en'] ?? $this->attributes['name'],
+            'fr' => $this->attributes['name_fr'] ?? $this->attributes['name'],
+            default => $this->attributes['name'],
+        };
     }
 }

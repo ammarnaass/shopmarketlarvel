@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ShippingCompany;
 use App\Models\ShippingLabel;
 use App\Models\ShippingMethod;
+use App\Models\ShippingOfficePickup;
 use App\Models\ShippingTracking;
 use App\Models\ShippingZone;
 use App\Services\ShippingCalculator;
@@ -27,6 +28,7 @@ class ShippingController extends Controller
         $zones = ShippingZone::with(['company', 'methods'])->orderBy('priority')->paginate(20, ['*'], 'z_page');
         $methods = ShippingMethod::with(['zone', 'carrier'])->orderBy('sort_order')->paginate(20, ['*'], 'm_page');
         $labels = ShippingLabel::with(['order', 'carrier'])->latest()->paginate(20, ['*'], 'l_page');
+        $pickupOffices = ShippingOfficePickup::with('carrier')->latest()->paginate(20, ['*'], 'p_page');
 
         $stats = [
             'zones_count' => ShippingZone::count(),
@@ -35,10 +37,11 @@ class ShippingController extends Controller
             'labels_count' => ShippingLabel::count(),
             'pending_labels' => ShippingLabel::where('status', 'pending')->count(),
             'shipped_labels' => ShippingLabel::where('status', 'shipped')->count(),
+            'pickup_offices_count' => ShippingOfficePickup::count(),
         ];
 
         return view('admin.shipping.index', compact(
-            'activeTab', 'companies', 'zones', 'methods', 'labels', 'stats'
+            'activeTab', 'companies', 'zones', 'methods', 'labels', 'stats', 'pickupOffices'
         ));
     }
 
@@ -352,6 +355,69 @@ class ShippingController extends Controller
 
         return redirect()->route('admin.shipping.index', ['tab' => 'labels'])
             ->with('success', "تم إنشاء {$created} بوليصة شحن بنجاح");
+    }
+
+    // ============================================
+    //  PICKUP OFFICES CRUD
+    // ============================================
+    public function createPickup(): View
+    {
+        $carriers = ShippingCompany::where('is_active', true)->orderBy('name')->get();
+        return view('admin.shipping.pickup-form', ['pickup' => null, 'carriers' => $carriers]);
+    }
+
+    public function storePickup(Request $request): RedirectResponse
+    {
+        $data = $this->validatePickup($request);
+        ShippingOfficePickup::create($data);
+        return redirect()->route('admin.shipping.index', ['tab' => 'pickups'])
+            ->with('success', 'تم إضافة مكتب الاستلام');
+    }
+
+    public function editPickup(ShippingOfficePickup $pickup): View
+    {
+        $carriers = ShippingCompany::where('is_active', true)->orderBy('name')->get();
+        $pickup->load('carrier');
+        return view('admin.shipping.pickup-form', compact('pickup', 'carriers'));
+    }
+
+    public function updatePickup(Request $request, ShippingOfficePickup $pickup): RedirectResponse
+    {
+        $data = $this->validatePickup($request);
+        $pickup->update($data);
+        return redirect()->route('admin.shipping.index', ['tab' => 'pickups'])
+            ->with('success', 'تم تحديث مكتب الاستلام');
+    }
+
+    public function destroyPickup(ShippingOfficePickup $pickup): RedirectResponse
+    {
+        $pickup->delete();
+        return redirect()->route('admin.shipping.index', ['tab' => 'pickups'])
+            ->with('success', 'تم حذف مكتب الاستلام');
+    }
+
+    private function validatePickup(Request $request): array
+    {
+        return $request->validate([
+            'carrier_id' => 'required|exists:shipping_companies,id',
+            'name' => 'required|string|max:100',
+            'address' => 'required|string',
+            'city' => 'required|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'country_code' => 'required|string|size:2',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
+            'working_hours' => 'nullable|array',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'is_active' => 'boolean',
+        ], [
+            'carrier_id.required' => 'شركة الشحن مطلوبة',
+            'name.required' => 'اسم المكتب مطلوب',
+            'address.required' => 'العنوان مطلوب',
+            'city.required' => 'المدينة مطلوبة',
+            'country_code.required' => 'الدولة مطلوبة',
+        ]);
     }
 
     // ============================================

@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'التقارير')
+@section('title', __t('admin.reports.title'))
 
 @section('content')
 {{-- Date Filter Card --}}
@@ -9,15 +9,15 @@
         <div class="p-2 bg-primary/5 rounded-lg">
             <span class="material-symbols-outlined text-primary">calendar_today</span>
         </div>
-        <span class="font-title-lg text-on-surface">الفترة الزمنية:</span>
+        <span class="font-title-lg text-on-surface">{{ __t('admin.reports.period') }}:</span>
     </div>
     <form method="GET" action="{{ route('admin.reports.index') }}" class="flex items-center gap-2">
         <select name="period" onchange="this.form.submit()" class="border border-outline-variant rounded-lg text-label-md px-3 py-2 focus:ring-primary focus:border-primary bg-surface-container-lowest">
-            <option value="7"  {{ $period == '7'  ? 'selected' : '' }}>آخر 7 أيام</option>
-            <option value="14" {{ $period == '14' ? 'selected' : '' }}>آخر 14 يوم</option>
-            <option value="30" {{ $period == '30' ? 'selected' : '' }}>آخر 30 يوم</option>
-            <option value="60" {{ $period == '60' ? 'selected' : '' }}>آخر 60 يوم</option>
-            <option value="90" {{ $period == '90' ? 'selected' : '' }}>آخر 90 يوم</option>
+            <option value="7"  {{ $period == '7'  ? 'selected' : '' }}>{{ __t('admin.reports.last_7_days') }}</option>
+            <option value="14" {{ $period == '14' ? 'selected' : '' }}>{{ __t('admin.reports.last_14_days') }}</option>
+            <option value="30" {{ $period == '30' ? 'selected' : '' }}>{{ __t('admin.reports.last_30_days') }}</option>
+            <option value="60" {{ $period == '60' ? 'selected' : '' }}>{{ __t('admin.reports.last_60_days') }}</option>
+            <option value="90" {{ $period == '90' ? 'selected' : '' }}>{{ __t('admin.reports.last_90_days') }}</option>
         </select>
     </form>
 </section>
@@ -28,7 +28,7 @@
     <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-r-4 border-primary relative overflow-hidden group hover:shadow-md transition-all">
         <div class="flex justify-between items-start mb-4">
             <div>
-                <p class="text-on-surface-variant text-label-md mb-1">الإيرادات</p>
+                <p class="text-on-surface-variant text-label-md mb-1">{{ __t('admin.reports.revenue') }}</p>
                 <h3 class="text-headline-md font-bold text-on-surface">{{ number_format($summary['total_revenue'], 0) }}</h3>
             </div>
             <div class="p-3 bg-primary/10 rounded-full text-primary group-hover:bg-primary group-hover:text-on-primary transition-all duration-300">
@@ -36,15 +36,15 @@
             </div>
         </div>
         <div class="flex items-center gap-1 text-[12px]">
-            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> إجمالي</span>
-            <span class="text-outline">الإيرادات الكلية</span>
+            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> {{ __t('admin.reports.total') }}</span>
+            <span class="text-outline">{{ __t('admin.reports.total_revenue') }}</span>
         </div>
     </div>
     {{-- Orders --}}
     <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-r-4 border-secondary relative overflow-hidden group hover:shadow-md transition-all">
         <div class="flex justify-between items-start mb-4">
             <div>
-                <p class="text-on-surface-variant text-label-md mb-1">الطلبات</p>
+                <p class="text-on-surface-variant text-label-md mb-1">{{ __t('admin.reports.orders') }}</p>
                 <h3 class="text-headline-md font-bold text-on-surface">{{ number_format($summary['total_orders']) }}</h3>
             </div>
             <div class="p-3 bg-secondary/10 rounded-full text-secondary group-hover:bg-secondary group-hover:text-on-secondary transition-all duration-300">
@@ -52,15 +52,15 @@
             </div>
         </div>
         <div class="flex items-center gap-1 text-[12px]">
-            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> إجمالي</span>
-            <span class="text-outline">عدد الطلبات</span>
+            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> {{ __t('admin.reports.total') }}</span>
+            <span class="text-outline">{{ __t('admin.reports.total_orders') }}</span>
         </div>
     </div>
     {{-- Avg Order --}}
     <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-r-4 border-tertiary relative overflow-hidden group hover:shadow-md transition-all">
         <div class="flex justify-between items-start mb-4">
             <div>
-                <p class="text-on-surface-variant text-label-md mb-1">متوسط الطلب</p>
+                <p class="text-on-surface-variant text-label-md mb-1">{{ __t('admin.reports.average_order') }}</p>
                 <h3 class="text-headline-md font-bold text-on-surface">{{ number_format($summary['avg_order_value'], 0) }}</h3>
             </div>
             <div class="p-3 bg-tertiary/10 rounded-full text-tertiary group-hover:bg-tertiary group-hover:text-on-tertiary transition-all duration-300">
@@ -68,15 +68,15 @@
             </div>
         </div>
         <div class="flex items-center gap-1 text-[12px]">
-            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> متوسط</span>
-            <span class="text-outline">قيمة الطلب</span>
+            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> {{ __t('admin.reports.avg') }}</span>
+            <span class="text-outline">{{ __t('admin.reports.order_value') }}</span>
         </div>
     </div>
     {{-- New Customers --}}
     <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-r-4 border-outline relative overflow-hidden group hover:shadow-md transition-all">
         <div class="flex justify-between items-start mb-4">
             <div>
-                <p class="text-on-surface-variant text-label-md mb-1">عملاء جدد</p>
+                <p class="text-on-surface-variant text-label-md mb-1">{{ __t('admin.reports.new_customers') }}</p>
                 <h3 class="text-headline-md font-bold text-on-surface">{{ number_format($summary['new_customers']) }}</h3>
             </div>
             <div class="p-3 bg-outline/10 rounded-full text-outline group-hover:bg-outline group-hover:text-surface-bright transition-all duration-300">
@@ -84,15 +84,15 @@
             </div>
         </div>
         <div class="flex items-center gap-1 text-[12px]">
-            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> إجمالي</span>
-            <span class="text-outline">عملاء جدد</span>
+            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> {{ __t('admin.reports.total') }}</span>
+            <span class="text-outline">{{ __t('admin.reports.new_customers') }}</span>
         </div>
     </div>
     {{-- Completed Orders --}}
     <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-r-4 border-primary-fixed-dim relative overflow-hidden group hover:shadow-md transition-all">
         <div class="flex justify-between items-start mb-4">
             <div>
-                <p class="text-on-surface-variant text-label-md mb-1">طلبات مكتملة</p>
+                <p class="text-on-surface-variant text-label-md mb-1">{{ __t('admin.reports.completed_orders') }}</p>
                 <h3 class="text-headline-md font-bold text-on-surface">{{ number_format($summary['completed_orders']) }}</h3>
             </div>
             <div class="p-3 bg-primary-fixed-dim/10 rounded-full text-primary-fixed-dim group-hover:bg-primary-fixed-dim group-hover:text-on-primary-fixed transition-all duration-300">
@@ -100,8 +100,8 @@
             </div>
         </div>
         <div class="flex items-center gap-1 text-[12px]">
-            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> إجمالي</span>
-            <span class="text-outline">الطلبات المكتملة</span>
+            <span class="text-green-600 font-bold flex items-center"><span class="material-symbols-outlined text-[14px]">trending_up</span> {{ __t('admin.reports.total') }}</span>
+            <span class="text-outline">{{ __t('admin.reports.completed_orders_label') }}</span>
         </div>
     </div>
 </div>
@@ -111,7 +111,7 @@
     <div class="flex justify-between items-center mb-6">
         <div class="flex items-center gap-3">
             <div class="w-1 h-6 bg-primary rounded-full"></div>
-            <h4 class="font-title-lg text-on-surface">الإيرادات والطلبات</h4>
+            <h4 class="font-title-lg text-on-surface">{{ __t('admin.reports.revenue_and_orders') }}</h4>
         </div>
     </div>
     @php
@@ -123,9 +123,9 @@
             @php
                 $h = max(4, ($day['revenue'] / $maxRev) * 100);
             @endphp
-            <div class="flex-1 flex flex-col items-center gap-1 group relative" title="{{ $day['label'] }}: {{ number_format($day['revenue'], 0) }} ({{ $day['orders'] }} طلب)">
+            <div class="flex-1 flex flex-col items-center gap-1 group relative" title="{{ $day['label'] }}: {{ number_format($day['revenue'], 0) }} ({{ $day['orders'] }} {{ __t('admin.reports.order') }})">
                 <div class="absolute bottom-full mb-1 hidden group-hover:block bg-gray-900 text-white text-xs rounded px-2 py-1 whitespace-nowrap z-10">
-                    {{ number_format($day['revenue'], 0) }} — {{ $day['orders'] }} طلب
+                    {{ number_format($day['revenue'], 0) }} — {{ $day['orders'] }} {{ __t('admin.reports.order') }}
                 </div>
                 <div class="w-full bg-gradient-to-t from-primary to-primary-fixed rounded-t hover:from-primary-fixed hover:to-primary transition-all" style="height: {{ $h }}%"></div>
                 <div class="text-[10px] text-outline writing-mode-vertical">{{ $day['label'] }}</div>
@@ -133,7 +133,7 @@
         @endforeach
     </div>
     @if(count($chartData) > 14)
-        <p class="text-xs text-outline text-center mt-4">عرض {{ count($chartData) }} يوم</p>
+        <p class="text-xs text-outline text-center mt-4">{{ __t('admin.reports.showing_days', ['count' => count($chartData)]) }}</p>
     @endif
 </div>
 
@@ -144,7 +144,7 @@
         <div class="p-6 border-b border-outline-variant/30 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-primary">military_tech</span>
-                <h4 class="font-title-lg text-on-surface">أفضل المنتجات (إيرادات)</h4>
+                <h4 class="font-title-lg text-on-surface">{{ __t('admin.reports.top_products') }}</h4>
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -152,9 +152,9 @@
                 <thead>
                     <tr class="bg-surface-container-low text-outline text-label-sm">
                         <th class="px-6 py-4 font-semibold">#</th>
-                        <th class="px-6 py-4 font-semibold">المنتج</th>
-                        <th class="px-6 py-4 font-semibold">المبيعات</th>
-                        <th class="px-6 py-4 font-semibold">الكمية</th>
+                        <th class="px-6 py-4 font-semibold">{{ __t('admin.reports.product') }}</th>
+                        <th class="px-6 py-4 font-semibold">{{ __t('admin.reports.sales') }}</th>
+                        <th class="px-6 py-4 font-semibold">{{ __t('admin.reports.quantity') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-outline-variant/20">
@@ -165,11 +165,11 @@
                                 <span class="text-label-md font-medium">{{ $p->product_name }}</span>
                             </td>
                             <td class="px-6 py-4 text-label-md font-bold">{{ number_format($p->revenue, 0) }}</td>
-                            <td class="px-6 py-4 text-label-md">{{ $p->qty }} قطعة</td>
+                            <td class="px-6 py-4 text-label-md">{{ $p->qty }} {{ __t('admin.reports.pieces') }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-outline">لا توجد بيانات</td>
+                            <td colspan="4" class="px-6 py-12 text-center text-outline">{{ __t('admin.reports.no_data') }}</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -182,7 +182,7 @@
         <div class="p-6 border-b border-outline-variant/30 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-secondary">category</span>
-                <h4 class="font-title-lg text-on-surface">أفضل التصنيفات</h4>
+                <h4 class="font-title-lg text-on-surface">{{ __t('admin.reports.top_categories') }}</h4>
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -190,9 +190,9 @@
                 <thead>
                     <tr class="bg-surface-container-low text-outline text-label-sm">
                         <th class="px-6 py-4 font-semibold">#</th>
-                        <th class="px-6 py-4 font-semibold">التصنيف</th>
-                        <th class="px-6 py-4 font-semibold">الإيرادات</th>
-                        <th class="px-6 py-4 font-semibold">الطلبات</th>
+                        <th class="px-6 py-4 font-semibold">{{ __t('admin.reports.category') }}</th>
+                        <th class="px-6 py-4 font-semibold">{{ __t('admin.reports.revenue') }}</th>
+                        <th class="px-6 py-4 font-semibold">{{ __t('admin.reports.orders') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-outline-variant/20">
@@ -203,11 +203,11 @@
                                 <span class="text-label-md font-medium">{{ $c->name }}</span>
                             </td>
                             <td class="px-6 py-4 text-label-md font-bold">{{ number_format($c->revenue, 0) }}</td>
-                            <td class="px-6 py-4 text-label-md">{{ $c->orders_count }} طلب</td>
+                            <td class="px-6 py-4 text-label-md">{{ $c->orders_count }} {{ __t('admin.reports.order') }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-outline">لا توجد بيانات</td>
+                            <td colspan="4" class="px-6 py-12 text-center text-outline">{{ __t('admin.reports.no_data') }}</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -221,7 +221,7 @@
     <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 p-6">
         <div class="flex items-center gap-3 mb-6">
             <div class="w-1 h-6 bg-secondary rounded-full"></div>
-            <h4 class="font-title-lg text-on-surface">الإيرادات حسب الدولة</h4>
+            <h4 class="font-title-lg text-on-surface">{{ __t('admin.reports.country_revenue') }}</h4>
         </div>
         @php $maxC = max($countryRevenue->pluck('revenue')->toArray()) ?: 1; @endphp
         <div class="space-y-4">
@@ -231,7 +231,7 @@
                         <div class="flex items-center gap-2">
                             <span class="material-symbols-outlined text-outline text-[18px]">location_on</span>
                             <span class="font-semibold text-on-surface">{{ $c->country_name ?? $c->country_code }}</span>
-                            <span class="text-xs text-outline">({{ $c->orders_count }} طلب)</span>
+                            <span class="text-xs text-outline">({{ $c->orders_count }} {{ __t('admin.reports.order') }})</span>
                         </div>
                         <span class="font-bold text-primary">{{ number_format($c->revenue, 0) }}</span>
                     </div>
@@ -248,15 +248,15 @@
 <footer class="flex items-center justify-center gap-4 py-4">
     <button class="flex items-center gap-2 px-6 py-3 bg-[#1D6F42] text-white rounded-lg font-bold text-label-md hover:bg-[#155331] transition-all shadow-lg shadow-green-900/10 active:scale-95">
         <span class="material-symbols-outlined">table_view</span>
-        تصدير Excel
+        {{ __t('admin.reports.export_excel') }}
     </button>
     <button class="flex items-center gap-2 px-6 py-3 bg-[#E02424] text-white rounded-lg font-bold text-label-md hover:bg-[#B91C1C] transition-all shadow-lg shadow-red-900/10 active:scale-95">
         <span class="material-symbols-outlined">picture_as_pdf</span>
-        تصدير PDF
+        {{ __t('admin.reports.export_pdf') }}
     </button>
     <button class="flex items-center gap-2 px-6 py-3 bg-on-background text-white rounded-lg font-bold text-label-md hover:bg-black transition-all shadow-lg shadow-black/10 active:scale-95">
         <span class="material-symbols-outlined">print</span>
-        طباعة التقرير
+        {{ __t('common.print') }}
     </button>
 </footer>
 @endsection

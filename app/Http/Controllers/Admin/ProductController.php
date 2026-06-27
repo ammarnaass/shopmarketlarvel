@@ -52,7 +52,8 @@ class ProductController extends Controller
     public function create(): View
     {
         $categories = \App\Models\Category::where('status', 'active')->get();
-        return view('admin.products.create', compact('categories'));
+        $shippingCompanies = \App\Models\ShippingCompany::where('status', 'active')->orderBy('name')->get();
+        return view('admin.products.create', compact('categories', 'shippingCompanies'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -80,11 +81,19 @@ class ProductController extends Controller
             'options.*.values.*.color_code' => 'nullable|string|max:20',
             'options.*.values.*.price_adjustment' => 'nullable|numeric',
             'options.*.values.*.stock' => 'nullable|integer',
+            'shipping_company_id' => 'nullable|exists:shipping_companies,id',
             'custom_fields' => 'nullable|array',
             'custom_fields.*.label' => 'required|string|max:255',
             'custom_fields.*.type' => 'required|in:text,textarea,file,number,calculated',
             'custom_fields.*.required' => 'boolean',
             'custom_fields.*.price_effect' => 'nullable|numeric',
+            'weight' => 'nullable|numeric|min:0',
+            'product_shipping_rules' => 'nullable|array',
+            'product_shipping_rules.max_weight' => 'nullable|numeric|min:0',
+            'product_shipping_rules.priority' => 'nullable|integer|min:0|max:999',
+            'product_shipping_rules.fragile' => 'boolean',
+            'product_shipping_rules.hazardous' => 'boolean',
+            'product_shipping_rules.requires_signature' => 'boolean',
         ], [
             'images.max' => 'الحد الأقصى ' . self::IMAGE_MAX_FILES . ' صور في المرة الواحدة',
             'images.*.image' => 'يجب أن يكون الملف صورة',
@@ -97,6 +106,7 @@ class ProductController extends Controller
             $product = Product::create($request->only([
                 'category_id', 'name', 'description', 'short_description',
                 'price', 'sale_price', 'sku', 'stock', 'type', 'status', 'featured',
+                'shipping_company_id', 'weight',
             ]));
 
             // Handle gallery images
@@ -104,12 +114,13 @@ class ProductController extends Controller
                 $this->storeImages($request->file('images'), $product);
             }
 
-            // Sync options and custom fields
+            // Sync options, custom fields, and shipping rules
             $this->syncOptionsAndCustomFields(
                 $product,
                 $request->input('options', []),
                 $request->input('custom_fields', [])
             );
+            $this->syncShippingRules($product, $request->input('product_shipping_rules', []));
         });
 
         return redirect()->route('admin.products.gallery', $product)
@@ -219,8 +230,9 @@ class ProductController extends Controller
     public function edit(Product $product): View
     {
         $categories = \App\Models\Category::where('status', 'active')->get();
+        $shippingCompanies = \App\Models\ShippingCompany::where('status', 'active')->orderBy('name')->get();
         $product->load('images', 'options.values', 'variants', 'customFields');
-        return view('admin.products.edit', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories', 'shippingCompanies'));
     }
 
     public function update(Request $request, Product $product): RedirectResponse
@@ -246,17 +258,26 @@ class ProductController extends Controller
             'options.*.values.*.color_code' => 'nullable|string|max:20',
             'options.*.values.*.price_adjustment' => 'nullable|numeric',
             'options.*.values.*.stock' => 'nullable|integer',
+            'shipping_company_id' => 'nullable|exists:shipping_companies,id',
             'custom_fields' => 'nullable|array',
             'custom_fields.*.label' => 'required|string|max:255',
             'custom_fields.*.type' => 'required|in:text,textarea,file,number,calculated',
             'custom_fields.*.required' => 'boolean',
             'custom_fields.*.price_effect' => 'nullable|numeric',
+            'weight' => 'nullable|numeric|min:0',
+            'product_shipping_rules' => 'nullable|array',
+            'product_shipping_rules.max_weight' => 'nullable|numeric|min:0',
+            'product_shipping_rules.priority' => 'nullable|integer|min:0|max:999',
+            'product_shipping_rules.fragile' => 'boolean',
+            'product_shipping_rules.hazardous' => 'boolean',
+            'product_shipping_rules.requires_signature' => 'boolean',
         ]);
 
         DB::transaction(function () use ($request, $product) {
             $product->update($request->only([
                 'category_id', 'name', 'description', 'short_description',
                 'price', 'sale_price', 'sku', 'stock', 'type', 'status', 'featured',
+                'shipping_company_id', 'weight',
             ]));
 
             $this->syncOptionsAndCustomFields(
@@ -264,6 +285,7 @@ class ProductController extends Controller
                 $request->input('options', []),
                 $request->input('custom_fields', [])
             );
+            $this->syncShippingRules($product, $request->input('product_shipping_rules', []));
         });
 
         return redirect()->route('admin.products.gallery', $product)
@@ -398,6 +420,25 @@ class ProductController extends Controller
     /**
      * Sync product options and custom fields from input array.
      */
+    protected function syncShippingRules(Product $product, array $input = [])
+    {
+        if (empty($input)) {
+            $product->shippingRule()?->delete();
+            return;
+        }
+
+        $product->shippingRule()->updateOrCreate(
+            ['product_id' => $product->id],
+            [
+                'max_weight' => !empty($input['max_weight']) ? $input['max_weight'] : null,
+                'priority' => (int)($input['priority'] ?? 0),
+                'fragile' => filter_var($input['fragile'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'hazardous' => filter_var($input['hazardous'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                'requires_signature' => filter_var($input['requires_signature'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            ]
+        );
+    }
+
     protected function syncOptionsAndCustomFields(Product $product, array $optionsInput = [], array $customFieldsInput = [])
     {
         // Delete previous options (option values will be cascadingly deleted)

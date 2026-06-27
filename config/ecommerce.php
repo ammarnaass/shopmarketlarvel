@@ -50,6 +50,7 @@ return [
             'dial_code' => '+212',
             'currency' => 'MAD',
             'currency_symbol' => 'د.م.',
+            'rate_to_usd' => 0.10,
             'states' => [
                 '01' => 'الدار البيضاء', '02' => 'الرباط', '03' => 'فاس', '04' => 'مراكش',
                 '05' => 'طنجة', '06' => 'أكادير', '07' => 'مكناس', '08' => 'وجدة',
@@ -301,6 +302,14 @@ return [
             'express' => ['name' => 'سريع', 'days' => '1-2'],
             'same_day' => ['name' => 'فوري', 'days' => '0', 'cities' => ['الخرطوم', 'الجزائر', 'الدار البيضاء', 'تونس', 'طرابلس', 'القاهرة']],
         ],
+    ],
+
+    'languages' => [
+        'supported' => ['ar', 'en', 'fr'],
+        'default' => env('APP_LOCALE', 'ar'),
+        'cookie_name' => 'locale',
+        'cookie_minutes' => 43200,
+        'hide_default_prefix' => true,
     ],
 
     // Root-level aliases for backward compatibility

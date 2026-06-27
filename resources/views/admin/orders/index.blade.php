@@ -1,12 +1,12 @@
 @extends('admin.layout')
 
-@section('title', 'الطلبات')
+@section('title', __t('admin.orders.title'))
 
-@section('page_title', 'الطلبات')
+@section('page_title', __t('admin.orders.title'))
 
 @section('content')
 <div class="mb-2">
-    <p class="text-sm text-on-surface-variant">إدارة طلبات العملاء</p>
+    <p class="text-sm text-on-surface-variant">{{ __t('admin.orders.description') }}</p>
 </div>
 
 {{-- Bulk Actions Form --}}
@@ -14,25 +14,25 @@
     @csrf
     <div class="card p-4 mb-4 hidden" id="bulkBar">
         <div class="flex items-center gap-3 flex-wrap">
-            <span class="text-sm text-on-surface-variant"><span id="selectedCount">0</span> طلب محدد</span>
+            <span class="text-sm text-on-surface-variant"><span id="selectedCount">0</span> {{ __t('admin.orders.selected_count') }}</span>
             <select name="action" class="px-3 py-1.5 border border-outline-variant rounded-lg text-sm bg-surface-container-lowest" required>
-                <option value="">اختر إجراء...</option>
-                <option value="update_status">تحديث الحالة</option>
-                <option value="delete">حذف</option>
-                <option value="print_labels">طباعة بوليصات</option>
+                <option value="">{{ __t('common.select_action') }}</option>
+                <option value="update_status">{{ __t('admin.orders.update_status') }}</option>
+                <option value="delete">{{ __t('common.delete') }}</option>
+                <option value="print_labels">{{ __t('admin.orders.print_labels') }}</option>
             </select>
             <div id="statusSelect" class="hidden">
                 <select name="status" class="px-3 py-1.5 border border-outline-variant rounded-lg text-sm bg-surface-container-lowest" required>
-                    <option value="pending">قيد الانتظار</option>
-                    <option value="confirmed">مؤكد</option>
-                    <option value="processing">قيد المعالجة</option>
-                    <option value="shipped">تم الشحن</option>
-                    <option value="delivered">تم التسليم</option>
-                    <option value="cancelled">ملغي</option>
+                    <option value="pending">{{ __t('order_status.pending') }}</option>
+                    <option value="confirmed">{{ __t('order_status.confirmed') }}</option>
+                    <option value="processing">{{ __t('order_status.processing') }}</option>
+                    <option value="shipped">{{ __t('order_status.shipped') }}</option>
+                    <option value="delivered">{{ __t('order_status.delivered') }}</option>
+                    <option value="cancelled">{{ __t('order_status.cancelled') }}</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('هل أنت متأكد من تنفيذ هذا الإجراء على الطلبات المحددة؟')">
-                <span class="material-symbols-outlined">check</span> تطبيق
+            <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('{{ __t('admin.orders.bulk_confirm') }}')">
+                <span class="material-symbols-outlined">check</span> {{ __t('common.apply') }}
             </button>
         </div>
     </div>
@@ -41,19 +41,19 @@
 {{-- Stats --}}
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <div class="kpi-card">
-        <p class="text-xs font-medium text-on-surface-variant">إجمالي الطلبات</p>
+        <p class="text-xs font-medium text-on-surface-variant">{{ __t('admin.orders.total_orders') }}</p>
         <p class="text-2xl font-bold mt-1 text-on-surface">{{ number_format($stats['total']) }}</p>
     </div>
     <div class="kpi-card">
-        <p class="text-xs font-medium text-on-surface-variant">في الانتظار</p>
+        <p class="text-xs font-medium text-on-surface-variant">{{ __t('admin.orders.pending_orders') }}</p>
         <p class="text-2xl font-bold mt-1 text-warning">{{ number_format($stats['pending']) }}</p>
     </div>
     <div class="kpi-card">
-        <p class="text-xs font-medium text-on-surface-variant">قيد المعالجة</p>
+        <p class="text-xs font-medium text-on-surface-variant">{{ __t('admin.orders.processing_orders') }}</p>
         <p class="text-2xl font-bold mt-1 text-primary">{{ number_format($stats['processing']) }}</p>
     </div>
     <div class="kpi-card">
-        <p class="text-xs font-medium text-on-surface-variant">إيرادات اليوم</p>
+        <p class="text-xs font-medium text-on-surface-variant">{{ __t('admin.orders.today_revenue') }}</p>
         <p class="text-2xl font-bold mt-1 text-emerald-600">{{ number_format($stats['today_revenue'], 0) }}</p>
     </div>
 </div>
@@ -63,44 +63,44 @@
     <form method="GET" action="{{ route('admin.orders.index') }}" class="space-y-3">
         <div class="flex flex-wrap items-end gap-3">
             <div class="flex-1 min-w-[200px]">
-                <label class="form-label">بحث</label>
+                <label class="form-label">{{ __t('common.search') }}</label>
                 <div class="relative">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="رقم الطلب، اسم العميل، البريد، الهاتف..."
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __t('admin.orders.search_placeholder') }}"
                            class="form-input pr-10">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
                 </div>
             </div>
             <div>
-                <label class="form-label">حالة الطلب</label>
+                <label class="form-label">{{ __t('admin.orders.status') }}</label>
                 <select name="status" class="form-select">
-                    <option value="">الكل</option>
+                    <option value="">{{ __t('common.all') }}</option>
                     @foreach(\App\Models\Order::STATUSES as $key => $label)
                         <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="form-label">حالة الدفع</label>
+                <label class="form-label">{{ __t('admin.orders.payment_status') }}</label>
                 <select name="payment_status" class="form-select">
-                    <option value="">الكل</option>
+                    <option value="">{{ __t('common.all') }}</option>
                     @foreach(\App\Models\Order::PAYMENT_STATUSES as $key => $label)
                         <option value="{{ $key }}" {{ request('payment_status') === $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="form-label">من تاريخ</label>
+                <label class="form-label">{{ __t('admin.orders.date_from') }}</label>
                 <input type="date" name="date_from" value="{{ request('date_from') }}" class="form-input">
             </div>
             <div>
-                <label class="form-label">إلى تاريخ</label>
+                <label class="form-label">{{ __t('admin.orders.date_to') }}</label>
                 <input type="date" name="date_to" value="{{ request('date_to') }}" class="form-input">
             </div>
             <button type="submit" class="btn btn-primary btn-sm">
-                <span class="material-symbols-outlined">filter_alt</span> تطبيق
+                <span class="material-symbols-outlined">filter_alt</span> {{ __t('common.filter') }}
             </button>
             @if(request()->hasAny(['search', 'status', 'payment_status', 'date_from', 'date_to']))
-                <a href="{{ route('admin.orders.index') }}" class="btn btn-ghost btn-sm">إعادة تعيين</a>
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-ghost btn-sm">{{ __t('common.reset') }}</a>
             @endif
         </div>
     </form>
@@ -115,15 +115,15 @@
                     <th class="w-10">
                         <input type="checkbox" id="selectAll" class="form-checkbox">
                     </th>
-                    <th>رقم الطلب</th>
-                    <th>العميل</th>
-                    <th>النوع</th>
-                    <th>المنتجات</th>
-                    <th>الإجمالي</th>
-                    <th>حالة الطلب</th>
-                    <th>الدفع</th>
-                    <th>التاريخ</th>
-                    <th>إجراءات</th>
+                    <th>{{ __t('admin.orders.order_id') }}</th>
+                    <th>{{ __t('admin.orders.customer') }}</th>
+                    <th>{{ __t('admin.orders.type') }}</th>
+                    <th>{{ __t('admin.orders.items') }}</th>
+                    <th>{{ __t('admin.orders.total') }}</th>
+                    <th>{{ __t('admin.orders.status') }}</th>
+                    <th>{{ __t('admin.orders.payment') }}</th>
+                    <th>{{ __t('admin.orders.date') }}</th>
+                    <th>{{ __t('common.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -138,16 +138,16 @@
                             </a>
                         </td>
                         <td>
-                            <div class="font-medium text-on-surface">{{ $order->user?->name ?? $order->shippingAddress?->name ?? 'زائر' }}</div>
+                            <div class="font-medium text-on-surface">{{ $order->user?->name ?? $order->shippingAddress?->name ?? __t('admin.orders.guest') }}</div>
                             <div class="text-xs text-on-surface-variant">{{ $order->user?->email ?? $order->guest_email ?? '—' }}</div>
                         </td>
                         <td>
                             @if($order->is_instant_buy)
                                 <span class="badge badge-primary">
-                                    <span class="material-symbols-outlined text-sm">bolt</span> فوري
+                                    <span class="material-symbols-outlined text-sm">bolt</span> {{ __t('admin.orders.instant') }}
                                 </span>
                             @else
-                                <span class="text-on-surface-variant text-xs">عادي</span>
+                                <span class="text-on-surface-variant text-xs">{{ __t('admin.orders.normal') }}</span>
                             @endif
                         </td>
                         <td>{{ $order->items->count() }}</td>
@@ -167,19 +167,19 @@
                         </td>
                         <td>
                             <span class="badge {{ $order->payment_status === 'paid' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $order->payment_status === 'paid' ? 'مدفوع' : 'غير مدفوع' }}
+                                {{ $order->payment_status === 'paid' ? __t('admin.orders.paid') : __t('admin.orders.unpaid') }}
                             </span>
                         </td>
                         <td class="text-xs text-on-surface-variant">{{ $order->created_at->format('Y-m-d H:i') }}</td>
                         <td>
                             <div class="flex items-center gap-2">
-                                <a href="{{ route('admin.orders.show', $order) }}" class="p-1.5 text-primary hover:bg-primary-fixed rounded-lg transition-all" title="عرض">
+                                <a href="{{ route('admin.orders.show', $order) }}" class="p-1.5 text-primary hover:bg-primary-fixed rounded-lg transition-all" title="{{ __t('common.view') }}">
                                     <span class="material-symbols-outlined">visibility</span>
                                 </a>
-                                <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطلب؟')">
+                                <form action="{{ route('admin.orders.destroy', $order) }}" method="POST" class="inline" onsubmit="return confirm('{{ __t('admin.orders.delete_confirm') }}')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-error hover:bg-error-container/30 rounded-lg transition-all" title="حذف">
+                                    <button type="submit" class="p-1.5 text-error hover:bg-error-container/30 rounded-lg transition-all" title="{{ __t('common.delete') }}">
                                         <span class="material-symbols-outlined">delete</span>
                                     </button>
                                 </form>
@@ -190,7 +190,7 @@
                     <tr>
                         <td colspan="10" class="px-4 py-12 text-center text-on-surface-variant">
                             <span class="material-symbols-outlined text-4xl text-outline mb-3 block">inventory_2</span>
-                            <p>لا توجد طلبات</p>
+                            <p>{{ __t('admin.orders.no_orders') }}</p>
                         </td>
                     </tr>
                 @endforelse

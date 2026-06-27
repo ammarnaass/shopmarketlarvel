@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'معرض صور: ' . $product->name)
+@section('title', __t('admin.products.gallery') . ': ' . $product->name)
 
 @section('content')
 @php
@@ -9,13 +9,13 @@
 
 <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
     <div>
-        <h1 class="text-3xl font-bold">معرض صور: <span class="text-blue-600">{{ $product->name }}</span></h1>
+        <h1 class="text-3xl font-bold">{{ __t('admin.products.gallery') }}: <span class="text-blue-600">{{ $product->name }}</span></h1>
         <p class="text-gray-600 text-sm mt-1">
-            <a href="{{ route('admin.products.index') }}" class="text-blue-600 hover:underline">المنتجات</a>
+            <a href="{{ route('admin.products.index') }}" class="text-blue-600 hover:underline">{{ __t('admin.products.title') }}</a>
             <span class="mx-1">/</span>
             <a href="{{ route('admin.products.show', $product) }}" class="text-blue-600 hover:underline">{{ $product->name }}</a>
             <span class="mx-1">/</span>
-            <span>المعرض</span>
+            <span>{{ __t('admin.products.gallery') }}</span>
         </p>
     </div>
     <div class="flex items-center gap-2">
@@ -36,16 +36,16 @@
     {{-- Upload form --}}
     <div class="lg:col-span-1">
         <div class="bg-white rounded-xl shadow-sm p-5 sticky top-4">
-            <h2 class="font-bold text-lg mb-3"><i class="fas fa-cloud-upload-alt text-blue-600 ml-2"></i>رفع صور جديدة</h2>
+            <h2 class="font-bold text-lg mb-3"><i class="fas fa-cloud-upload-alt text-blue-600 ml-2"></i>{{ __t('admin.products.upload_new_images') }}</h2>
 
             <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg text-xs text-blue-800 mb-4 space-y-1">
-                <p><i class="fas fa-info-circle ml-1"></i><strong>إرشادات:</strong></p>
+                <p><i class="fas fa-info-circle ml-1"></i><strong>{{ __t('admin.products.guidelines') }}</strong></p>
                 <ul class="list-disc list-inside space-y-0.5">
-                    <li>الصيغ المدعومة: {{ strtoupper(str_replace(',', '، ', PC::IMAGE_MIMES)) }}</li>
-                    <li>الحد الأقصى لحجم الصورة: {{ PC::IMAGE_MAX_SIZE_KB / 1024 }}MB</li>
-                    <li>الحد الأقصى لعدد الصور: {{ PC::IMAGE_MAX_FILES }} صور في المرة</li>
-                    <li>المقاس الموصى به: {{ PC::IMAGE_RECOMMENDED_W }}×{{ PC::IMAGE_RECOMMENDED_H }} بكسل (مربع)</li>
-                    <li>الحد الأدنى: {{ PC::IMAGE_MIN_WIDTH }}×{{ PC::IMAGE_MIN_HEIGHT }} بكسل</li>
+                    <li>{{ __t('admin.products.supported_formats') }} {{ strtoupper(str_replace(',', '، ', PC::IMAGE_MIMES)) }}</li>
+                    <li>{{ __t('admin.products.max_image_size') }} {{ PC::IMAGE_MAX_SIZE_KB / 1024 }}MB</li>
+                    <li>{{ __t('admin.products.max_images_count') }} {{ PC::IMAGE_MAX_FILES }} {{ __t('admin.products.images_per_batch') }}</li>
+                    <li>المقاس الموصى به: {{ PC::IMAGE_RECOMMENDED_W }}×{{ PC::IMAGE_RECOMMENDED_H }} {{ __t('admin.products.pixels_square') }}</li>
+                    <li>{{ __t('admin.products.minimum_size') }} {{ PC::IMAGE_MIN_WIDTH }}×{{ PC::IMAGE_MIN_HEIGHT }} {{ __t('admin.products.pixels') }}</li>
                 </ul>
             </div>
 
@@ -58,7 +58,7 @@
                            accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
                            class="hidden">
                     <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
-                    <p class="text-sm font-semibold text-gray-700 mb-1">اضغط أو اسحب الصور هنا</p>
+                    <p class="text-sm font-semibold text-gray-700 mb-1">{{ __t('admin.products.click_or_drag') }}</p>
                     <p class="text-xs text-gray-500">JPEG, PNG, WEBP, GIF — حتى {{ PC::IMAGE_MAX_FILES }} صور</p>
                 </div>
 
@@ -67,7 +67,7 @@
 
                 {{-- Primary picker --}}
                 <div id="primaryPicker" class="mb-3 hidden">
-                    <label class="block text-sm font-semibold mb-1">تعيين كصورة رئيسية</label>
+                    <label class="block text-sm font-semibold mb-1">{{ __t('admin.products.set_as_primary') }}</label>
                     <select name="primary" id="primarySelect" class="w-full px-3 py-2 border rounded-lg text-sm">
                         <option value="">— التلقائي (أول صورة) —</option>
                     </select>
@@ -88,7 +88,7 @@
         <div class="bg-white rounded-xl shadow-sm p-5">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="font-bold text-lg">
-                    <i class="fas fa-images text-purple-600 ml-2"></i>الصور الحالية
+                    <i class="fas fa-images text-purple-600 ml-2"></i>{{ __t('admin.products.current_images') }}
                     <span class="bg-gray-100 text-gray-600 text-sm px-2 py-0.5 rounded-full mr-1">{{ $product->images->count() }}</span>
                 </h2>
             </div>
@@ -96,7 +96,7 @@
             @if($product->images->count() === 0)
                 <div class="text-center py-12 text-gray-400">
                     <i class="fas fa-image text-5xl mb-3"></i>
-                    <p class="text-sm">لا توجد صور بعد. ارفع أول صورة من النموذج.</p>
+                    <p class="text-sm">{{ __t('admin.products.no_images_yet') }}</p>
                 </div>
             @else
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -119,19 +119,19 @@
                                 @if(!$image->is_primary)
                                     <form method="POST" action="{{ route('admin.products.images.primary', [$product, $image]) }}" class="inline">
                                         @csrf
-                                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white w-9 h-9 rounded-full flex items-center justify-center" title="تعيين كرئيسية">
+                                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white w-9 h-9 rounded-full flex items-center justify-center" title="{{ __t('admin.products.set_primary') }}">
                                             <i class="fas fa-star"></i>
                                         </button>
                                     </form>
                                 @endif
                                 <button type="button" onclick="openAltModal({{ $image->id }}, '{{ addslashes($image->alt_text ?? '') }}', {{ $image->order ?? 0 }})"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-white w-9 h-9 rounded-full flex items-center justify-center" title="تعديل النص البديل">
+                                        class="bg-yellow-500 hover:bg-yellow-600 text-white w-9 h-9 rounded-full flex items-center justify-center" title="{{ __t('admin.products.edit_alt_text') }}">
                                     <i class="fas fa-pen"></i>
                                 </button>
-                                <form method="POST" action="{{ route('admin.products.images.destroy', [$product, $image]) }}" class="inline" onsubmit="return confirm('حذف هذه الصورة؟')">
+                                <form method="POST" action="{{ route('admin.products.images.destroy', [$product, $image]) }}" class="inline" onsubmit="return confirm('{{ __t('admin.products.delete_image_confirm') }}')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white w-9 h-9 rounded-full flex items-center justify-center" title="حذف">
+                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white w-9 h-9 rounded-full flex items-center justify-center" title="{{ __t('admin.products.delete') }}">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -153,22 +153,22 @@
 {{-- Alt text modal --}}
 <div id="altModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-        <h3 class="font-bold text-lg mb-3"><i class="fas fa-pen text-yellow-500 ml-2"></i>تعديل بيانات الصورة</h3>
+        <h3 class="font-bold text-lg mb-3"><i class="fas fa-pen text-yellow-500 ml-2"></i>{{ __t('admin.products.edit_image_data') }}</h3>
         <form id="altForm" method="POST">
             @csrf
             @method('PATCH')
             <div class="mb-3">
-                <label class="block text-sm font-semibold mb-1">النص البديل (Alt text) — للـ SEO</label>
-                <input type="text" name="alt_text" id="altTextInput" maxlength="255" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="وصف مختصر للصورة">
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.products.alt_text_seo') }}</label>
+                <input type="text" name="alt_text" id="altTextInput" maxlength="255" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="{{ __t('admin.products.image_description_placeholder') }}">
             </div>
             <div class="mb-4">
-                <label class="block text-sm font-semibold mb-1">الترتيب</label>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.products.order') }}</label>
                 <input type="number" name="order" id="altOrderInput" min="0" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                <p class="text-xs text-gray-500 mt-1">أقل رقم = يظهر أولاً</p>
+                <p class="text-xs text-gray-500 mt-1">{{ __t('admin.products.lowest_first') }}</p>
             </div>
             <div class="flex items-center gap-2">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold flex-1">حفظ</button>
-                <button type="button" onclick="closeAltModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">إلغاء</button>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold flex-1">{{ __t('admin.products.save') }}</button>
+                <button type="button" onclick="closeAltModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">{{ __t('admin.products.cancel') }}</button>
             </div>
         </form>
     </div>

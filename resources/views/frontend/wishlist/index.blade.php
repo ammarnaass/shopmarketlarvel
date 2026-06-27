@@ -1,6 +1,6 @@
 @extends('frontend.layout')
 
-@section('title', 'المفضلة - ' . site('store_name'))
+@section('title', __t('wishlist.title') . ' - ' . site('store_name'))
 
 @section('content')
 
@@ -9,10 +9,10 @@
     <nav class="flex items-center gap-2 text-body-sm text-on-surface-variant mb-stack-lg">
         <a href="{{ route('home') }}" class="hover:text-primary transition-colors flex items-center gap-1">
             <span class="material-symbols-outlined text-xs">home</span>
-            الرئيسية
+            {{ __t('nav.home') }}
         </a>
         <span class="material-symbols-outlined text-[16px]">chevron_left</span>
-        <span class="text-primary font-bold">المفضلة</span>
+        <span class="text-primary font-bold">{{ __t('wishlist.title') }}</span>
     </nav>
 
     {{-- Page Title --}}
@@ -20,18 +20,18 @@
         <div>
             <div class="flex items-center gap-3 text-primary mb-2">
                 <span class="material-symbols-outlined text-headline-md" style="font-variation-settings: 'FILL' 1;">favorite</span>
-                <h2 class="font-headline-md text-headline-md">قائمة المفضلة</h2>
+                <h2 class="font-headline-md text-headline-md">{{ __t('wishlist.title') }}</h2>
             </div>
-            <p class="text-on-surface-variant font-body-md">لديك <span class="font-bold text-on-surface">{{ $wishlists->count() }} @choice('منتج|منتجات', $wishlists->count())</span> في قائمة الأمنيات الخاصة بك</p>
+            <p class="text-on-surface-variant font-body-md">{{ __t('wishlist.you_have') }} <span class="font-bold text-on-surface">{{ $wishlists->count() }} @choice(__t('wishlist.product_singular') . '|' . __t('wishlist.product_plural'), $wishlists->count())</span> {{ __t('wishlist.in_wishlist') }}</p>
         </div>
         <div class="flex gap-3">
             <button class="flex items-center gap-2 px-6 py-2.5 bg-error-container text-on-error-container rounded-lg font-label-md hover:bg-error hover:text-on-error transition-all active:scale-95 shadow-sm" disabled>
                 <span class="material-symbols-outlined text-[20px]">delete_sweep</span>
-                إفراغ القائمة
+                {{ __t('wishlist.clear_all') }}
             </button>
             <a href="{{ route('shop.index') }}" class="flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary rounded-lg font-label-md hover:opacity-90 transition-all active:scale-95 shadow-md">
                 <span class="material-symbols-outlined text-[20px]">bolt</span>
-                شراء الكل
+                {{ __t('wishlist.buy_all') }}
             </a>
         </div>
     </div>
@@ -43,9 +43,9 @@
         <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant">
             {{-- Table Header --}}
             <div class="hidden md:grid grid-cols-12 bg-surface-container-low px-6 py-4 font-label-md text-on-surface-variant border-b border-outline-variant">
-                <div class="col-span-6">المنتج</div>
-                <div class="col-span-2 text-center">السعر</div>
-                <div class="col-span-4 text-left">الإجراءات</div>
+                <div class="col-span-6">{{ __t('product.name') }}</div>
+                <div class="col-span-2 text-center">{{ __t('product.price') }}</div>
+                <div class="col-span-4 text-left">{{ __t('common.actions') }}</div>
             </div>
 
             {{-- Items --}}
@@ -72,24 +72,24 @@
                             </div>
                             <div>
                                 <h3 class="font-title-lg text-title-lg text-on-surface group-hover:text-primary transition-colors">
-                                    <a href="{{ route('shop.show', $product->slug) }}">{{ $product->name }}</a>
+                                    <a href="{{ route('shop.show', ['slug' => $product->slug]) }}">{{ $product->name }}</a>
                                 </h3>
                                 <p class="text-body-sm text-on-surface-variant line-clamp-2 mt-1">{{ $product->short_description ?? ($product->description ? Str::limit(strip_tags($product->description), 80) : '') }}</p>
                                 @if($isOutOfStock)
-                                    <span class="inline-block mt-2 px-2 py-0.5 bg-error-container text-on-error-container text-[10px] font-bold rounded">نفد المخزون</span>
+                                    <span class="inline-block mt-2 px-2 py-0.5 bg-error-container text-on-error-container text-[10px] font-bold rounded">{{ __t('common.out_of_stock') }}</span>
                                 @elseif($isLowStock)
-                                    <span class="inline-block mt-2 px-2 py-0.5 bg-warning-bg text-warning text-[10px] font-bold rounded">آخر {{ $product->stock }} قطع!</span>
+                                    <span class="inline-block mt-2 px-2 py-0.5 bg-warning-bg text-warning text-[10px] font-bold rounded">{{ __t('common.last_pieces', ['count' => $product->stock]) }}</span>
                                 @else
-                                    <span class="inline-block mt-2 px-2 py-0.5 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold rounded">متوفر في المخزن</span>
+                                    <span class="inline-block mt-2 px-2 py-0.5 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold rounded">{{ __t('common.in_stock') }}</span>
                                 @endif
                             </div>
                         </div>
 
                         {{-- Price --}}
                         <div class="col-span-1 md:col-span-2 text-right md:text-center">
-                            <span class="font-headline-sm text-headline-sm text-primary">{{ number_format($product->price, 2) }} {{ $symbol }}</span>
+                            <span class="font-headline-sm text-headline-sm text-primary">{{ number_format(convertPrice($product->price), 2) }} {{ $symbol }}</span>
                             @if($hasDiscount)
-                                <div class="text-body-sm text-on-surface-variant line-through">{{ number_format($product->compare_price, 2) }} {{ $symbol }}</div>
+                                <div class="text-body-sm text-on-surface-variant line-through">{{ number_format(convertPrice($product->compare_price), 2) }} {{ $symbol }}</div>
                             @endif
                         </div>
 
@@ -98,13 +98,13 @@
                             <form action="{{ route('wishlist.destroy', $product) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container/30" title="إزالة">
+                                <button type="submit" class="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container/30" title="{{ __t('wishlist.remove') }}">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </form>
-                            <a href="{{ route('shop.show', $product->slug) }}" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-primary text-on-primary rounded-full font-label-md hover:bg-on-primary-fixed-variant transition-all active:scale-95 shadow-md">
+                            <a href="{{ route('shop.show', ['slug' => $product->slug]) }}" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-primary text-on-primary rounded-full font-label-md hover:bg-on-primary-fixed-variant transition-all active:scale-95 shadow-md">
                                 <span class="material-symbols-outlined text-[20px]">bolt</span>
-                                شراء فوري
+                                {{ __t('wishlist.quick_buy') }}
                             </a>
                         </div>
                     </div>
@@ -124,11 +124,11 @@
                 <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-error-container flex items-center justify-center">
                     <span class="material-symbols-outlined text-5xl text-on-error-container">favorite</span>
                 </div>
-                <h2 class="font-headline-md text-headline-md text-on-surface mb-2">قائمة المفضلة فارغة</h2>
-                <p class="text-on-surface-variant font-body-md mb-8">لم تقم بإضافة أي منتجات إلى المفضلة بعد</p>
+                <h2 class="font-headline-md text-headline-md text-on-surface mb-2">{{ __t('wishlist.empty') }}</h2>
+                <p class="text-on-surface-variant font-body-md mb-8">{{ __t('wishlist.empty_desc') }}</p>
                 <a href="{{ route('shop.index') }}" class="btn btn-primary btn-lg inline-flex">
                     <span class="material-symbols-outlined">shopping_cart</span>
-                    اكتشف المنتجات
+                    {{ __t('wishlist.discover_products') }}
                 </a>
             </div>
         </div>

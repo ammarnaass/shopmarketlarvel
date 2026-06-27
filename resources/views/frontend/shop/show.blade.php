@@ -6,15 +6,17 @@
 
 @php
     use Illuminate\Support\Str;
+    $ibSettings = \App\Models\InstantBuySetting::firstOrCreate([], []);
     $countries = config('ecommerce.countries', []);
     $defaultCountry = old('country_code', auth()->user()->country_code ?? session('selected_country', config('ecommerce.store.default_country', 'SD')));
     $defaultState = old('state_code', auth()->user()->defaultAddress?->state_code ?? '');
-    $countrySymbol = $countries[$defaultCountry]['currency_symbol'] ?? config('ecommerce.store.currency_symbol', 'ج.س');
+    $countrySymbol = $countries[$defaultCountry]['currency_symbol'] ?? config('ecommerce.store.currency_symbol', __t('common.currency'));
     $hasOptions = $product->options->count() > 0;
     $hasCustomFields = $product->customFields->count() > 0;
     $mainImage = $product->images->first();
     $imageList = $product->images->map(fn($i) => asset('storage/' . $i->image))->values();
     $authUserData = auth()->user() ? auth()->user()->only(['name', 'email', 'phone', 'country_code', 'state_code']) : [];
+    $ibS = fn($key) => $ibSettings->$key ?? null;
 @endphp
 
 @push('styles')
@@ -51,20 +53,22 @@
 @section('content')
 <div class="bg-gray-50 product-detail"
      x-data="instantBuyForm()"
-     x-init='setup(@json($product->id), @json($product->name), @json($product->price), @json($product->final_price), @json($product->sale_price), @json($imageList), @json($product->stock), @json($product->sku), @json($product->weight ?? 0), @json($countries), @json($defaultCountry), @json($defaultState), @json($countrySymbol), @json($authUserData))'>
+      x-init='setup(@json($product->id), @json($product->name), @json($product->price), @json($product->final_price), @json($product->sale_price), @json($imageList), @json($product->stock), @json($product->sku), @json($product->weight ?? 0), @json($countries), @json($defaultCountry), @json($defaultState), @json($countrySymbol), @json($authUserData), @json(conversionRate()), @json($ibS('is_enabled')))'
+      :style='ibEnabled && {{ $ibS('is_enabled') ? 'true' : 'false' }} ? { backgroundColor: "{{ $ibS('form_bg_color') }}", border: "{{ $ibS('form_border_width') }}px solid {{ $ibS('form_border_color') }}", borderRadius: "{{ $ibS('form_border_radius') }}px", boxShadow: "{{ $ibS('form_shadow') }}" } : {}'>
+
 
     {{-- ============ BREADCRUMB ============ --}}
     <div class="bg-white border-b">
         <div class="container-app py-3">
             <nav class="flex items-center gap-2 text-sm text-gray-500 flex-wrap">
                 <a href="{{ route('home') }}" class="hover:text-blue-600 flex items-center gap-1">
-                    <span class="material-symbols-outlined ml-1">home</span>الرئيسية
+                    <span class="material-symbols-outlined ml-1">home</span>{{ __t('nav.home') }}
                 </a>
                 <span class="material-symbols-outlined text-xs">chevron_right</span>
-                <a href="{{ route('shop.index') }}" class="hover:text-blue-600">المتجر</a>
+                <a href="{{ route('shop.index') }}" class="hover:text-blue-600">{{ __t('nav.products') }}</a>
                 @if($product->category)
                     <span class="material-symbols-outlined text-xs">chevron_right</span>
-                    <a href="{{ route('shop.category', $product->category->slug) }}" class="hover:text-blue-600">
+                    <a href="{{ route('shop.category', ['slug' => $product->category->slug]) }}" class="hover:text-blue-600">
                         {{ $product->category->name }}
                     </a>
                 @endif
@@ -75,7 +79,8 @@
     </div>
 
     <div class="container-app py-6 md:py-8">
-        <form method="POST" action="{{ route('instant.submit') }}" @submit.prevent="submitForm($event)" id="instant-buy-form" class="grid lg:grid-cols-3 gap-6">
+        <form method="POST" :action="ibEnabled ? '{{ route('instant-buy.submit') }}' : '{{ route('instant.submit') }}'"
+              @submit.prevent="submitForm($event)" id="instant-buy-form" class="grid lg:grid-cols-3 gap-6">
             @csrf
             <input type="hidden" name="product_id" :value="product.id">
             <input type="hidden" name="weight" :value="weight">
@@ -136,7 +141,7 @@
                                         <span class="material-symbols-outlined text-sm">star</span>
                                     </template>
                                 </div>
-                                <span class="text-xs text-gray-500">({{ $product->reviews->count() ?? 0 }} تقييم)</span>
+                                <span class="text-xs text-gray-500">({{ __t('product.reviews_count', ['count' => $product->reviews->count() ?? 0]) }})</span>
                             </div>
 
                             {{-- Price (live) --}}
@@ -162,12 +167,12 @@
                             {{-- Stock --}}
                             <div class="flex items-center gap-2 mb-4 text-sm">
                                 <span class="material-symbols-outlined text-green-500">check_circle</span>
-                                <span class="text-gray-700">متوفر (<span x-text="product.stock"></span> قطعة)</span>
+                                <span class="text-gray-700">{{ __t('shop.show.in_stock') }} (<span x-text="product.stock"></span> {{ __t('shop.show.pieces') }})</span>
                             </div>
 
                             {{-- Quantity --}}
                             <div class="flex items-center gap-3 mb-4">
-                                <span class="text-sm font-semibold text-gray-700">الكمية:</span>
+                                <span class="text-sm font-semibold text-gray-700">{{ __t('product.quantity') }}:</span>
                                 <div class="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
                                     <button type="button" @click="quantity = Math.max(1, quantity - 1); recalculate()"
                                             class="w-10 h-10 hover:bg-gray-100 transition disabled:opacity-30"
@@ -185,7 +190,7 @@
                                 <div class="text-xs text-gray-500 mt-auto pt-3 border-t">
                                     <span class="font-semibold">SKU:</span> <span x-text="product.sku"></span>
                                     <span class="mx-2">•</span>
-                                    <span class="font-semibold">الوزن:</span> <span x-text="product.weight + ' كجم'"></span>
+                                    <span class="font-semibold">{{ __t('shop.show.weight') }}:</span> <span x-text="product.weight + ' {{ __t('shop.show.kg') }}'"></span>
                                 </div>
                             </template>
                         </div>
@@ -197,7 +202,7 @@
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-blue-600">tune</span>
-                            اختر المواصفات
+                            {{ __t('product.specifications') }}
                         </h2>
                         @foreach($product->options as $option)
                             <div class="mb-4 last:mb-0">
@@ -221,7 +226,7 @@
                                                        hover:border-gray-400">
                                                 {{ $value->value }}
                                                 @if($value->price_adjustment > 0)
-                                                    <span class="text-xs text-gray-500">(+{{ number_format($value->price_adjustment, 0) }})</span>
+                                                    <span class="text-xs text-gray-500">(+{{ number_format(convertPrice($value->price_adjustment), 0) }})</span>
                                                 @endif
                                             </span>
                                         </label>
@@ -237,7 +242,7 @@
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
                             <span class="material-symbols-outlined text-blue-600">edit_note</span>
-                            معلومات إضافية
+                            {{ __t('instant.custom_fields') }}
                         </h2>
                         @foreach($product->customFields as $field)
                             <div class="mb-4 last:mb-0">
@@ -252,7 +257,7 @@
                                 @if($field->type === 'text')
                                     <input type="text" name="custom_text" x-model="customText" @input="recalculate()"
                                            class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg"
-                                           placeholder="{{ $field->placeholder ?? 'أدخل ' . $field->name }}">
+                                           placeholder="{{ $field->placeholder ?? __t('shop.show.custom_field_placeholder') . ' ' . $field->name }}">
                                 @elseif($field->type === 'textarea')
                                     <textarea name="custom_text" x-model="customText" @input="recalculate()" rows="3"
                                               class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg"
@@ -271,38 +276,38 @@
                         <button type="button" @click="tab = 'description'"
                                 :class="tab === 'description' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500'"
                                 class="px-4 py-2 font-semibold border-b-2 transition flex items-center gap-1">
-                            <span class="material-symbols-outlined text-xs">notes</span> الوصف
+                            <span class="material-symbols-outlined text-xs">notes</span> {{ __t('product.description') }}
                         </button>
                         <button type="button" @click="tab = 'reviews'"
                                 :class="tab === 'reviews' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500'"
                                 class="px-4 py-2 font-semibold border-b-2 transition flex items-center gap-1">
-                            <span class="material-symbols-outlined text-xs">star</span> التقييمات ({{ $product->reviews->count() ?? 0 }})
+                            <span class="material-symbols-outlined text-xs">star</span> {{ __t('product.reviews') }} ({{ $product->reviews->count() ?? 0 }})
                         </button>
                         <button type="button" @click="tab = 'shipping'"
                                 :class="tab === 'shipping' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500'"
                                 class="px-4 py-2 font-semibold border-b-2 transition flex items-center gap-1">
-                            <span class="material-symbols-outlined text-xs">local_shipping</span> الشحن
+                            <span class="material-symbols-outlined text-xs">local_shipping</span> {{ __t('shop.show.tab_shipping') }}
                         </button>
                     </div>
                     <div x-show="tab === 'description'" class="prose prose-sm max-w-none text-gray-700 leading-loose">
                         {!! nl2br(e($product->description)) !!}
                     </div>
                     <div x-show="tab === 'reviews'" x-cloak>
-                        <p class="text-gray-500 text-center py-8">لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!</p>
+                        <p class="text-gray-500 text-center py-8">{{ __t('product.no_reviews') }}. {{ __t('product.be_first_review') }}!</p>
                     </div>
                     <div x-show="tab === 'shipping'" x-cloak>
                         <div class="space-y-3 text-sm text-gray-700">
                             <p class="flex items-start gap-2">
                                 <span class="material-symbols-outlined text-blue-600 mt-1">local_shipping</span>
-                                <span>شحن سريع وآمن لكل المدن عبر شركات شحن معتمدة (أرامكس، سمسا، البريد السوداني، نوست إكسبرس، ياليدين).</span>
+                                <span>{{ __t('shop.show.shipping_desc') }}</span>
                             </p>
                             <p class="flex items-start gap-2">
                                 <span class="material-symbols-outlined text-green-600 mt-1">shield</span>
-                                <span>الدفع عند الاستلام متاح في كل المدن بدون رسوم مسبقاً.</span>
+                                <span>{{ __t('shop.show.cod_desc') }}</span>
                             </p>
                             <p class="flex items-start gap-2">
                                 <span class="material-symbols-outlined text-amber-600 mt-1">schedule</span>
-                                <span>الشحن العادي: 3-5 أيام. الشحن السريع: 1-2 يوم.</span>
+                                <span>{{ __t('shop.show.shipping_times') }}</span>
                             </p>
                         </div>
                     </div>
@@ -317,33 +322,33 @@
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-base font-bold mb-4 flex items-center gap-2 text-gray-800">
                             <span class="material-symbols-outlined text-blue-600">account_circle</span>
-                            بياناتك
+                            {{ __t('instant.customer_info') }}
                         </h2>
                         <div class="space-y-3">
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-600 mb-1">الاسم الأول *</label>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">{{ __t('instant.first_name') }} *</label>
                                     <input type="text" name="first_name" required x-model="form.first_name"
                                            class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
-                                           placeholder="أحمد">
+                                           placeholder="{{ __t('instant.first_name_placeholder') }}">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-600 mb-1">اللقب *</label>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">{{ __t('instant.last_name') }} *</label>
                                     <input type="text" name="last_name" required x-model="form.last_name"
                                            class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
-                                           placeholder="محمد">
+                                           placeholder="{{ __t('instant.last_name_placeholder') }}">
                                 </div>
                             </div>
-                            @if(site('instant_show_email', '1') === '1')
+                            @if($ibS('field_email_enabled'))
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">البريد الإلكتروني {{ site('instant_req_email', '0') === '1' ? '*' : '(اختياري)' }}</label>
-                                <input type="email" name="email" x-model="form.email" {{ site('instant_req_email', '0') === '1' ? 'required' : '' }}
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">{{ $ibS('field_email_label') ?? __t('common.email') }} {{ $ibS('field_email_required') ? '*' : '(' . __t('common.optional') . ')' }}</label>
+                                <input type="email" name="email" x-model="form.email" {{ $ibS('field_email_required') ? 'required' : '' }}
                                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
-                                       placeholder="example@mail.com">
+                                       placeholder="{{ $ibS('field_email_placeholder') ?? 'example@mail.com' }}">
                             </div>
                             @endif
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">رقم الهاتف *</label>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">{{ __t('instant.phone') }} *</label>
                                 <div class="flex gap-1" dir="ltr">
                                     <input type="text" :value="dialCode" readonly
                                            class="w-16 px-2 py-2 border-2 border-gray-200 rounded-lg bg-gray-50 text-center font-semibold text-xs">
@@ -359,11 +364,11 @@
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-base font-bold mb-4 flex items-center gap-2 text-gray-800">
                             <span class="material-symbols-outlined text-blue-600">local_shipping</span>
-                            عنوان الشحن
+                            {{ __t('instant.shipping_data') }}
                         </h2>
                         <div class="space-y-3">
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">الدولة *</label>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">{{ __t('common.country') }} *</label>
                                 <select name="country_code" required x-model="countryCode" @change="onCountryChange()"
                                         class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm bg-white">
                                     @foreach($countries as $code => $info)
@@ -371,12 +376,12 @@
                                     @endforeach
                                 </select>
                             </div>
-                            @if(site('instant_show_state', '1') === '1')
+                            @if($ibS('field_state_enabled'))
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">الولاية / المحافظة {{ site('instant_req_state', '0') === '1' ? '*' : '' }}</label>
-                                <select name="state_code" x-model="stateCode" {{ site('instant_req_state', '0') === '1' ? 'required' : '' }}
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">{{ $ibS('field_state_label') ?? __t('common.state') }} {{ $ibS('field_state_required') ? '*' : '' }}</label>
+                                <select name="state_code" x-model="stateCode" @change="onStateChange()" {{ $ibS('field_state_required') ? 'required' : '' }}
                                         class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm bg-white">
-                                    <option value="">— اختر —</option>
+                                    <option value="">— {{ __t('common.select') }} —</option>
                                     <template x-for="(name, code) in currentStates" :key="code">
                                         <option :value="code" x-text="name"></option>
                                     </template>
@@ -384,126 +389,84 @@
                             </div>
                             @endif
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">المدينة *</label>
-                                <input type="text" name="city" required x-model="city" @input.debounce.400ms="recalculate()"
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">{{ __t('instant.city') }} *</label>
+                                <input type="text" name="city" required x-model="city" @input.debounce.400ms="if(city&&countryCode)this.fetchShippingOptions();this.recalculate()"
                                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
-                                       placeholder="الخرطوم">
+                                       placeholder="{{ __t('instant.city_placeholder') }}">
                             </div>
-                            @if(site('instant_show_district', '1') === '1')
+                            @if($ibS('field_district_enabled'))
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">الحي / المنطقة {{ site('instant_req_district', '0') === '1' ? '*' : '' }}</label>
-                                <input type="text" name="district" x-model="form.district" {{ site('instant_req_district', '0') === '1' ? 'required' : '' }}
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">{{ $ibS('field_district_label') ?? __t('instant.district') }} {{ $ibS('field_district_required') ? '*' : '' }}</label>
+                                <input type="text" name="district" x-model="form.district" {{ $ibS('field_district_required') ? 'required' : '' }}
                                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
-                                       placeholder="الرياض">
+                                       placeholder="{{ $ibS('field_district_placeholder') ?? __t('instant.district_placeholder') }}">
                             </div>
                             @endif
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">العنوان التفصيلي *</label>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">{{ __t('instant.address') }} *</label>
                                 <textarea name="address" required x-model="form.address" rows="2"
                                           class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
-                                          placeholder="الشارع، رقم المبنى، علامة مميزة..."></textarea>
+                                          placeholder="{{ __t('instant.address_placeholder') }}"></textarea>
                             </div>
-                            @if(site('instant_show_zip', '1') === '1')
+                            @if($ibS('field_zip_enabled'))
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">الرمز البريدي {{ site('instant_req_zip', '0') === '1' ? '*' : '' }}</label>
-                                <input type="text" name="zip" x-model="form.zip" {{ site('instant_req_zip', '0') === '1' ? 'required' : '' }}
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">{{ $ibS('field_zip_label') ?? __t('instant.zip') }} {{ $ibS('field_zip_required') ? '*' : '' }}</label>
+                                <input type="text" name="zip" x-model="form.zip" {{ $ibS('field_zip_required') ? 'required' : '' }}
                                        class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
-                                       placeholder="11111">
+                                       placeholder="{{ $ibS('field_zip_placeholder') ?? '11111' }}">
                             </div>
                             @endif
                         </div>
                     </div>
 
-                    {{-- ===== Delivery Type ===== --}}
-                    <div class="bg-white rounded-2xl shadow-sm p-5">
-                        <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
-                            <span class="material-symbols-outlined text-blue-600">route</span>
-                            نوع التوصيل
-                        </h2>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition"
-                                   :class="deliveryType === 'home' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-400'">
-                                <input type="radio" name="delivery_type" value="home" x-model="deliveryType" @change="recalculate()"
-                                       class="w-4 h-4 text-blue-600">
-                                <div class="flex-1">
-                                    <div class="font-semibold text-sm flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-blue-600">home</span>
-                                        توصيل للمنزل
-                                    </div>
-                                    <div class="text-xs text-gray-500">إلى عنوانك مباشرة</div>
-                                </div>
-                            </label>
-                            <label class="flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition"
-                                   :class="deliveryType === 'office' ? 'border-purple-600 bg-purple-50' : 'border-gray-200 hover:border-gray-400'">
-                                <input type="radio" name="delivery_type" value="office" x-model="deliveryType" @change="recalculate()"
-                                       class="w-4 h-4 text-purple-600">
-                                <div class="flex-1">
-                                    <div class="font-semibold text-sm flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-purple-600">business</span>
-                                        استلام من مكتب الشركة
-                                    </div>
-                                    <div class="text-xs text-gray-500">من أقرب مكتب شحن إليك</div>
-                                </div>
-                                <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-bold">أرخص</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    {{-- ===== Shipping Company ===== --}}
-                    @if(isset($shippingCompanies) && $shippingCompanies->count() > 0)
-                        <div class="bg-white rounded-2xl shadow-sm p-5">
-                            <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
-                                <i class="fas fa-truck text-blue-600"></i>
-                                شركة الشحن (اختياري)
-                            </h2>
-                            <select name="shipping_company_id" x-model="shippingCompanyId" @change="recalculate()"
-                                    class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
-                                <option value="">— تلقائي (أرخص/أسرع) —</option>
-                                @foreach($shippingCompanies as $company)
-                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                @endforeach
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">اتركه فارغاً للسماح للنظام باختيار الأنسب</p>
-                        </div>
-                    @endif
-
-                    {{-- ===== Shipping Method ===== --}}
+                    {{-- ===== Shipping Method (dynamic from admin settings) ===== --}}
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
                             <i class="fas fa-shipping-fast text-blue-600"></i>
-                            طريقة الشحن
+                            {{ __t('instant.shipping_method') }}
                         </h2>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition"
-                                   :class="shippingMethod === 'standard' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-400'">
-                                <input type="radio" name="shipping_method" value="standard" x-model="shippingMethod" @change="recalculate()"
-                                       class="w-4 h-4 text-blue-600">
-                                <div class="flex-1">
-                                    <div class="font-semibold text-sm">عادي (3-5 أيام)</div>
-                                    <div class="text-xs text-gray-500">شحن قياسي</div>
-                                </div>
-                                <span class="text-sm font-bold"
-                                      :class="shippingCost === 0 ? 'text-green-600' : 'text-gray-700'"
-                                      x-text="shippingMethod === 'standard' ? (shippingCost === 0 ? 'مجاناً' : formatMoney(shippingCost) + ' ' + currencySymbol) : ''">
-                                </span>
-                            </label>
-                            <label class="flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition"
-                                   :class="shippingMethod === 'express' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-400'">
-                                <input type="radio" name="shipping_method" value="express" x-model="shippingMethod" @change="recalculate()"
-                                       class="w-4 h-4 text-blue-600">
-                                <div class="flex-1">
-                                    <div class="font-semibold text-sm">سريع (1-2 يوم)</div>
-                                    <div class="text-xs text-gray-500">أولوية قصوى</div>
-                                </div>
-                                <span class="text-sm font-bold text-amber-600"
-                                      x-text="shippingMethod === 'express' ? (shippingCost === 0 ? 'مجاناً' : formatMoney(shippingCost) + ' ' + currencySymbol) : (expressCost === 0 ? 'مجاناً' : formatMoney(expressCost) + ' ' + currencySymbol)">
-                                </span>
-                            </label>
-                        </div>
+                        <template x-if="shippingOptions.length === 0">
+                            <div class="text-center py-4 text-sm text-gray-500">
+                                <i class="fas fa-truck text-gray-300 text-2xl mb-2"></i>
+                                <p>{{ __t('instant.select_city_shipping') }}</p>
+                            </div>
+                        </template>
+                        <template x-if="shippingOptions.length > 0">
+                            <div class="space-y-2">
+                                <template x-for="(opt, idx) in shippingOptions" :key="idx">
+                                    <label class="flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition"
+                                           :class="selectedShippingOption?.type === opt.type && selectedShippingOption?.company_id === opt.company_id ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-gray-400'">
+                                        <input type="radio" name="shipping_method" :value="opt.type"
+                                               x-model="shippingMethod"
+                                               @change="selectShippingOption(opt)"
+                                               class="w-4 h-4 text-blue-600">
+                                        <div class="flex-1 min-w-0">
+                                            <div class="font-semibold text-sm" x-text="opt.label"></div>
+                                            <div class="text-xs text-gray-500 flex items-center gap-1">
+                                                <span x-text="opt.company_name"></span>
+                                                <template x-if="opt.estimated_days">
+                                                    <span>• 🕐 <span x-text="opt.estimated_days"></span></span>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <span class="text-sm font-bold whitespace-nowrap"
+                                              :class="opt.is_free ? 'text-green-600' : 'text-gray-700'"
+                                              x-text="opt.is_free ? '{{ __t("common.free") }}' : formatMoney(opt.cost) + ' ' + currencySymbol">
+                                        </span>
+                                    </label>
+                                </template>
+                            </div>
+                        </template>
                         <template x-if="shippingFree && subtotal > 0">
                             <p class="text-xs text-green-600 mt-2 flex items-center gap-1">
                                 <i class="fas fa-gift"></i>
-                                <span>مبروك! حصلت على شحن مجاني.</span>
+                                <span>{{ __t('instant.free_shipping_notice') }}</span>
+                            </p>
+                        </template>
+                        <template x-if="fixedCompany">
+                            <p class="text-xs text-blue-600 mt-2 flex items-center gap-1">
+                                <i class="fas fa-info-circle"></i>
+                                <span>{{ __t('instant.ships_via') }} <span x-text="fixedCompany.name"></span></span>
                             </p>
                         </template>
                     </div>
@@ -512,17 +475,17 @@
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
                             <i class="fas fa-credit-card text-blue-600"></i>
-                            طريقة الدفع
+                            {{ __t('instant.payment_method') }}
                         </h2>
                         <div class="space-y-2">
-                            @if(site('instant_enable_bank_transfer', '0') === '1')
+                            @if($ibS('show_bank_transfer'))
                             <label class="flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition"
                                    :class="paymentMethod === 'cod' ? 'border-green-600 bg-green-50' : 'border-gray-200 hover:border-gray-400'">
                                 <input type="radio" name="payment_method" value="cod" x-model="paymentMethod" @change="recalculate()"
                                        class="w-4 h-4 text-green-600">
                                 <div class="flex-1">
-                                    <div class="font-semibold text-sm">الدفع عند الاستلام</div>
-                                    <div class="text-xs text-gray-500">ادفع نقداً عند الاستلام</div>
+                                    <div class="font-semibold text-sm">{{ __t('instant.cod') }}</div>
+                                    <div class="text-xs text-gray-500">{{ __t('instant.cod_desc') }}</div>
                                 </div>
                                 <i class="fas fa-money-bill-wave text-green-600"></i>
                             </label>
@@ -531,8 +494,8 @@
                                 <input type="radio" name="payment_method" value="bank" x-model="paymentMethod" @change="recalculate()"
                                        class="w-4 h-4 text-blue-600">
                                 <div class="flex-1">
-                                    <div class="font-semibold text-sm">تحويل بنكي</div>
-                                    <div class="text-xs text-gray-500">سيتم إرسال التفاصيل</div>
+                                    <div class="font-semibold text-sm">{{ __t('instant.bank_transfer') }}</div>
+                                    <div class="text-xs text-gray-500">{{ __t('instant.bank_transfer_desc') }}</div>
                                 </div>
                                 <i class="fas fa-university text-blue-600"></i>
                             </label>
@@ -540,8 +503,8 @@
                             <input type="hidden" name="payment_method" value="cod">
                             <div class="flex items-center gap-3 p-3 border-2 border-green-600 bg-green-50 rounded-lg">
                                 <div class="flex-1">
-                                    <div class="font-semibold text-sm">الدفع عند الاستلام</div>
-                                    <div class="text-xs text-gray-500">ادفع نقداً عند الاستلام</div>
+                                    <div class="font-semibold text-sm">{{ __t('instant.cod') }}</div>
+                                    <div class="text-xs text-gray-500">{{ __t('instant.cod_cash_desc') }}</div>
                                 </div>
                                 <i class="fas fa-money-bill-wave text-green-600"></i>
                             </div>
@@ -550,27 +513,27 @@
                     </div>
 
                     {{-- ===== Notes ===== --}}
-                    @if(site('instant_show_notes', '1') === '1')
+                    @if($ibS('field_notes_enabled'))
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
                             <i class="fas fa-note-sticky text-blue-600"></i>
-                            ملاحظات (اختياري)
+                            {{ $ibS('field_notes_label') ?? __t('instant.notes') }} @if(!$ibS('field_notes_required'))({{ __t('common.optional') }})@endif
                         </h2>
                         <textarea name="notes" rows="2" x-model="form.notes"
                                   class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm"
-                                  placeholder="أي ملاحظات خاصة بالطلب..."></textarea>
+                                  placeholder="{{ $ibS('field_notes_placeholder') ?? __t('instant.notes_placeholder') }}"></textarea>
                     </div>
                     @endif
 
                     {{-- ===== Coupon ===== --}}
-                    @if(site('instant_show_coupon', '1') === '1')
+                    @if($ibS('field_coupon_enabled'))
                     <div class="bg-white rounded-2xl shadow-sm p-5">
                         <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
                             <i class="fas fa-ticket text-blue-600"></i>
-                            كوبون خصم
+                            {{ $ibS('field_coupon_label') ?? __t('instant.coupon') }}
                         </h2>
                         <div class="flex gap-2">
-                            <input type="text" x-model="couponCode" placeholder="أدخل كود الكوبون"
+                            <input type="text" x-model="couponCode" placeholder="{{ $ibS('field_coupon_placeholder') ?? __t('instant.coupon_placeholder') }}"
                                    class="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg text-sm font-mono uppercase">
                             <button type="button" @click="applyCoupon()" :disabled="couponLoading || !couponCode"
                                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50">
@@ -597,20 +560,20 @@
                     <div class="summary-card border-2 border-green-200 rounded-2xl p-5">
                         <h2 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-800">
                             <i class="fas fa-receipt text-green-600"></i>
-                            ملخص الطلب
+                            {{ __t('instant.order_summary') }}
                             <span x-show="loading" class="text-xs text-gray-400 mr-auto">
-                                <i class="fas fa-spinner fa-spin"></i> جاري الحساب...
+                                <i class="fas fa-spinner fa-spin"></i> {{ __t('common.loading') }}
                             </span>
                         </h2>
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between">
-                                <span class="text-gray-600">المنتج (<span x-text="quantity"></span>×)</span>
+                                <span class="text-gray-600">{{ __t('product.name') }} (<span x-text="quantity"></span>×)</span>
                                 <span class="font-semibold" x-text="formatMoney(subtotal) + ' ' + currencySymbol"></span>
                             </div>
                             <template x-if="discount > 0">
                                 <div class="flex justify-between text-red-600">
                                     <span class="flex items-center gap-1">
-                                        <i class="fas fa-tag text-xs"></i> الخصم
+                                        <i class="fas fa-tag text-xs"></i> {{ __t('instant.discount') }}
                                         <template x-if="appliedCoupon">
                                             <span class="badge bg-red-100 text-red-600 text-[10px] px-1.5 py-0 rounded mr-1" x-text="appliedCoupon.code"></span>
                                         </template>
@@ -619,19 +582,19 @@
                                 </div>
                             </template>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">الشحن (<span x-text="shippingMethod === 'express' ? 'سريع' : 'عادي'"></span>)</span>
+                                <span class="text-gray-600">{{ __t('instant.shipping') }} <span x-text="selectedShippingOption ? '(' + selectedShippingOption.label + ')' : ''"></span></span>
                                 <span class="font-semibold" :class="shippingCost === 0 ? 'text-green-600' : ''"
-                                      x-text="shippingCost === 0 ? 'مجاناً' : formatMoney(shippingCost) + ' ' + currencySymbol"></span>
+                                      x-text="shippingCost === 0 ? '{{ __t("common.free") }}' : formatMoney(shippingCost) + ' ' + currencySymbol"></span>
                             </div>
                             <template x-if="paymentMethod === 'cod' && codFee > 0">
                                 <div class="flex justify-between text-amber-600">
-                                    <span><i class="fas fa-money-bill text-xs ml-1"></i>رسوم الدفع عند الاستلام</span>
+                                    <span><i class="fas fa-money-bill text-xs ml-1"></i>{{ __t('instant.cod_fee') }}</span>
                                     <span class="font-semibold" x-text="formatMoney(codFee) + ' ' + currencySymbol"></span>
                                 </div>
                             </template>
                             <hr class="border-green-200 my-2">
                             <div class="flex justify-between items-center">
-                                <span class="text-base font-bold text-gray-800">الإجمالي</span>
+                                <span class="text-base font-bold text-gray-800">{{ __t('instant.total') }}</span>
                                 <span class="text-2xl font-extrabold text-green-600 price-pulse" :key="grandTotal"
                                       x-text="formatMoney(grandTotal) + ' ' + currencySymbol"></span>
                             </div>
@@ -642,7 +605,7 @@
                     <div class="space-y-3">
                         <div class="flex items-start gap-2 text-xs text-gray-500 px-2">
                             <i class="fas fa-shield-halved text-green-600 mt-0.5"></i>
-                            <span>طلبك آمن ومُشفر. الدفع عند الاستلام متاح في كل المدن.</span>
+                            <span>{{ __t('instant.secure_notice') }}</span>
                         </div>
 
                         <button type="submit" :disabled="submitting || !canSubmit"
@@ -650,30 +613,30 @@
                                 :class="canSubmit ? 'bg-gradient-to-l from-blue-600 via-indigo-600 to-purple-600 hover:shadow-2xl hover:-translate-y-0.5' : 'bg-gray-400'">
                             <span x-show="!submitting">
                                 <i class="fas fa-check-circle"></i>
-                                <span>تأكيد الطلب — <span x-text="formatMoney(grandTotal) + ' ' + currencySymbol"></span></span>
+                                <span>{{ __t('instant.complete_order') }} — <span x-text="formatMoney(grandTotal) + ' ' + currencySymbol"></span></span>
                             </span>
                             <span x-show="submitting" class="flex items-center gap-2">
                                 <i class="fas fa-spinner fa-spin"></i>
-                                جاري الإرسال...
+                                {{ __t('instant.submitting') }}...
                             </span>
                         </button>
 
                         <div class="grid grid-cols-2 gap-2 text-xs text-gray-500">
                             <div class="flex items-center gap-1.5">
                                 <i class="fas fa-shield-halved text-green-500"></i>
-                                <span>دفع آمن</span>
+                                <span>{{ __t('instant.secure_payment') }}</span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="fas fa-truck-fast text-blue-500"></i>
-                                <span>شحن سريع</span>
+                                <span>{{ __t('instant.fast_shipping') }}</span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="fas fa-rotate-left text-purple-500"></i>
-                                <span>إرجاع مضمون</span>
+                                <span>{{ __t('instant.guaranteed_return') }}</span>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="fas fa-headset text-amber-500"></i>
-                                <span>دعم 24/7</span>
+                                <span>{{ __t('instant.support_24_7') }}</span>
                             </div>
                         </div>
                     </div>
@@ -682,12 +645,58 @@
         </form>
     </div>
 
+    {{-- ============ SUCCESS OVERLAY ============ --}}
+    <div x-show="submitted" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100">
+        <div @click.outside="resetForm()"
+             class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center"
+             style="border: {{ $ibS('form_border_width') }}px solid {{ $ibS('form_border_color') }};
+                    border-radius: {{ $ibS('form_border_radius') }}px;">
+            <div style="font-size: {{ $ibS('success_icon_size') }}px; color: {{ $ibS('success_icon_color') }}">✅</div>
+            <h3 style="color: {{ $ibS('success_title_color') }}; font-size: 18px; font-weight: bold" class="mt-3">{{ $ibS('success_title') }}</h3>
+            <p class="text-sm text-gray-500 mt-1">{{ $ibS('success_message') }}</p>
+
+            <template x-if="successOrderNumber && {{ $ibS('success_show_order_number') ? 'true' : 'false' }}">
+                <div class="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
+                    <p class="text-xs text-gray-500">{{ __t('instant.order_number') }}</p>
+                    <p style="color: {{ $ibS('success_order_number_color') }}; font-size: {{ $ibS('success_order_number_size') }}px"
+                       class="font-bold" x-text="successOrderNumber"></p>
+                </div>
+            </template>
+
+            <template x-if="successDetails && {{ $ibS('success_show_order_details') ? 'true' : 'false' }}">
+                <div class="mt-3 text-right text-sm bg-gray-50 rounded-xl p-3 border border-gray-200 space-y-1">
+                    <div class="flex justify-between"><span class="text-gray-500">{{ __t('product.name') }}</span><span class="font-medium" x-text="successDetails.product_name"></span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">{{ __t('instant.total') }}</span><span class="font-bold text-green-600" x-text="successDetails.total"></span></div>
+                </div>
+            </template>
+
+            <div class="mt-4 flex flex-col gap-2">
+                <template x-if="successWhatsappUrl && {{ $ibS('success_show_whatsapp_button') ? 'true' : 'false' }}">
+                    <a :href="successWhatsappUrl" target="_blank"
+                       class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm text-white bg-green-600 hover:bg-green-700 transition">
+                        <i class="fab fa-whatsapp"></i> {{ __t('instant.whatsapp_contact') }}
+                    </a>
+                </template>
+                <button @click="resetForm()"
+                        style="background: {{ $ibS('button_bg_color') }}; color: {{ $ibS('button_text_color') }};
+                               border-radius: {{ $ibS('button_border_radius') }}px; height: {{ $ibS('button_height') }}px;"
+                        class="w-full font-bold text-sm flex items-center justify-center">
+                    {{ $ibS('success_button_text') }}
+                </button>
+            </div>
+        </div>
+    </div>
+
     {{-- ============ RELATED PRODUCTS ============ --}}
     @if(isset($relatedProducts) && $relatedProducts->count() > 0)
         <div class="container-app py-8 border-t">
             <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
                 <i class="fas fa-thumbs-up text-blue-600"></i>
-                منتجات مشابهة
+                {{ __t('product.related_products') }}
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($relatedProducts as $rel)
@@ -750,7 +759,20 @@ function instantBuyForm() {
         deliveryType: 'home',
         shippingCompanyId: '',
         paymentMethod: 'cod',
-        currencySymbol: 'ج.س',
+        currencySymbol: '{{ __t('common.currency') }}',
+
+        // === Conversion Rate ===
+        conversionRate: window.__CONVERSION_RATE__ || 1,
+        storeCountry: 'SD',
+
+        // === Dynamic Shipping Options ===
+        shippingOptions: [],
+        selectedShippingOption: null,
+        fixedCompany: null,
+
+        // === Zone-based Delivery Types ===
+        supportedDeliveryTypes: [],
+        zoneDeliveryType: 'home',
 
         // === Pricing (live) ===
         subtotal: 0,
@@ -776,6 +798,7 @@ function instantBuyForm() {
 
         // === UI State ===
         submitting: false,
+        submitted: false,
         loading: false,
         couponCode: '',
         couponLoading: false,
@@ -783,6 +806,10 @@ function instantBuyForm() {
         couponError: '',
         calcTimer: null,
         authUser: null,
+        ibEnabled: true,
+        successOrderNumber: '',
+        successWhatsappUrl: '',
+        successDetails: null,
 
         get displayPrice() {
             // The unit price (per piece) for display in the product info
@@ -790,23 +817,41 @@ function instantBuyForm() {
         },
 
         get canSubmit() {
-            const reqEmail = {{ site('instant_req_email', '0') === '1' ? 'true' : 'false' }};
-            const reqState = {{ site('instant_req_state', '0') === '1' ? 'true' : 'false' }};
-            const reqDistrict = {{ site('instant_req_district', '0') === '1' ? 'true' : 'false' }};
-            const reqZip = {{ site('instant_req_zip', '0') === '1' ? 'true' : 'false' }};
-
-            if (!this.city || !this.form.first_name || !this.form.last_name || !this.form.phone || !this.form.address) {
-                return false;
-            }
-            if (reqEmail && !this.form.email) return false;
-            if (reqState && !this.stateCode) return false;
-            if (reqDistrict && !this.form.district) return false;
-            if (reqZip && !this.form.zip) return false;
-
+            @if($ibS('field_country_required'))
+            if (!this.countryCode) return false;
+            @endif
+            @if($ibS('field_city_required'))
+            if (!this.city) return false;
+            @endif
+            @if($ibS('field_phone_required'))
+            if (!this.form.phone) return false;
+            @endif
+            @if($ibS('field_address_required'))
+            if (!this.form.address) return false;
+            @endif
+            @if($ibS('field_first_name_required'))
+            if (!this.form.first_name) return false;
+            @endif
+            @if($ibS('field_last_name_required'))
+            if (!this.form.last_name) return false;
+            @endif
+            @if($ibS('field_email_required'))
+            if (!this.form.email) return false;
+            @endif
+            @if($ibS('field_state_required'))
+            if (!this.stateCode) return false;
+            @endif
+            @if($ibS('field_district_required'))
+            if (!this.form.district) return false;
+            @endif
+            @if($ibS('field_zip_required'))
+            if (!this.form.zip) return false;
+            @endif
             return true;
         },
 
-        setup(id, name, basePrice, finalPrice, salePrice, images, stock, sku, weight, countries, defaultCountry, defaultState, defaultSymbol, authUser) {
+        setup(id, name, basePrice, finalPrice, salePrice, images, stock, sku, weight, countries, defaultCountry, defaultState, defaultSymbol, authUser, conversionRate, ibEnabled) {
+            this.ibEnabled = ibEnabled;
             this.product.id = id;
             this.product.name = name;
             this.product.basePrice = parseFloat(basePrice) || 0;
@@ -822,8 +867,10 @@ function instantBuyForm() {
             this.countries = countries || {};
             this.countryCode = defaultCountry || 'SD';
             this.stateCode = defaultState || '';
-            this.currencySymbol = countries[defaultCountry]?.currency_symbol || defaultSymbol || 'ج.س';
+            this.currencySymbol = countries[defaultCountry]?.currency_symbol || defaultSymbol || '{{ __t('common.currency') }}';
             this.dialCode = countries[defaultCountry]?.dial_code || '+249';
+            this.conversionRate = parseFloat(conversionRate) || 1;
+            this.storeCountry = '@json(config('ecommerce.store.default_country', 'SD'))';
             this.authUser = authUser || null;
             @if($product->category)
             this.product.categoryName = @json($product->category->name);
@@ -838,8 +885,67 @@ function instantBuyForm() {
                 this.form.phone = authUser.phone || '';
             }
 
-            // Initial calculation (without city)
+            // Initial calculation + shipping options
+            if (this.city) {
+                this.fetchShippingOptions();
+            }
             this.recalculate();
+        },
+
+        selectShippingOption(opt) {
+            this.selectedShippingOption = opt;
+            this.shippingMethod = opt.type;
+            this.shippingCompanyId = opt.company_id || '';
+            this.recalculate();
+        },
+
+        async fetchShippingOptions() {
+            if (!this.product.id || !this.countryCode || !this.city) return;
+            try {
+                const payload = {
+                    product_id: this.product.id,
+                    country_code: this.countryCode,
+                    city: this.city,
+                    delivery_type: this.deliveryType,
+                };
+                const res = await fetch(this.ibEnabled ? '{{ route('instant-buy.shipping-options') }}' : '{{ route('instant.shipping-options') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    this.shippingOptions = data.options || [];
+                    this.fixedCompany = data.fixed_company || null;
+                    this.supportedDeliveryTypes = data.supported_delivery_types || ['home'];
+                    this.zoneDeliveryType = data.zone_delivery_type || 'home';
+                    this.deliveryType = this.supportedDeliveryTypes[0];
+                    // Auto-select first option if current selection is invalid
+                    if (this.shippingOptions.length > 0) {
+                        const currentValid = this.shippingOptions.find(o =>
+                            o.type === this.selectedShippingOption?.type &&
+                            o.company_id === this.selectedShippingOption?.company_id &&
+                            o.delivery_type === this.deliveryType
+                        );
+                        if (!currentValid) {
+                            this.selectShippingOption(this.shippingOptions[0]);
+                        }
+                    }
+                }
+            } catch (e) { /* silent */ }
+        },
+
+        onStateChange() {
+            if (this.stateCode && this.currentStates[this.stateCode]) {
+                this.city = this.currentStates[this.stateCode];
+                this.fetchShippingOptions();
+                this.recalculate();
+            }
         },
 
         onCountryChange() {
@@ -848,7 +954,13 @@ function instantBuyForm() {
             this.dialCode = '+' + dial;
             this.currencySymbol = info.currency_symbol || this.currencySymbol;
             this.stateCode = '';
+            this.city = '';
             this.currentStates = info.states || {};
+            // Recalculate conversion rate
+            const baseCountry = this.storeCountry;
+            const baseRate = parseFloat(this.countries[baseCountry]?.rate_to_usd) || 1;
+            const targetRate = parseFloat(info.rate_to_usd) || 1;
+            this.conversionRate = baseRate > 0 && targetRate > 0 ? baseRate / targetRate : 1;
             this.recalculate();
         },
 
@@ -889,28 +1001,48 @@ function instantBuyForm() {
             }
 
             try {
-                const payload = {
-                    product_id: this.product.id,
-                    quantity: this.quantity,
-                    country_code: this.countryCode,
-                    city: this.city,
-                    state_code: this.stateCode,
-                    shipping_method: this.shippingMethod,
-                    delivery_type: this.deliveryType,
-                    shipping_company_id: this.shippingCompanyId || null,
-                    coupon_code: this.appliedCoupon?.code || null,
-                    custom_text: this.customText || null,
-                };
+                const payload = {};
 
-                // Add options
-                const opts = {};
-                let hasOptions = false;
-                for (const [k, v] of Object.entries(this.selectedOptions)) {
-                    if (v) { opts[k] = v; hasOptions = true; }
+                if (this.ibEnabled) {
+                    // New controller format (InstantBuyOrderController)
+                    payload.product_id = this.product.id;
+                    payload.quantity = this.quantity;
+                    payload.country_code = this.countryCode;
+                    payload.city = this.city;
+                    payload.shipping_method_type = this.shippingMethod;
+                    payload.shipping_cost = this.selectedShippingOption?.cost ?? 0;
+                    payload.delivery_type = this.deliveryType;
+                    payload.coupon_code = this.appliedCoupon?.code || null;
+                    payload.custom_text = this.customText || null;
+
+                    // Convert options map to array of IDs
+                    const selectedValues = [];
+                    for (const [, v] of Object.entries(this.selectedOptions)) {
+                        if (v) selectedValues.push(v);
+                    }
+                    if (selectedValues.length > 0) payload.selected_options = selectedValues;
+                } else {
+                    // Old controller format (InstantBuyController)
+                    payload.product_id = this.product.id;
+                    payload.quantity = this.quantity;
+                    payload.country_code = this.countryCode;
+                    payload.city = this.city;
+                    payload.state_code = this.stateCode;
+                    payload.shipping_method = this.shippingMethod;
+                    payload.delivery_type = this.deliveryType;
+                    payload.shipping_company_id = this.shippingCompanyId || null;
+                    payload.coupon_code = this.appliedCoupon?.code || null;
+                    payload.custom_text = this.customText || null;
+
+                    const opts = {};
+                    let hasOptions = false;
+                    for (const [k, v] of Object.entries(this.selectedOptions)) {
+                        if (v) { opts[k] = v; hasOptions = true; }
+                    }
+                    if (hasOptions) payload.options = opts;
                 }
-                if (hasOptions) payload.options = opts;
 
-                const res = await fetch('{{ route('instant.calculate') }}', {
+                const res = await fetch(this.ibEnabled ? '{{ route('instant-buy.calculate') }}' : '{{ route('instant.calculate') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -924,33 +1056,21 @@ function instantBuyForm() {
                 const data = await res.json();
                 if (data.success) {
                     this.subtotal = data.subtotal;
-                    this.shippingCost = data.shipping_cost;
-                    this.shippingFree = data.shipping_free;
+                    // Use local selected option cost for shipping (avoids race condition
+                    // where first request with null selectedShippingOption overwrites)
+                    if (this.selectedShippingOption) {
+                        this.shippingCost = this.selectedShippingOption.cost;
+                        this.shippingFree = this.selectedShippingOption.is_free;
+                    } else {
+                        this.shippingCost = data.shipping_cost;
+                        this.shippingFree = data.shipping_free;
+                    }
                     this.discount = data.discount;
                     this.weight = data.weight;
                     this.currencySymbol = data.currency_symbol || this.currencySymbol;
-                    this.grandTotal = data.total + (this.paymentMethod === 'cod' ? this.codFee : 0);
-
-                    // Fetch the OTHER method's cost to show in the radio
-                    if (this.shippingMethod === 'standard') {
-                        const expressPayload = { ...payload, shipping_method: 'express' };
-                        const expressRes = await fetch('{{ route('instant.calculate') }}', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                            body: JSON.stringify(expressPayload),
-                        });
-                        const expressData = await expressRes.json();
-                        if (expressData.success) this.expressCost = expressData.shipping_cost;
-                    } else {
-                        const standardPayload = { ...payload, shipping_method: 'standard' };
-                        const standardRes = await fetch('{{ route('instant.calculate') }}', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                            body: JSON.stringify(standardPayload),
-                        });
-                        const standardData = await standardRes.json();
-                        if (standardData.success) this.expressCost = standardData.shipping_cost;
-                    }
+                    // Recalculate total locally to reflect actual shipping cost
+                    this.grandTotal = Math.max(0, this.subtotal + this.shippingCost - this.discount)
+                        + (this.paymentMethod === 'cod' ? this.codFee : 0);
                 }
             } catch (e) {
                 console.warn('Calculate error:', e);
@@ -966,7 +1086,7 @@ function instantBuyForm() {
             this.couponMessage = '';
 
             try {
-                const res = await fetch('{{ route('instant.coupon') }}', {
+                const res = await fetch(this.ibEnabled ? '{{ route('instant-buy.coupon') }}' : '{{ route('instant.coupon') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -983,11 +1103,11 @@ function instantBuyForm() {
                     this.couponError = '';
                     this.recalculate();
                 } else {
-                    this.couponError = data.message || 'كود غير صالح';
+                    this.couponError = data.message || '{{ __t('shop.show.coupon_invalid') }}';
                     this.appliedCoupon = null;
                 }
             } catch (e) {
-                this.couponError = 'حدث خطأ. حاول مرة أخرى.';
+                this.couponError = '{{ __t('shop.show.coupon_error') }}';
             } finally {
                 this.couponLoading = false;
             }
@@ -1003,7 +1123,8 @@ function instantBuyForm() {
 
         formatMoney(amount) {
             if (isNaN(amount) || amount === null || amount === undefined) amount = 0;
-            return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(Math.round(amount * 100) / 100);
+            const locale = document.documentElement.lang || 'en';
+            return new Intl.NumberFormat(locale, { maximumFractionDigits: 2, minimumFractionDigits: 0 }).format(Math.round(amount * this.conversionRate * 100) / 100);
         },
 
         async submitForm(event) {
@@ -1013,7 +1134,7 @@ function instantBuyForm() {
             }
             if (!this.canSubmit) {
                 event.preventDefault();
-                alert('يرجى إكمال جميع الحقول المطلوبة');
+                alert('{{ __t('shop.show.fill_required') }}');
                 return;
             }
             event.preventDefault();
@@ -1023,12 +1144,29 @@ function instantBuyForm() {
             try {
                 const fd = new FormData(event.target);
 
-                // Ensure radio buttons are set
-                if (!fd.has('delivery_type')) fd.append('delivery_type', this.deliveryType);
-                if (!fd.has('shipping_method')) fd.append('shipping_method', this.shippingMethod);
-                if (!fd.has('payment_method')) fd.append('payment_method', this.paymentMethod);
-                if (!fd.has('quantity')) fd.append('quantity', this.quantity);
-                if (this.shippingCompanyId) fd.set('shipping_company_id', this.shippingCompanyId);
+                if (this.ibEnabled) {
+                    // Convert options[optionId] to selected_options[] for new controller
+                    if (fd.has('options')) {
+                        const optVals = [];
+                        for (const [k, v] of fd.entries()) {
+                            if (k.startsWith('options[')) optVals.push(v);
+                        }
+                        optVals.forEach(v => fd.append('selected_options[]', v));
+                        fd.delete('options');
+                    }
+                    if (!fd.has('delivery_type')) fd.append('delivery_type', this.deliveryType);
+                    if (this.shippingMethod) fd.set('shipping_method_type', this.shippingMethod);
+                    if (!fd.has('payment_method')) fd.append('payment_method', this.paymentMethod);
+                    if (!fd.has('quantity')) fd.append('quantity', this.quantity);
+                    if (this.selectedShippingOption) fd.set('shipping_cost', this.selectedShippingOption.cost);
+                } else {
+                    if (!fd.has('delivery_type')) fd.append('delivery_type', this.deliveryType);
+                    if (!fd.has('shipping_method')) fd.append('shipping_method', this.shippingMethod);
+                    if (!fd.has('payment_method')) fd.append('payment_method', this.paymentMethod);
+                    if (!fd.has('quantity')) fd.append('quantity', this.quantity);
+                    if (this.shippingCompanyId) fd.set('shipping_company_id', this.shippingCompanyId);
+                    if (this.selectedShippingOption) fd.set('shipping_cost', this.selectedShippingOption.cost);
+                }
 
                 const res = await fetch(event.target.action, {
                     method: 'POST',
@@ -1044,14 +1182,26 @@ function instantBuyForm() {
                 if (contentType.includes('application/json')) {
                     const data = await res.json();
                     if (data.success) {
-                        window.location.href = data.redirect || ('/order/' + data.order_number + '/thanks');
+                        if (this.ibEnabled && data.data) {
+                            this.successOrderNumber = '# ' + data.data.order_number;
+                            this.successWhatsappUrl = data.data.whatsapp_url || '';
+                            this.successDetails = {
+                                product_name: data.data.product_name,
+                                total: this.formatMoney(data.data.grand_total) + ' ' + this.currencySymbol,
+                            };
+                            this.submitted = true;
+                            this.submitting = false;
+                            document.documentElement.classList.remove('is-loading');
+                        } else {
+                            window.location.href = data.redirect || ('/order/' + data.order_number + '/thanks');
+                        }
                     } else if (data.errors) {
                         const firstError = Object.values(data.errors)[0];
-                        alert(firstError[0] || 'حدث خطأ في الطلب');
+                        alert(firstError[0] || '{{ __t('shop.show.order_error') }}');
                         this.submitting = false;
                         document.documentElement.classList.remove('is-loading');
                     } else {
-                        alert(data.message || 'حدث خطأ');
+                        alert(data.message || '{{ __t('shop.show.general_error') }}');
                         this.submitting = false;
                         document.documentElement.classList.remove('is-loading');
                     }
@@ -1062,10 +1212,31 @@ function instantBuyForm() {
                 }
             } catch (e) {
                 console.error('Submit error:', e);
-                alert('تعذّر إرسال الطلب. حاول مرة أخرى.');
+                alert('{{ __t('shop.show.submit_error') }}');
                 this.submitting = false;
                 document.documentElement.classList.remove('is-loading');
             }
+        },
+
+        resetForm() {
+            this.submitted = false;
+            this.successOrderNumber = '';
+            this.successWhatsappUrl = '';
+            this.successDetails = null;
+            this.form.first_name = '';
+            this.form.last_name = '';
+            this.form.phone = '';
+            this.form.address = '';
+            this.form.notes = '';
+            this.city = '';
+            this.stateCode = '';
+            this.shippingOptions = [];
+            this.selectedShippingOption = null;
+            this.subtotal = 0;
+            this.shippingCost = 0;
+            this.discount = 0;
+            this.grandTotal = 0;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         },
     };
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="scroll-smooth">
+<html lang="{{ current_locale() }}" dir="{{ is_rtl() ? 'rtl' : 'ltr' }}" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     <meta name="theme-color" content="{{ $siteSettings['primary_color'] ?? '#2563eb' }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@yield('title', site('store_name', config('app.name'))) - {{ site('store_name', config('app.name')) }}</title>
-    <meta name="description" content="@yield('description', site('seo_meta_description', site('store_description', 'متجر إلكتروني متكامل')))">
+    <meta name="description" content="@yield('description', site('seo_meta_description', site('store_description', __t('layout.default_description'))))">
     <meta name="keywords" content="{{ site('seo_meta_keywords', '') }}">
     <meta property="og:title" content="@yield('title', site('seo_meta_title', site('store_name')))">
     <meta property="og:description" content="@yield('description', site('seo_meta_description', site('store_description')))">
@@ -43,13 +43,14 @@
 
     {{-- Material Symbols (Stitch design system) --}}
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     {{-- Font Awesome (for legacy category icons stored as fa-xxx) --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eecU/V7BUV/4hMa1cEQIFVQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         /* Inline critical CSS (loaded before Vite) */
-        body { font-family: 'IBM Plex Sans Arabic', 'Cairo', 'Tajawal', system-ui, sans-serif; }
+        body { font-family: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', 'Inter', system-ui, sans-serif; }
+        html[dir="ltr"] body { font-family: 'Inter', system-ui, sans-serif; }
         [x-cloak] { display: none !important; }
 
         /* Page loading screen */
@@ -158,7 +159,7 @@
     {{-- Global JavaScript --}}
     @php
         $sessionCountry = session('selected_country', config('ecommerce.store.default_country', 'SD'));
-        $sessionCurrency = $sessionCountry ? (config('ecommerce.countries.' . $sessionCountry . '.currency_symbol') ?: config('ecommerce.store.currency_symbol', 'ج.س')) : config('ecommerce.store.currency_symbol', 'ج.س');
+        $sessionCurrency = $sessionCountry ? (config('ecommerce.countries.' . $sessionCountry . '.currency_symbol') ?: config('ecommerce.store.currency_symbol', __t('layout.currency_symbol'))) : config('ecommerce.store.currency_symbol', __t('layout.currency_symbol'));
         $sessionCurrencyCode = $sessionCountry ? (config('ecommerce.countries.' . $sessionCountry . '.currency') ?: config('ecommerce.store.currency', 'SDG')) : config('ecommerce.store.currency', 'SDG');
     @endphp
     <script>
@@ -173,14 +174,17 @@
         window.__CURRENCY_SYMBOL__ = @json($sessionCurrency);
         window.__CURRENCY__ = @json($sessionCurrencyCode);
         window.__COUNTRY__ = @json($sessionCountry);
+        window.__CONVERSION_RATE__ = @json(conversionRate());
 
-        // Format currency helper
+        // Format currency helper (converts from base currency using the current rate)
         window.formatCurrency = function(amount, symbol) {
             symbol = symbol || window.__CURRENCY_SYMBOL__;
-            return new Intl.NumberFormat('ar-SA', {
+            const rate = window.__CONVERSION_RATE__ || 1;
+            var intlLocale = '{{ current_locale() }}' === 'ar' ? 'ar-SA' : 'en-US';
+            return new Intl.NumberFormat(intlLocale, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
-            }).format(amount) + ' ' + symbol;
+            }).format(amount * rate) + ' ' + symbol;
         };
     </script>
 
@@ -222,14 +226,14 @@
     @if(site('whatsapp_btn_show', '0') === '1' && site('whatsapp_btn_phone'))
         @php
             $waPhone = preg_replace('/\D/', '', site('whatsapp_btn_phone'));
-            $waText = site('whatsapp_btn_text', 'مرحباً، أود الاستفسار عن المنتجات');
+            $waText = site('whatsapp_btn_text', __t('page.whatsapp_default_text'));
             $waUrl = 'https://wa.me/' . $waPhone . '?text=' . urlencode($waText);
             $waPosition = site('whatsapp_btn_position', 'right') === 'left' ? 'left-6' : 'right-6';
         @endphp
         <div class="fixed bottom-6 {{ $waPosition }} z-40 group">
             {{-- Tooltip text --}}
             <span class="absolute bottom-1/2 translate-y-1/2 {{ site('whatsapp_btn_position', 'right') === 'left' ? 'left-16' : 'right-16' }} whitespace-nowrap bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-md">
-                تواصل معنا عبر واتساب
+                {{ __t('layout.whatsapp_tooltip') }}
             </span>
             <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer" 
                class="w-14 h-14 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-bounce-subtle">

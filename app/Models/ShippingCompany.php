@@ -33,6 +33,11 @@ class ShippingCompany extends Model
         return $this->hasMany(ShippingLabel::class, 'carrier_id');
     }
 
+    public function officePickups(): HasMany
+    {
+        return $this->hasMany(ShippingOfficePickup::class, 'carrier_id');
+    }
+
     public function getTrackingLink(string $trackingNumber): string
     {
         return str_replace('{TRACKING}', $trackingNumber, $this->tracking_url ?? '');

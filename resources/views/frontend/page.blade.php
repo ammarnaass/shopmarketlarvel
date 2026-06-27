@@ -36,7 +36,7 @@
         <nav class="flex items-center gap-2 text-sm text-white/80 mb-6">
             <a href="{{ route('home') }}" class="hover:text-white transition flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs">home</span>
-                الرئيسية
+                {{ __t('nav.breadcrumb_home') }}
             </a>
             <span class="material-symbols-outlined text-[10px] text-white/50">chevron_right</span>
             <span class="text-white font-medium">{{ $page['title'] }}</span>
@@ -97,16 +97,16 @@
                 <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
                     <span class="material-symbols-outlined text-3xl">headphones</span>
                 </div>
-                <h3 class="text-2xl md:text-3xl font-bold mb-2">هل تحتاج مساعدة؟</h3>
-                <p class="text-white/90 mb-6 text-lg">فريق خدمة العملاء جاهز للرد على استفساراتك</p>
+                <h3 class="text-2xl md:text-3xl font-bold mb-2">{{ __t('page.help_heading') }}</h3>
+                <p class="text-white/90 mb-6 text-lg">{{ __t('page.help_text') }}</p>
                 <div class="flex flex-wrap justify-center gap-3">
                     <a href="{{ route('page.show', 'contact') }}" class="btn btn-lg bg-white text-gray-800 hover:bg-gray-100 shadow-lg">
                         <span class="material-symbols-outlined">mail</span>
-                        صفحة الاتصال
+                        {{ __t('page.contact_btn') }}
                     </a>
                     <a href="https://wa.me/2490674784859" target="_blank" class="btn btn-lg bg-green-500 hover:bg-green-600 text-white shadow-lg">
                         <span class="material-symbols-outlined text-xl">whatsapp</span>
-                        واتساب
+                        {{ __t('page.whatsapp_btn') }}
                     </a>
                 </div>
             </div>

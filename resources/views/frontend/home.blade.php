@@ -1,7 +1,7 @@
 @extends('frontend.layout')
 
-@section('title', config('app.name') . ' - تسوق أفضل المنتجات بأسعار مميزة')
-@section('description', 'متجر إلكتروني متكامل - شحن مجاني - الدفع عند الاستلام - تشكيلة واسعة من المنتجات في 6 دول عربية')
+@section('title', __t('home.title', ['store' => config('app.name')]))
+@section('description', __t('home.description'))
 
 @section('content')
 
@@ -32,25 +32,25 @@
             <div data-aos="fade-up">
                 <span class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-1.5 rounded-full text-sm mb-6">
                     <span class="material-symbols-outlined text-accent-300">auto_awesome</span>
-                    {{ site('hero_badge', 'عروض حصرية تصل إلى 50%') }}
+                    {{ site('hero_badge', __t('home.hero_badge')) }}
                 </span>
 
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 text-balance">
-                    {{ site('hero_title', 'تسوق بذكاء ، عش تجربة فريدة') }}
+                    {{ site('hero_title', __t('home.hero_title')) }}
                 </h1>
 
                 <p class="text-lg sm:text-xl mb-8 text-white/90 max-w-xl text-pretty">
-                    {{ site('hero_subtitle', 'اكتشف أحدث المنتجات بأفضل الأسعار مع شحن مجاني فوق ' . config('ecommerce.shipping.free_threshold', 500) . ' ' . currentCurrencySymbol()) }}
+                    {{ site('hero_subtitle', __t('home.hero_subtitle', ['amount' => config('ecommerce.shipping.free_threshold', 500), 'symbol' => currentCurrencySymbol()])) }}
                 </p>
 
                 <div class="flex gap-3 flex-wrap mb-10">
                     <a href="{{ route('shop.index') }}" class="btn-accent btn-lg shadow-accent">
                         <span class="material-symbols-outlined">shopping_cart</span>
-                        تسوق الآن
+                        {{ __t('nav.shop_now') }}
                     </a>
                     <a href="{{ route('shop.index') }}?featured=1" class="btn btn-lg bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25">
                         <span class="material-symbols-outlined">star</span>
-                        المنتجات المميزة
+                        {{ __t('nav.featured') }}
                     </a>
                 </div>
 
@@ -58,15 +58,15 @@
                 <div class="grid grid-cols-3 gap-4 max-w-lg">
                     <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
                         <span class="material-symbols-outlined text-2xl text-accent-300">local_shipping</span>
-                        <span class="text-xs font-medium">شحن سريع</span>
+                        <span class="text-xs font-medium">{{ __t('home.hero_trust_1') }}</span>
                     </div>
                     <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
                         <span class="material-symbols-outlined text-2xl text-accent-300">shield</span>
-                        <span class="text-xs font-medium">دفع آمن</span>
+                        <span class="text-xs font-medium">{{ __t('home.hero_trust_2') }}</span>
                     </div>
                     <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
                         <span class="material-symbols-outlined text-2xl text-accent-300">undo</span>
-                        <span class="text-xs font-medium">إرجاع سهل</span>
+                        <span class="text-xs font-medium">{{ __t('home.hero_trust_3') }}</span>
                     </div>
                 </div>
             </div>
@@ -88,12 +88,12 @@
                                         @endif
                                     </div>
                                     <p class="text-xs font-semibold text-gray-800 truncate">{{ $p->name }}</p>
-                                    <p class="text-xs font-bold text-brand-600">{{ number_format($p->price, 0) }} {{ currentCurrencySymbol() }}</p>
+                                    <p class="text-xs font-bold text-brand-600">{{ number_format(convertPrice($p->price), 0) }} {{ currentCurrencySymbol() }}</p>
                                 </div>
                             @empty
                                 <div class="col-span-2 text-center py-8">
                                     <span class="material-symbols-outlined text-6xl text-white/30 mb-3">shopping_cart</span>
-                                    <p class="text-white/70 text-sm">منتجات مميزة قريباً</p>
+                                    <p class="text-white/70 text-sm">{{ __t('home.featured_empty') }}</p>
                                 </div>
                             @endforelse
                         </div>
@@ -101,7 +101,7 @@
 
                     {{-- Floating notification badges --}}
                     <div class="absolute -top-4 -right-4 bg-accent-500 text-white px-4 py-2 rounded-full shadow-accent text-sm font-bold animate-bounce-slow">
-                        <span class="material-symbols-outlined">local_fire_department</span> الأكثر مبيعاً
+                        <span class="material-symbols-outlined">local_fire_department</span> {{ __t('home.best_seller') }}
                     </div>
                 </div>
             </div>
@@ -114,12 +114,12 @@
     <div class="container-app py-6">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 flex-shrink-0">
-                    <span class="material-symbols-outlined text-lg">local_shipping</span>
-                </div>
-                <div>
-                    <p class="font-semibold text-sm">شحن مجاني</p>
-                    <p class="text-xs text-gray-500">للطلبات فوق {{ config('ecommerce.shipping.free_threshold', 500) }}</p>
+                    <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-brand-600 flex-shrink-0">
+                        <span class="material-symbols-outlined text-lg">local_shipping</span>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-sm">{{ __t('home.free_shipping') }}</p>
+                        <p class="text-xs text-gray-500">{{ __t('home.free_shipping_desc', ['amount' => config('ecommerce.shipping.free_threshold', 500)]) }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -127,8 +127,8 @@
                     <span class="material-symbols-outlined text-lg">payments</span>
                 </div>
                 <div>
-                    <p class="font-semibold text-sm">دفع عند الاستلام</p>
-                    <p class="text-xs text-gray-500">بدون أي رسوم مسبقاً</p>
+                    <p class="font-semibold text-sm">{{ __t('home.cod') }}</p>
+                    <p class="text-xs text-gray-500">{{ __t('home.cod_desc') }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -136,8 +136,8 @@
                     <span class="material-symbols-outlined text-lg">headphones</span>
                 </div>
                 <div>
-                    <p class="font-semibold text-sm">دعم 24/7</p>
-                    <p class="text-xs text-gray-500">فريق متخصص لخدمتك</p>
+                    <p class="font-semibold text-sm">{{ __t('home.support') }}</p>
+                    <p class="text-xs text-gray-500">{{ __t('home.support_desc') }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -145,8 +145,8 @@
                     <span class="material-symbols-outlined text-lg">workspace_premium</span>
                 </div>
                 <div>
-                    <p class="font-semibold text-sm">منتجات أصلية</p>
-                    <p class="text-xs text-gray-500">ضمان الجودة 100%</p>
+                    <p class="font-semibold text-sm">{{ __t('home.authentic') }}</p>
+                    <p class="text-xs text-gray-500">{{ __t('home.authentic_desc') }}</p>
                 </div>
             </div>
         </div>
@@ -159,15 +159,15 @@
     <div class="container-app">
         <div class="text-center mb-10">
             <span class="inline-block badge badge-primary mb-3">
-                <span class="material-symbols-outlined">grid_view</span> تصفح حسب التصنيف
+                <span class="material-symbols-outlined">grid_view</span> {{ __t('home.browse_categories') }}
             </span>
-            <h2 class="heading-2 mb-2">جميع التصنيفات</h2>
-            <p class="text-gray-500">اختر من بين {{ $categories->count() }} تصنيف متوفر</p>
+            <h2 class="heading-2 mb-2">{{ __t('home.all_categories') }}</h2>
+            <p class="text-gray-500">{{ __t('home.categories_count', ['count' => $categories->count()]) }}</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             @foreach($categories as $category)
-                <a href="{{ route('shop.category', $category->slug) }}"
+                <a href="{{ route('shop.category', ['slug' => $category->slug]) }}"
                    class="group relative bg-white rounded-2xl p-5 text-center transition-all duration-300 hover:-translate-y-1 border border-gray-100 hover:border-brand-200 overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-brand-50 to-accent-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div class="relative z-10">
@@ -179,7 +179,7 @@
                             @endif
                         </div>
                         <h3 class="font-semibold text-sm text-gray-800 group-hover:text-brand-700 transition-colors">{{ $category->name }}</h3>
-                        <p class="text-xs text-gray-400 mt-1">{{ $category->products_count ?? $category->products()->count() }} منتج</p>
+                        <p class="text-xs text-gray-400 mt-1">{{ __t('home.products_count', ['count' => $category->products_count ?? $category->products()->count()]) }}</p>
                     </div>
                 </a>
             @endforeach
@@ -195,13 +195,13 @@
         <div class="flex items-end justify-between mb-8 flex-wrap gap-4">
             <div>
                 <span class="inline-block badge badge-accent mb-2">
-                    <span class="material-symbols-outlined">local_fire_department</span> الأكثر طلباً
+                    <span class="material-symbols-outlined">local_fire_department</span> {{ __t('home.most_requested') }}
                 </span>
-                <h2 class="heading-2">منتجات مميزة</h2>
-                <p class="text-gray-500 mt-1">أفضل المنتجات المختارة خصيصاً لك</p>
+                <h2 class="heading-2">{{ __t('home.featured_products') }}</h2>
+                <p class="text-gray-500 mt-1">{{ __t('home.featured_subtitle') }}</p>
             </div>
             <a href="{{ route('shop.index') }}?featured=1" class="btn btn-secondary">
-                عرض الكل
+                {{ __t('shop.view_all') }}
                 <span class="material-symbols-outlined">arrow_back</span>
             </a>
         </div>
@@ -222,13 +222,13 @@
         <div class="flex items-end justify-between mb-8 flex-wrap gap-4">
             <div>
                 <span class="inline-block badge badge-info mb-2">
-                    <span class="material-symbols-outlined">bolt</span> وصل حديثاً
+                    <span class="material-symbols-outlined">bolt</span> {{ __t('home.just_arrived') }}
                 </span>
-                <h2 class="heading-2">أحدث المنتجات</h2>
-                <p class="text-gray-500 mt-1">جديدنا هذا الأسبوع</p>
+                <h2 class="heading-2">{{ __t('home.latest_products') }}</h2>
+                <p class="text-gray-500 mt-1">{{ __t('home.latest_subtitle') }}</p>
             </div>
             <a href="{{ route('shop.index') }}" class="btn btn-secondary">
-                تصفح الكل
+                {{ __t('nav.browse_all') }}
                 <span class="material-symbols-outlined">arrow_back</span>
             </a>
         </div>
@@ -254,21 +254,21 @@
             <div class="relative z-10 grid md:grid-cols-2 gap-10 items-center">
                 <div>
                     <span class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-bold mb-4 shadow-lg animate-pulse">
-                        <span class="material-symbols-outlined text-base">local_shipping</span> شحن سريع
+                        <span class="material-symbols-outlined text-base">local_shipping</span> {{ __t('home.fast_shipping') }}
                     </span>
                     <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-balance leading-tight">
                         @if(site('banner_1_title'))
                             {{ site('banner_1_title') }}
                         @else
-                            اشترِ الآن<br>واستلم خلال 24-48 ساعة
+                            {{ __t('home.banner_1_title') }}
                         @endif
                     </h2>
                     <p class="text-white/90 text-lg md:text-xl mb-8 text-pretty leading-relaxed">
-                        {{ site('banner_1_subtitle', 'توصيل سريع لكل المدن في 6 دول - تتبع شحنتك لحظة بلحظة') }}
+                        {{ site('banner_1_subtitle', __t('home.banner_1_subtitle')) }}
                     </p>
                     <a href="{{ site('banner_1_link') ?: route('shop.index') }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-700 font-bold text-base rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                         <span class="material-symbols-outlined">add_shopping_cart</span>
-                        تسوق الآن
+                        {{ __t('nav.shop_now') }}
                     </a>
                 </div>
                 <div class="hidden md:flex justify-center">
@@ -300,7 +300,7 @@
                     <p class="text-white/90 text-lg mb-6">{{ site('banner_2_subtitle') }}</p>
                     @if(site('banner_2_link'))
                         <a href="{{ site('banner_2_link') }}" class="btn btn-lg bg-white text-purple-600 hover:bg-gray-100">
-                            <span class="material-symbols-outlined">arrow_back</span> اكتشف المزيد
+                            <span class="material-symbols-outlined">arrow_back</span> {{ __t('nav.discover_more') }}
                         </a>
                     @endif
                 </div>

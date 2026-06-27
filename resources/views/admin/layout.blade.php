@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'لوحة التحكم') - {{ config('app.name') }}</title>
+    <title>@yield('title', __t('admin.title_prefix')) - {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -28,20 +28,20 @@
                 <h1 class="text-sm font-bold text-surface-container-lowest leading-tight truncate" title="{{ site('store_name', config('app.name')) }}">
                     {{ site('store_name', config('app.name')) }}
                 </h1>
-                <p class="text-[10px] text-surface-variant/60">إدارة النظام</p>
+                <p class="text-[10px] text-surface-variant/60">{{ __t('admin.system_management') }}</p>
             </div>
         </div>
 
         <nav class="flex-1 space-y-1 px-3">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.dashboard') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">dashboard</span>
-                <span class="font-medium text-sm">لوحة القيادة</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.dashboard') }}</span>
             </a>
 
-            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">المبيعات</div>
+            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">{{ __t('admin.sidebar.sales') }}</div>
             <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.orders*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">shopping_cart</span>
-                <span class="font-medium text-sm">الطلبات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.orders') }}</span>
                 @if(($stats['pending_orders'] ?? 0) > 0)
                     <span class="mr-auto bg-error text-on-error text-xs px-1.5 py-0.5 rounded-full">{{ $stats['pending_orders'] }}</span>
                 @endif
@@ -49,63 +49,74 @@
 
             <a href="{{ route('admin.coupons.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.coupons*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">confirmation_number</span>
-                <span class="font-medium text-sm">الكوبونات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.coupons') }}</span>
             </a>
 
-            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">الكتالوج</div>
+            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">{{ __t('admin.sidebar.catalog') }}</div>
             <a href="{{ route('admin.products.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.products*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">inventory_2</span>
-                <span class="font-medium text-sm">المنتجات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.products') }}</span>
             </a>
             <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.categories*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">category</span>
-                <span class="font-medium text-sm">التصنيفات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.categories') }}</span>
             </a>
             <a href="{{ route('admin.tags.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.tags*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">label</span>
-                <span class="font-medium text-sm">الوسوم</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.tags') }}</span>
             </a>
             <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.reviews*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">star</span>
-                <span class="font-medium text-sm">التقييمات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.reviews') }}</span>
             </a>
 
-            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">العملاء</div>
+            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">{{ __t('admin.sidebar.customers') }}</div>
             <a href="{{ route('admin.users.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.users*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">group</span>
-                <span class="font-medium text-sm">قائمة العملاء</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.users') }}</span>
             </a>
 
-            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">العمليات</div>
+            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">{{ __t('admin.sidebar.operations') }}</div>
             <a href="{{ route('admin.shipping.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.shipping*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">local_shipping</span>
-                <span class="font-medium text-sm">الشحن</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.shipping') }}</span>
             </a>
             <a href="{{ route('admin.payments.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.payments*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">credit_card</span>
-                <span class="font-medium text-sm">المدفوعات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.payments') }}</span>
             </a>
 
-            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">النظام</div>
+            <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">{{ __t('admin.sidebar.system') }}</div>
             <a href="{{ route('admin.pages.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.pages*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">description</span>
-                <span class="font-medium text-sm">الصفحات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.pages') }}</span>
             </a>
             <a href="{{ route('admin.currencies.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.currencies*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">payments</span>
-                <span class="font-medium text-sm">العملات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.currencies') }}</span>
             </a>
             <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.reports*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">bar_chart</span>
-                <span class="font-medium text-sm">التقارير</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.reports') }}</span>
             </a>
             <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.settings*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">settings</span>
-                <span class="font-medium text-sm">الإعدادات</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.settings') }}</span>
             </a>
             <a href="{{ route('admin.customize.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.customize*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">palette</span>
-                <span class="font-medium text-sm">التخصيص</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.customize') }}</span>
+            </a>
+            <a href="{{ route('admin.languages.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.languages*') ? 'active' : 'sidebar-link' }}">
+                <span class="material-symbols-outlined">translate</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.languages') }}</span>
+            </a>
+            <a href="{{ route('admin.instant-buy.settings') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.instant-buy*') ? 'active' : 'sidebar-link' }}">
+                <span class="material-symbols-outlined">bolt</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.instant_orders') }}</span>
+                @if(($stats['pending_instant_orders'] ?? 0) > 0)
+                    <span class="mr-auto bg-error text-on-error text-xs px-1.5 py-0.5 rounded-full">{{ $stats['pending_instant_orders'] }}</span>
+                @endif
             </a>
         </nav>
 
@@ -119,8 +130,8 @@
                     </div>
                 @endif
                 <div class="flex-1 overflow-hidden">
-                    <p class="text-sm font-medium text-surface-bright truncate">{{ auth()->user()->name ?? 'المدير' }}</p>
-                    <p class="text-xs text-surface-variant/70 truncate">مدير المتجر</p>
+                    <p class="text-sm font-medium text-surface-bright truncate">{{ auth()->user()->name ?? __t('admin.common.default_admin') }}</p>
+                    <p class="text-xs text-surface-variant/70 truncate">{{ __t('admin.common.store_manager') }}</p>
                 </div>
             </div>
         </div>
@@ -131,14 +142,14 @@
         {{-- Top Nav Bar --}}
         <header class="h-16 flex items-center justify-between px-8 bg-surface border-b border-outline-variant shadow-sm z-40">
             <div class="flex items-center gap-6">
-                <h2 class="text-xl font-bold text-primary">@yield('page_title', 'لوحة التحكم')</h2>
+                <h2 class="text-xl font-bold text-primary">@yield('page_title', __t('admin.title'))</h2>
             </div>
             <div class="flex items-center gap-4">
                 <div class="relative group">
                     <span class="absolute inset-y-0 right-3 flex items-center text-outline group-focus-within:text-primary transition-colors">
                         <span class="material-symbols-outlined">search</span>
                     </span>
-                    <input type="text" placeholder="بحث سريع..."
+                    <input type="text" placeholder="{{ __t('admin.common.quick_search') }}"
                            class="bg-surface-container-low border border-outline-variant rounded-lg pr-10 pl-4 py-1.5 w-64 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
                 </div>
                 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
@@ -158,9 +169,9 @@
                          class="absolute left-0 top-full mt-2 w-72 bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant z-50 overflow-hidden"
                          x-cloak>
                         <div class="px-4 py-3 border-b border-outline-variant flex items-center justify-between">
-                            <span class="font-semibold text-sm text-on-surface">الإشعارات</span>
+                            <span class="font-semibold text-sm text-on-surface">{{ __t('admin.common.notifications') }}</span>
                             @if(($stats['pending_orders'] ?? 0) > 0)
-                                <span class="text-xs bg-error text-on-error px-2 py-0.5 rounded-full">{{ $stats['pending_orders'] }} جديد</span>
+                                <span class="text-xs bg-error text-on-error px-2 py-0.5 rounded-full">{{ $stats['pending_orders'] }} {{ __t('admin.common.new') }}</span>
                             @endif
                         </div>
                         @if(($stats['pending_orders'] ?? 0) > 0)
@@ -169,28 +180,28 @@
                                     <span class="material-symbols-outlined text-amber-600" style="font-size:16px">pending</span>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-on-surface">طلبات معلقة تنتظر المراجعة</p>
-                                    <p class="text-xs text-on-surface-variant">{{ $stats['pending_orders'] }} طلب جديد</p>
+                                    <p class="text-sm font-medium text-on-surface">{{ __t('admin.common.pending_orders_review') }}</p>
+                                    <p class="text-xs text-on-surface-variant">{{ $stats['pending_orders'] }} {{ __t('admin.common.new_order') }}</p>
                                 </div>
                             </a>
                         @else
                             <div class="px-4 py-6 text-center">
                                 <span class="material-symbols-outlined text-outline text-3xl block mb-2">notifications_none</span>
-                                <p class="text-sm text-on-surface-variant">لا توجد إشعارات جديدة</p>
+                                <p class="text-sm text-on-surface-variant">{{ __t('admin.common.no_new_notifications') }}</p>
                             </div>
                         @endif
                         <div class="px-4 py-2 border-t border-outline-variant">
-                            <a href="{{ route('admin.orders.index') }}" class="text-xs text-primary hover:underline block text-center">عرض كل الطلبات</a>
+                            <a href="{{ route('admin.orders.index') }}" class="text-xs text-primary hover:underline block text-center">{{ __t('admin.common.view_all_orders') }}</a>
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 mr-2 pr-2 border-r border-outline-variant">
-                    <a href="{{ route('home') }}" target="_blank" class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-all" title="عرض المتجر">
+                    <a href="{{ route('home') }}" target="_blank" class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-all" title="{{ __t('admin.common.view_store') }}">
                         <span class="material-symbols-outlined">open_in_new</span>
                     </a>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="p-2 text-error hover:bg-error-container/30 rounded-lg transition-all" title="تسجيل الخروج">
+                        <button type="submit" class="p-2 text-error hover:bg-error-container/30 rounded-lg transition-all" title="{{ __t('admin.logout') }}">
                             <span class="material-symbols-outlined">logout</span>
                         </button>
                     </form>
