@@ -548,8 +548,8 @@ $tabs = [
     </div>
 </form>
 
-<form method="POST" action="{{ route('admin.settings.remove.logo') }}" id="remove-store-logo-form">@csrf @method('DELETE')</form>
-<form method="POST" action="{{ route('admin.settings.remove.favicon') }}" id="remove-store-favicon-form">@csrf @method('DELETE')</form>
+<form method="POST" action="{{ route('admin.settings.removeImage') }}" id="remove-store-logo-form">@csrf<input type="hidden" name="key" value="store_logo"></form>
+<form method="POST" action="{{ route('admin.settings.removeImage') }}" id="remove-store-favicon-form">@csrf<input type="hidden" name="key" value="store_favicon"></form>
 
 @if(session('success'))
 <div id="success-toast" class="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-5 py-3.5 rounded-xl shadow-lg flex items-center gap-3 animate-slide-up">

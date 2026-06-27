@@ -68,6 +68,10 @@
                 <p class="text-sm leading-relaxed mb-6 max-w-md">
                     {{ site('footer_about', __t('footer.about_store')) }}
                 </p>
+                <div class="flex items-center gap-2 text-sm mb-4">
+                    <span class="material-symbols-outlined text-accent-400" style="font-size:18px">call</span>
+                    <a href="tel:{{ site('store_phone') }}" class="hover:text-accent-400 transition" dir="ltr">{{ site('store_phone') }}</a>
+                </div>
                 <div class="flex gap-2">
                     @if(site('facebook_url'))
                         <a href="{{ site('facebook_url') }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition" title="Facebook">
