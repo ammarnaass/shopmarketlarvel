@@ -1973,5 +1973,6 @@
     "admin.slider.slide_deleted": "تم حذف الشريحة بنجاح",
     "admin.slider.delete_confirm": "هل تريد حذف هذه الشريحة؟",
     "admin.customize.hero_moved_to_slider": "تم نقل إدارة شرائح الهيرو إلى صفحة السلايدر حيث يمكنك إضافة عدة إعلانات وعروض",
-    "admin.customize.go_to_slider": "الذهاب لإدارة السلايدر"
+    "admin.customize.go_to_slider": "الذهاب لإدارة السلايدر",
+    "admin.slider.image_recommended": "المقاس المقترح: 1920×600"
 }

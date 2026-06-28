@@ -1973,5 +1973,6 @@
     "admin.slider.slide_deleted": "Diapositive supprimée avec succès",
     "admin.slider.delete_confirm": "Voulez-vous supprimer cette diapositive?",
     "admin.customize.hero_moved_to_slider": "La gestion des diapositives a été déplacée vers la page du carrousel où vous pouvez ajouter plusieurs publicités",
-    "admin.customize.go_to_slider": "Aller à la gestion du carrousel"
+    "admin.customize.go_to_slider": "Aller à la gestion du carrousel",
+    "admin.slider.image_recommended": "Taille recommandée : 1920×600"
 }

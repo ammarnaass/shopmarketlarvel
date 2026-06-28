@@ -57,6 +57,12 @@
                 <p class="text-xs text-on-surface-variant mt-1">
                     <span class="material-symbols-outlined ml-1 text-xs">info</span>JPEG, PNG, WEBP — {{ __t('admin.customize.up_to_2mb') }}
                 </p>
+                <p class="text-xs mt-1.5">
+                    <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium">
+                        <span class="material-symbols-outlined text-sm">aspect_ratio</span>
+                        {{ __t('admin.slider.image_recommended') }}
+                    </span>
+                </p>
                 @error('image_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
