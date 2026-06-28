@@ -111,10 +111,7 @@ class SettingsController extends Controller
                 
                 // Skip overwriting local image paths with empty values
                 if (in_array($key, ['store_logo', 'store_favicon', 'seo_og_image'], true) && empty($value)) {
-                    $existing = Setting::get($key);
-                    if ($existing && !preg_match('#^https?://#i', $existing)) {
-                        continue;
-                    }
+                    continue;
                 }
                 
                 Setting::set($key, (string) $value, $group);

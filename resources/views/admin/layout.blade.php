@@ -75,6 +75,10 @@
                 <span class="material-symbols-outlined">group</span>
                 <span class="font-medium text-sm">{{ __t('admin.sidebar.users') }}</span>
             </a>
+            <a href="{{ route('admin.newsletter.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.newsletter*') ? 'active' : 'sidebar-link' }}">
+                <span class="material-symbols-outlined">mail</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.newsletter') }}</span>
+            </a>
 
             <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">{{ __t('admin.sidebar.operations') }}</div>
             <a href="{{ route('admin.shipping.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.shipping*') ? 'active' : 'sidebar-link' }}">

@@ -7,7 +7,6 @@ $activeTab = request('tab', 'store');
 $tabs = [
     'store' => ['icon' => 'store', 'title' => __t('admin.settings.store_tab')],
     'currency' => ['icon' => 'payments', 'title' => __t('admin.settings.currency_tab')],
-    'checkout' => ['icon' => 'bolt', 'title' => __t('admin.settings.checkout_tab')],
     'social' => ['icon' => 'share', 'title' => __t('admin.settings.social_tab')],
     'contact' => ['icon' => 'headset_mic', 'title' => __t('admin.settings.contact_tab')],
     'seo' => ['icon' => 'search', 'title' => __t('admin.settings.seo_tab')],
@@ -79,26 +78,38 @@ $tabs = [
                 <div class="grid md:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-on-surface-variant">{{ __t('admin.settings.store_name') }} <span class="text-error">*</span></label>
-                        <input type="text" name="store_name" value="{{ old('store_name', $settings['store']['store_name']) }}" required
-                               class="w-full rounded-lg border-outline-variant bg-white p-2.5 text-body-md @error('store_name') border-error @enderror">
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">storefront</span>
+                            <input type="text" name="store_name" value="{{ old('store_name', $settings['store']['store_name']) }}" required
+                                   class="w-full rounded-lg border-outline-variant bg-white p-2.5 pl-10 text-body-md @error('store_name') border-error @enderror">
+                        </div>
                         @error('store_name')<p class="text-error text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-on-surface-variant">{{ __t('admin.settings.store_email') }} <span class="text-error">*</span></label>
-                        <input type="email" name="store_email" value="{{ old('store_email', $settings['store']['store_email']) }}" required
-                               class="w-full rounded-lg border-outline-variant bg-white p-2.5 text-body-md @error('store_email') border-error @enderror">
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">mail</span>
+                            <input type="email" name="store_email" value="{{ old('store_email', $settings['store']['store_email']) }}" required
+                                   class="w-full rounded-lg border-outline-variant bg-white p-2.5 pl-10 text-body-md @error('store_email') border-error @enderror">
+                        </div>
                         @error('store_email')<p class="text-error text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-on-surface-variant">{{ __t('admin.settings.store_phone') }} <span class="text-error">*</span></label>
-                        <input type="text" name="store_phone" value="{{ old('store_phone', $settings['store']['store_phone']) }}" required
-                               class="w-full rounded-lg border-outline-variant bg-white p-2.5 text-body-md @error('store_phone') border-error @enderror">
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">call</span>
+                            <input type="text" name="store_phone" value="{{ old('store_phone', $settings['store']['store_phone']) }}" required
+                                   class="w-full rounded-lg border-outline-variant bg-white p-2.5 pl-10 text-body-md @error('store_phone') border-error @enderror">
+                        </div>
                         @error('store_phone')<p class="text-error text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-on-surface-variant">{{ __t('admin.settings.store_address') }}</label>
-                        <input type="text" name="store_address" value="{{ old('store_address', $settings['store']['store_address']) }}"
-                               class="w-full rounded-lg border-outline-variant bg-white p-2.5 text-body-md @error('store_address') border-error @enderror">
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">location_on</span>
+                            <input type="text" name="store_address" value="{{ old('store_address', $settings['store']['store_address']) }}"
+                                   class="w-full rounded-lg border-outline-variant bg-white p-2.5 pl-10 text-body-md @error('store_address') border-error @enderror">
+                        </div>
                         @error('store_address')<p class="text-error text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div class="md:col-span-2 space-y-2">

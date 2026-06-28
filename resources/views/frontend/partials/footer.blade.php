@@ -22,12 +22,13 @@
             </div>
             <h3 class="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">{{ __t('footer.newsletter_title') }}</h3>
             <p class="text-white/80 mb-8 text-base md:text-lg max-w-xl mx-auto leading-relaxed">{{ __t('footer.newsletter_desc') }}</p>
-            <form class="flex flex-col sm:flex-row max-w-lg mx-auto gap-3 sm:gap-0 shadow-2xl rounded-2xl overflow-hidden" 
-                  onsubmit="event.preventDefault(); typeof showToast !== 'undefined' ? showToast('{{ __t('footer.newsletter_thanks') }}', 'success') : alert('{{ __t('footer.newsletter_thanks_short') }}');">
-                <input type="email" required placeholder="{{ __t('footer.newsletter_placeholder') }}"
+            <form class="flex flex-col sm:flex-row max-w-lg mx-auto gap-3 sm:gap-0 shadow-2xl rounded-2xl overflow-hidden"
+                  action="{{ route('newsletter.subscribe') }}" method="POST">
+                @csrf
+                <input type="email" name="email" required placeholder="{{ __t('footer.newsletter_placeholder') }}"
                        class="flex-1 min-w-0 px-5 py-4 bg-white text-gray-800 text-sm focus:outline-none border-0 focus:ring-2 focus:ring-inset focus:ring-yellow-400"
                        style="border-radius: 0;">
-                <button type="submit" 
+                <button type="submit"
                         class="px-8 py-4 font-bold text-sm whitespace-nowrap flex items-center justify-center gap-2 transition-all duration-200 hover:brightness-110 active:scale-95 cursor-pointer text-white"
                         style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 0;">
                     <span class="material-symbols-outlined" style="font-size:18px">send</span>
@@ -52,7 +53,7 @@
             <div class="col-span-2 lg:col-span-2">
                 <div class="mb-4">
                     @if(site('store_logo'))
-                        <img src="{{ site('store_logo') }}" alt="{{ site('store_name') }}" class="h-12 w-auto object-contain max-w-[200px] bg-white rounded-xl p-1">
+                        <img src="{{ site('store_logo') }}" alt="{{ site('store_name') }}" class="h-16 w-auto object-contain max-w-[250px] rounded-xl p-2">
                     @else
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white shadow-lg">
@@ -68,10 +69,11 @@
                 <p class="text-sm leading-relaxed mb-6 max-w-md">
                     {{ site('footer_about', __t('footer.about_store')) }}
                 </p>
-                <div class="flex items-center gap-2 text-sm mb-4">
-                    <span class="material-symbols-outlined text-accent-400" style="font-size:18px">call</span>
-                    <a href="tel:{{ site('store_phone') }}" class="hover:text-accent-400 transition" dir="ltr">{{ site('store_phone') }}</a>
-                </div>
+                @php
+                    $wa = preg_replace('/[^0-9]/', '', site('whatsapp_number') ?: site('store_phone'));
+                    $wa = ltrim($wa, '0');
+                    if(strlen($wa) < 12) $wa = '213' . $wa;
+                @endphp
                 <div class="flex gap-2">
                     @if(site('facebook_url'))
                         <a href="{{ site('facebook_url') }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition" title="Facebook">
@@ -96,7 +98,7 @@
                             if(strlen($wa) < 12) $wa = '213' . $wa;
                         @endphp
                         <a href="https://wa.me/{{ $wa }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-gray-800 hover:bg-green-600 flex items-center justify-center transition" title="WhatsApp">
-                            <i class="fa-brands fa-whatsapp text-lg text-white"></i>
+                            <img src="{{ asset('storage/icons/whatsapp.png') }}" alt="WhatsApp" class="h-5 w-5 object-contain">
                         </a>
                     @endif
                     @if(site('youtube_url'))

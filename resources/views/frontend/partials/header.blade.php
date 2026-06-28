@@ -177,12 +177,6 @@
                 </div>
             </div>
 
-            {{-- Store Phone --}}
-            <a href="tel:{{ site('store_phone') }}" class="hidden lg:flex items-center gap-1.5 text-sm text-gray-700 hover:text-primary ml-2" dir="ltr">
-                <span class="material-symbols-outlined text-base">call</span>
-                <span>{{ site('store_phone') }}</span>
-            </a>
-
             {{-- Mobile Search Icon --}}
             <button @click="searchOpen = !searchOpen" class="lg:hidden material-symbols-outlined text-primary p-2 hover:bg-gray-100 rounded-full">
                 search
