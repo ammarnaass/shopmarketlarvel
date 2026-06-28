@@ -138,26 +138,31 @@ Alpine.data('carousel', (totalSlides, options = {}) => ({
     total: totalSlides,
     autoplay: options.autoplay || false,
     interval: options.interval || 5000,
-    _timer: null,
+    timer: null,
     init() {
-        if (this.autoplay) this._startAutoplay();
+        if (this.autoplay) this.startAutoplay();
     },
-    destroy() { this._stopAutoplay(); },
     next() {
         this.active = (this.active + 1) % this.total;
+        if (this.autoplay) { this.stopAutoplay(); this.startAutoplay(); }
     },
     prev() {
         this.active = (this.active - 1 + this.total) % this.total;
+        if (this.autoplay) { this.stopAutoplay(); this.startAutoplay(); }
     },
-    goTo(i) { this.active = i; },
-    _startAutoplay() {
-        this._timer = setInterval(() => this.next(), this.interval);
+    goTo(i) {
+        this.active = i;
+        if (this.autoplay) { this.stopAutoplay(); this.startAutoplay(); }
     },
-    _stopAutoplay() {
-        if (this._timer) clearInterval(this._timer);
+    startAutoplay() {
+        this.stopAutoplay();
+        this.timer = setInterval(() => { this.active = (this.active + 1) % this.total; }, this.interval);
     },
-    pause() { this._stopAutoplay(); },
-    resume() { if (this.autoplay) this._startAutoplay(); },
+    stopAutoplay() {
+        if (this.timer) { clearInterval(this.timer); this.timer = null; }
+    },
+    pause() { this.stopAutoplay(); },
+    resume() { if (this.autoplay) this.startAutoplay(); },
 }));
 
 /* ----- Form Validator ----- */
