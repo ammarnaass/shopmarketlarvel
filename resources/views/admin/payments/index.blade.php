@@ -35,29 +35,45 @@
 
 {{-- Payment Methods --}}
 <div class="bg-white rounded-xl shadow-sm p-5 mb-6">
-    <h2 class="font-bold text-lg mb-4"><i class="fas fa-credit-card text-blue-600 ml-2"></i>{{ __t('admin.payments.available_methods') }}</h2>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="font-bold text-lg"><i class="fas fa-credit-card text-blue-600 ml-2"></i>{{ __t('admin.payments.available_methods') }}</h2>
+        <a href="{{ route('admin.payment-methods.index') }}" class="text-sm text-primary hover:underline flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">settings</span>
+            {{ __t('admin.payment_methods.manage_methods') }}
+        </a>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        @foreach($methods as $key => $method)
-            <div class="border-2 {{ $method['active'] ? 'border-'.$method['color'].'-500 bg-'.$method['color'].'-50' : 'border-gray-200' }} rounded-xl p-4 relative">
-                @if($method['active'])
-                    <span class="absolute top-2 left-2 bg-{{ $method['color'] }}-600 text-white text-xs px-2 py-0.5 rounded-full">
-                        <i class="fas fa-check"></i> {{ __t('admin.payments.enabled') }}
+        @foreach($methods as $method)
+            <div class="border-2 {{ $method->is_active ? 'border-{{ $method->color }}-500 bg-{{ $method->color }}-50' : 'border-gray-200' }} rounded-xl p-4 relative">
+                @if($method->is_active)
+                    <span class="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-0.5 rounded-full">
+                        <span class="material-symbols-outlined text-xs align-middle" style="font-size:12px">check</span> {{ __t('admin.payments.enabled') }}
                     </span>
                 @else
                     <span class="absolute top-2 left-2 bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded-full">
-                        {{ __t('admin.payments.soon') }}
+                        {{ __t('admin.payment_methods.inactive') }}
                     </span>
                 @endif
-                <div class="w-12 h-12 rounded-lg bg-{{ $method['color'] }}-100 text-{{ $method['color'] }}-600 flex items-center justify-center text-2xl mb-3">
-                    <i class="fas {{ $method['icon'] }}"></i>
+                <div class="w-12 h-12 rounded-lg bg-{{ $method->color }}-100 text-{{ $method->color }}-600 flex items-center justify-center mb-3">
+                    <span class="material-symbols-outlined">{{ $method->icon }}</span>
                 </div>
-                <h3 class="font-bold">{{ $method['name'] }}</h3>
-                <p class="text-xs text-gray-600 mt-1">{{ $method['description'] }}</p>
-                @if(!$method['active'])
-                    <button class="mt-3 text-xs text-blue-600 hover:underline">{{ __t('admin.payments.request_activation') }}</button>
+                <h3 class="font-bold">{{ $method->name }}</h3>
+                <p class="text-xs text-gray-600 mt-1">{{ $method->description }}</p>
+                @if($method->fees_value > 0)
+                    <p class="text-xs mt-2 text-{{ $method->color }}-600 font-medium">
+                        @if($method->fees_type === 'percent'){{ $method->fees_value }}%@else{{ number_format($method->fees_value, 0) }} @endif
+                        {{ __t('admin.payment_methods.fees') }}
+                    </p>
                 @endif
             </div>
         @endforeach
+        @if($methods->isEmpty())
+            <div class="col-span-full text-center py-8 text-gray-500">
+                <span class="material-symbols-outlined text-4xl text-gray-300 mb-2 block">credit_card</span>
+                <p class="text-sm">{{ __t('admin.payment_methods.empty_desc') }}</p>
+                <a href="{{ route('admin.payment-methods.create') }}" class="text-primary text-sm hover:underline mt-2 inline-block">{{ __t('admin.payment_methods.add_method') }}</a>
+            </div>
+        @endif
     </div>
 </div>
 

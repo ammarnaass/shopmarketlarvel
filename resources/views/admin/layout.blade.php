@@ -86,8 +86,12 @@
                 <span class="font-medium text-sm">{{ __t('admin.sidebar.shipping') }}</span>
             </a>
             <a href="{{ route('admin.payments.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.payments*') ? 'active' : 'sidebar-link' }}">
-                <span class="material-symbols-outlined">credit_card</span>
+                <span class="material-symbols-outlined">receipt_long</span>
                 <span class="font-medium text-sm">{{ __t('admin.sidebar.payments') }}</span>
+            </a>
+            <a href="{{ route('admin.payment-methods.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.payment-methods*') ? 'active' : 'sidebar-link' }}">
+                <span class="material-symbols-outlined">credit_card</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.payment_methods') }}</span>
             </a>
 
             <div class="pt-4 pb-1 px-4 text-xs text-surface-variant/50 font-semibold">{{ __t('admin.sidebar.system') }}</div>

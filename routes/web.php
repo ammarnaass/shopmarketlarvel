@@ -202,6 +202,10 @@ Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.
     // Payments
     Route::get('/payments', [App\Http\Controllers\Admin\PaymentController::class, 'index'])->name('payments.index');
 
+    // Payment Methods
+    Route::resource('payment-methods', App\Http\Controllers\Admin\PaymentMethodController::class)->except(['show']);
+    Route::post('/payment-methods/{paymentMethod}/toggle', [App\Http\Controllers\Admin\PaymentMethodController::class, 'toggleActive'])->name('payment-methods.toggle');
+
     // Currencies
     Route::get('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'index'])->name('currencies.index');
     Route::post('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'update'])->name('currencies.update');
