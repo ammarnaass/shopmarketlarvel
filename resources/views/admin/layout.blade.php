@@ -111,6 +111,10 @@
                 <span class="material-symbols-outlined">palette</span>
                 <span class="font-medium text-sm">{{ __t('admin.sidebar.customize') }}</span>
             </a>
+            <a href="{{ route('admin.slider.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.slider*') ? 'active' : 'sidebar-link' }}">
+                <span class="material-symbols-outlined">slideshow</span>
+                <span class="font-medium text-sm">{{ __t('admin.sidebar.slider') }}</span>
+            </a>
             <a href="{{ route('admin.languages.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-150 active:scale-95 {{ request()->routeIs('admin.languages*') ? 'active' : 'sidebar-link' }}">
                 <span class="material-symbols-outlined">translate</span>
                 <span class="font-medium text-sm">{{ __t('admin.sidebar.languages') }}</span>

@@ -103,7 +103,7 @@ class CustomizeController extends Controller
                     $fail('اللون الثانوي يجب أن يكون بصيغة #RRGGBB (مثال: #F59E0B)');
                 }
             }],
-            'hero_title' => 'required|string|max:255',
+            'hero_title' => 'nullable|string|max:255',
             'hero_subtitle' => 'nullable|string|max:500',
             'hero_badge' => 'nullable|string|max:50',
             'hero_image' => 'nullable|string|max:500',

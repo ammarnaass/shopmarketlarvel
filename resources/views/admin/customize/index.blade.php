@@ -106,58 +106,11 @@
     {{-- Hero section --}}
     <div class="bg-surface-container-lowest rounded-xl shadow-sm p-5 mb-6">
         <h2 class="font-bold text-lg mb-4"><span class="material-symbols-outlined text-green-600 ml-2">image</span>{{ __t('admin.customize.hero_section') }}</h2>
-        <div class="grid md:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-semibold mb-1">{{ __t('admin.customize.hero_badge') }}</label>
-                <input type="text" name="hero_badge" value="{{ old('hero_badge', $current['hero_badge']) }}" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="{{ __t('admin.customize.new') }}">
-            </div>
-            <div>
-                <label class="block text-sm font-semibold mb-1">{{ __t('admin.customize.hero_title') }} <span class="text-red-500">*</span></label>
-                <input type="text" name="hero_title" value="{{ old('hero_title', $current['hero_title']) }}" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 @error('hero_title') border-red-500 @enderror">
-                @error('hero_title')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-            <div class="md:col-span-2">
-                <label class="block text-sm font-semibold mb-1">{{ __t('admin.customize.hero_subtitle') }}</label>
-                <textarea name="hero_subtitle" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">{{ old('hero_subtitle', $current['hero_subtitle']) }}</textarea>
-            </div>
-            <div class="md:col-span-2">
-                <label class="block text-sm font-semibold mb-1">{{ __t('admin.customize.hero_background') }}</label>
-
-                @php
-                    $heroVal = $current['hero_image'];
-                    $heroUrl = $heroVal && !preg_match('#^https?://#i', $heroVal) ? asset('storage/' . $heroVal) : $heroVal;
-                @endphp
-
-                @if($heroVal)
-                    <div class="bg-surface-container-low border-2 border-dashed border-outline-variant rounded-lg p-3 mb-2 flex items-center gap-3">
-                        <img src="{{ $heroUrl }}" alt="hero" class="h-20 w-32 object-cover rounded border">
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs text-on-surface-variant truncate" dir="ltr">{{ $heroVal }}</p>
-                            <p class="text-xs text-green-600 mt-0.5"><span class="material-symbols-outlined">check_circle</span> {{ __t('admin.customize.current_image') }}</p>
-                        </div>
-                        <button type="button" onclick="if(confirm('{{ __t('admin.customize.delete_hero_confirm') }}')) document.getElementById('remove-hero-form').submit()" class="bg-error-container hover:bg-error-container text-on-error-container px-3 py-1.5 rounded text-xs">
-                            <span class="material-symbols-outlined">delete</span> {{ __t('common.delete') }}
-                        </button>
-                    </div>
-                @endif
-
-                <div class="grid md:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold mb-1 text-on-surface-variant">{{ __t('common.upload') }}</label>
-                        <input type="file" name="hero_image_file" accept="image/jpeg,image/jpg,image/png,image/webp" class="w-full text-sm @error('hero_image_file') border-red-500 @enderror">
-                        <p class="text-xs text-on-surface-variant mt-1">
-                            <span class="material-symbols-outlined ml-1">info</span>JPEG, PNG, WEBP &#8212; {{ __t('admin.customize.up_to_2mb') }}<br>
-                            <span class="inline-block bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded mt-0.5">{{ __t('admin.customize.recommended_hero') }}</span>
-                        </p>
-                        @error('hero_image_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold mb-1 text-on-surface-variant">{{ __t('admin.customize.or_url') }}</label>
-                        <input type="url" name="hero_image" value="{{ old('hero_image', $heroVal && preg_match('#^https?://#i', $heroVal) ? $heroVal : '') }}" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm" placeholder="https://...">
-                    </div>
-                </div>
-            </div>
-        </div>
+        <p class="text-on-surface-variant text-sm mb-3">{{ __t('admin.customize.hero_moved_to_slider') }}</p>
+        <a href="{{ route('admin.slider.index') }}" class="inline-flex items-center gap-2 bg-primary hover:bg-primary text-white px-4 py-2 rounded-lg text-sm transition">
+            <span class="material-symbols-outlined text-sm">slideshow</span>
+            {{ __t('admin.customize.go_to_slider') }}
+        </a>
     </div>
 
     {{-- Banners --}}
@@ -433,10 +386,6 @@
     </div>
 </form>
 
-<form id="remove-hero-form" method="POST" action="{{ route('admin.customize.removeImage') }}" style="display:none">
-    @csrf
-    <input type="hidden" name="key" value="hero_image">
-</form>
 @for($i = 1; $i <= 2; $i++)
     <form id="remove-banner-{{ $i }}-form" method="POST" action="{{ route('admin.customize.removeImage') }}" style="display:none">
         @csrf

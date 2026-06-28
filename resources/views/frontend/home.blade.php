@@ -5,14 +5,22 @@
 
 @section('content')
 
-{{-- ========== HERO SECTION ========== --}}
-<section class="relative overflow-hidden text-white {{ site('hero_image') ? '' : 'bg-gradient-to-bl from-brand-700 via-brand-600 to-brand-500' }}" @if(site('hero_image')) style="background-image: url('{{ site('hero_image') }}'); background-size: cover; background-position: center;" @endif>
-    @if(site('hero_image'))
-        {{-- Dark overlay for legibility --}}
-        <div class="absolute inset-0 bg-gradient-to-bl from-black/60 via-black/40 to-black/30"></div>
-    @endif
+{{-- ========== HERO SLIDER ========== --}}
+@if($slides->count() > 0)
+<section x-data="carousel({{ $slides->count() }}, { autoplay: true, interval: 5000 })" @mouseenter="pause()" @mouseleave="resume()" class="relative overflow-hidden text-white min-h-[500px] md:min-h-0">
+    @foreach($slides as $i => $slide)
+    <div x-show="active === {{ $i }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 scale-105" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute inset-0">
+        @if($slide->image)
+            <img src="{{ $slide->image_url }}" alt="{{ $slide->title }}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-bl from-black/60 via-black/40 to-black/30"></div>
+        @else
+            <div class="w-full h-full bg-gradient-to-bl from-brand-700 via-brand-600 to-brand-500"></div>
+        @endif
+    </div>
+    @endforeach
+
     {{-- Decorative background pattern --}}
-    <div class="absolute inset-0 opacity-10">
+    <div class="absolute inset-0 opacity-10 z-[1]">
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
             <defs>
                 <pattern id="hero-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
@@ -24,56 +32,70 @@
     </div>
 
     {{-- Floating shapes --}}
-    <div class="absolute top-20 right-10 w-72 h-72 bg-accent-500/20 rounded-full blur-3xl animate-bounce-slow"></div>
-    <div class="absolute bottom-10 left-20 w-96 h-96 bg-brand-400/30 rounded-full blur-3xl"></div>
+    <div class="absolute top-20 right-10 w-72 h-72 bg-accent-500/20 rounded-full blur-3xl animate-bounce-slow z-[1]"></div>
+    <div class="absolute bottom-10 left-20 w-96 h-96 bg-brand-400/30 rounded-full blur-3xl z-[1]"></div>
 
     <div class="container-app relative z-10 py-16 md:py-24 lg:py-32">
         <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div data-aos="fade-up">
-                <span class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-1.5 rounded-full text-sm mb-6">
-                    <span class="material-symbols-outlined text-accent-300">auto_awesome</span>
-                    {{ site('hero_badge', __t('home.hero_badge')) }}
-                </span>
+            <div>
+                @foreach($slides as $i => $slide)
+                <div x-show="active === {{ $i }}" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                    @if($slide->badge)
+                        <span class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-1.5 rounded-full text-sm mb-6">
+                            <span class="material-symbols-outlined text-accent-300">auto_awesome</span>
+                            {{ $slide->badge }}
+                        </span>
+                    @endif
 
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 text-balance">
-                    {{ site('hero_title', __t('home.hero_title')) }}
-                </h1>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 text-balance">
+                        {{ $slide->title }}
+                    </h1>
 
-                <p class="text-lg sm:text-xl mb-8 text-white/90 max-w-xl text-pretty">
-                    {{ site('hero_subtitle', __t('home.hero_subtitle', ['amount' => config('ecommerce.shipping.free_threshold', 500), 'symbol' => currentCurrencySymbol()])) }}
-                </p>
+                    @if($slide->subtitle)
+                        <p class="text-lg sm:text-xl mb-8 text-white/90 max-w-xl text-pretty">
+                            {{ $slide->subtitle }}
+                        </p>
+                    @endif
 
-                <div class="flex gap-3 flex-wrap mb-10">
-                    <a href="{{ route('shop.index') }}" class="btn-accent btn-lg shadow-accent">
-                        <span class="material-symbols-outlined">shopping_cart</span>
-                        {{ __t('nav.shop_now') }}
-                    </a>
-                    <a href="{{ route('shop.index') }}?featured=1" class="btn btn-lg bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25">
-                        <span class="material-symbols-outlined">star</span>
-                        {{ __t('nav.featured') }}
-                    </a>
+                    <div class="flex gap-3 flex-wrap mb-10">
+                        @if($slide->link)
+                            <a href="{{ $slide->link }}" class="btn-accent btn-lg shadow-accent">
+                                <span class="material-symbols-outlined">shopping_cart</span>
+                                {{ $slide->btn_text ?: __t('nav.shop_now') }}
+                            </a>
+                        @else
+                            <a href="{{ route('shop.index') }}" class="btn-accent btn-lg shadow-accent">
+                                <span class="material-symbols-outlined">shopping_cart</span>
+                                {{ $slide->btn_text ?: __t('nav.shop_now') }}
+                            </a>
+                        @endif
+                        <a href="{{ route('shop.index') }}?featured=1" class="btn btn-lg bg-white/15 backdrop-blur-md border border-white/30 text-white hover:bg-white/25">
+                            <span class="material-symbols-outlined">star</span>
+                            {{ __t('nav.featured') }}
+                        </a>
+                    </div>
+
+                    {{-- Trust badges --}}
+                    <div class="grid grid-cols-3 gap-4 max-w-lg">
+                        <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
+                            <span class="material-symbols-outlined text-2xl text-accent-300">local_shipping</span>
+                            <span class="text-xs font-medium">{{ __t('home.hero_trust_1') }}</span>
+                        </div>
+                        <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
+                            <span class="material-symbols-outlined text-2xl text-accent-300">shield</span>
+                            <span class="text-xs font-medium">{{ __t('home.hero_trust_2') }}</span>
+                        </div>
+                        <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
+                            <span class="material-symbols-outlined text-2xl text-accent-300">undo</span>
+                            <span class="text-xs font-medium">{{ __t('home.hero_trust_3') }}</span>
+                        </div>
+                    </div>
                 </div>
-
-                {{-- Trust badges --}}
-                <div class="grid grid-cols-3 gap-4 max-w-lg">
-                    <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
-                        <span class="material-symbols-outlined text-2xl text-accent-300">local_shipping</span>
-                        <span class="text-xs font-medium">{{ __t('home.hero_trust_1') }}</span>
-                    </div>
-                    <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
-                        <span class="material-symbols-outlined text-2xl text-accent-300">shield</span>
-                        <span class="text-xs font-medium">{{ __t('home.hero_trust_2') }}</span>
-                    </div>
-                    <div class="flex flex-col items-center text-center gap-2 bg-white/10 backdrop-blur-md rounded-xl p-3">
-                        <span class="material-symbols-outlined text-2xl text-accent-300">undo</span>
-                        <span class="text-xs font-medium">{{ __t('home.hero_trust_3') }}</span>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <div class="hidden md:block relative">
                 <div class="relative">
-                    {{-- Floating product cards --}}
                     <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
                         <div class="grid grid-cols-2 gap-4">
                             @forelse($featuredProducts->take(4) as $i => $p)
@@ -99,7 +121,6 @@
                         </div>
                     </div>
 
-                    {{-- Floating notification badges --}}
                     <div class="absolute -top-4 -right-4 bg-accent-500 text-white px-4 py-2 rounded-full shadow-accent text-sm font-bold animate-bounce-slow">
                         <span class="material-symbols-outlined">local_fire_department</span> {{ __t('home.best_seller') }}
                     </div>
@@ -107,7 +128,47 @@
             </div>
         </div>
     </div>
+
+    {{-- Navigation arrows --}}
+    @if($slides->count() > 1)
+    <button @click="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 backdrop-blur-md hover:bg-white/30 text-white w-10 h-10 rounded-full flex items-center justify-center transition">
+        <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+    <button @click="next()" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 backdrop-blur-md hover:bg-white/30 text-white w-10 h-10 rounded-full flex items-center justify-center transition">
+        <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+
+    {{-- Dots indicator --}}
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        @foreach($slides as $i => $slide)
+        <button @click="goTo({{ $i }})" class="w-2.5 h-2.5 rounded-full transition-all duration-300 {{ $loop->first ? 'bg-white w-7' : 'bg-white/50' }}" :class="{ 'bg-white w-7': active === {{ $i }}, 'bg-white/50 w-2.5': active !== {{ $i }} }"></button>
+        @endforeach
+    </div>
+    @endif
 </section>
+@else
+{{-- Fallback static hero when no slides exist --}}
+<section class="relative overflow-hidden text-white bg-gradient-to-bl from-brand-700 via-brand-600 to-brand-500">
+    <div class="absolute inset-0 opacity-10">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+            <defs><pattern id="hero-pattern-fb" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="30" cy="30" r="2" fill="white"/></pattern></defs>
+            <rect width="100%" height="100%" fill="url(#hero-pattern-fb)"/>
+        </svg>
+    </div>
+    <div class="absolute top-20 right-10 w-72 h-72 bg-accent-500/20 rounded-full blur-3xl animate-bounce-slow"></div>
+    <div class="absolute bottom-10 left-20 w-96 h-96 bg-brand-400/30 rounded-full blur-3xl"></div>
+    <div class="container-app relative z-10 py-16 md:py-24 lg:py-32">
+        <div class="text-center">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 text-balance">{{ site('hero_title', __t('home.hero_title')) }}</h1>
+            <p class="text-lg sm:text-xl mb-8 text-white/90 max-w-2xl mx-auto text-pretty">{{ site('hero_subtitle', __t('home.hero_subtitle')) }}</p>
+            <a href="{{ route('shop.index') }}" class="btn-accent btn-lg shadow-accent inline-flex">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                {{ __t('nav.shop_now') }}
+            </a>
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- ========== MARQUEE FEATURES ========== --}}
 <section class="bg-white border-y border-gray-100">

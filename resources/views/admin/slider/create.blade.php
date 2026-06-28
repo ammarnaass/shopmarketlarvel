@@ -1,0 +1,73 @@
+@extends('admin.layout')
+
+@section('title', __t('admin.slider.add_slide'))
+
+@section('content')
+<div class="mb-6">
+    <a href="{{ route('admin.slider.index') }}" class="inline-flex items-center gap-1 text-sm text-on-surface-variant hover:text-primary transition">
+        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        {{ __t('admin.slider.back_to_list') }}
+    </a>
+    <h1 class="text-3xl font-bold mt-2">{{ __t('admin.slider.add_slide') }}</h1>
+</div>
+
+<form method="POST" action="{{ route('admin.slider.store') }}" enctype="multipart/form-data">
+    @csrf
+
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-5 mb-6">
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.slider.badge') }}</label>
+                <input type="text" name="badge" value="{{ old('badge') }}" class="w-full px-3 py-2 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary" placeholder="{{ __t('admin.slider.badge_placeholder') }}">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.slider.title') }} <span class="text-red-500">*</span></label>
+                <input type="text" name="title" value="{{ old('title') }}" required class="w-full px-3 py-2 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary @error('title') border-red-500 @enderror">
+                @error('title')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.slider.subtitle') }}</label>
+                <textarea name="subtitle" rows="2" class="w-full px-3 py-2 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary">{{ old('subtitle') }}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.slider.btn_text') }}</label>
+                <input type="text" name="btn_text" value="{{ old('btn_text') }}" class="w-full px-3 py-2 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary" placeholder="{{ __t('nav.shop_now') }}">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.slider.link') }}</label>
+                <input type="url" name="link" value="{{ old('link') }}" class="w-full px-3 py-2 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary font-mono text-sm" placeholder="https://..." dir="ltr">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.slider.image') }}</label>
+                <input type="file" name="image_file" accept="image/jpeg,image/jpg,image/png,image/webp" class="w-full text-sm @error('image_file') border-red-500 @enderror">
+                <p class="text-xs text-on-surface-variant mt-1">
+                    <span class="material-symbols-outlined ml-1 text-xs">info</span>JPEG, PNG, WEBP — {{ __t('admin.customize.up_to_2mb') }}
+                </p>
+                @error('image_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label class="block text-xs font-semibold mb-1 text-on-surface-variant">{{ __t('admin.customize.or_url') }}</label>
+                <input type="url" name="image" value="{{ old('image') }}" class="w-full px-3 py-2 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary font-mono text-sm" placeholder="https://..." dir="ltr">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">{{ __t('admin.slider.sort_order') }}</label>
+                <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" min="0" class="w-full px-3 py-2 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary">
+            </div>
+            <div>
+                <label class="flex items-center gap-3 p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low mt-6">
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }} class="w-5 h-5 text-primary rounded">
+                    <span class="text-sm font-semibold">{{ __t('admin.slider.is_active') }}</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-surface-container-lowest rounded-xl shadow-sm p-5 flex items-center justify-between">
+        <a href="{{ route('admin.slider.index') }}" class="text-on-surface-variant hover:text-primary transition text-sm">{{ __t('common.cancel') }}</a>
+        <button type="submit" class="bg-primary hover:bg-primary text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition active:scale-95">
+            <span class="material-symbols-outlined">save</span>
+            {{ __t('admin.slider.add_slide') }}
+        </button>
+    </div>
+</form>
+@endsection

@@ -231,6 +231,10 @@ Route::middleware(['auth', 'role:admin,manager'])->prefix('admin')->name('admin.
         Route::post('/{language}/settings', [App\Http\Controllers\Admin\LanguageController::class, 'updateSettings'])->name('update-settings');
     });
 
+    // Slider
+    Route::resource('slider', App\Http\Controllers\Admin\SliderController::class)->except(['show']);
+    Route::post('/slider/{slider}/toggle', [App\Http\Controllers\Admin\SliderController::class, 'toggleActive'])->name('slider.toggle');
+
     // Customize
     Route::get('/customize', [App\Http\Controllers\Admin\CustomizeController::class, 'index'])->name('customize.index');
     Route::post('/customize', [App\Http\Controllers\Admin\CustomizeController::class, 'update'])->name('customize.update');
