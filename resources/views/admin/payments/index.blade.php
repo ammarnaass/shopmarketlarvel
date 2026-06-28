@@ -44,7 +44,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         @foreach($methods as $method)
-            <div class="border-2 {{ $method->is_active ? 'border-{{ $method->color }}-500 bg-{{ $method->color }}-50' : 'border-gray-200' }} rounded-xl p-4 relative">
+            <div class="border-2 {{ $method->is_active ? 'border-green-500 bg-green-50' : 'border-gray-200' }} rounded-xl p-4 relative">
                 @if($method->is_active)
                     <span class="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-0.5 rounded-full">
                         <span class="material-symbols-outlined text-xs align-middle" style="font-size:12px">check</span> {{ __t('admin.payments.enabled') }}
@@ -54,13 +54,13 @@
                         {{ __t('admin.payment_methods.inactive') }}
                     </span>
                 @endif
-                <div class="w-12 h-12 rounded-lg bg-{{ $method->color }}-100 text-{{ $method->color }}-600 flex items-center justify-center mb-3">
+                <div class="w-12 h-12 rounded-lg flex items-center justify-center mb-3 {{ 'bg-' . $method->color . '-100 text-' . $method->color . '-600' }}">
                     <span class="material-symbols-outlined">{{ $method->icon }}</span>
                 </div>
                 <h3 class="font-bold">{{ $method->name }}</h3>
                 <p class="text-xs text-gray-600 mt-1">{{ $method->description }}</p>
                 @if($method->fees_value > 0)
-                    <p class="text-xs mt-2 text-{{ $method->color }}-600 font-medium">
+                    <p class="text-xs mt-2 {{ 'text-' . $method->color . '-600' }} font-medium">
                         @if($method->fees_type === 'percent'){{ $method->fees_value }}%@else{{ number_format($method->fees_value, 0) }} @endif
                         {{ __t('admin.payment_methods.fees') }}
                     </p>
