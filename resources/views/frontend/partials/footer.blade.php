@@ -4,8 +4,9 @@
     $countryName = $defaultCountry['name'] ?? __t('footer.favorite_store');
 @endphp
 
-{{-- Newsletter section --}}
-@if(site('show_newsletter', '1') === '1')
+{{-- Newsletter section — hidden on auth pages --}}
+@php $isAuthPage = request()->is('*login') || request()->is('*register') || request()->routeIs('login') || request()->routeIs('register'); @endphp
+@if(site('show_newsletter', '1') === '1' && !$isAuthPage)
 <section class="relative overflow-hidden" style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #7c3aed 100%);">
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div class="absolute -top-20 -right-20 w-72 h-72 bg-white/5 rounded-full blur-2xl"></div>

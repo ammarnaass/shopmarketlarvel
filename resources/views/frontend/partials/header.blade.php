@@ -46,7 +46,7 @@
 @endif
 
 {{-- Main header --}}
-<header class="sticky top-0 z-40 bg-white border-b border-outline-variant shadow-sm"
+<header class="sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-outline-variant dark:border-gray-700 shadow-sm"
         x-data="{
             mobileMenu: false,
             searchOpen: false,
@@ -111,18 +111,18 @@
             <div x-show="open && (results.length > 0 || loading)"
                  x-transition.opacity
                  @click.outside="close()"
-                 class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-soft-xl border border-outline-variant overflow-hidden z-50 max-h-96 overflow-y-auto">
+                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-2xl shadow-soft-xl border border-outline-variant dark:border-gray-600 overflow-hidden z-50 max-h-96 overflow-y-auto">
                 <div x-show="loading" class="p-4 text-center text-gray-500">
                     <span class="material-symbols-outlined text-2xl text-brand-500 animate-spin">sync</span>
                 </div>
                 <template x-for="item in results" :key="item.id">
-                    <a :href="item.url" class="flex items-center gap-3 p-3 hover:bg-brand-50 transition border-b border-outline-variant last:border-0">
-                        <img :src="item.image" :alt="item.name" class="w-10 h-10 rounded-lg object-cover" loading="lazy">
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-800 truncate" x-text="item.name"></p>
-                            <p class="text-xs text-brand-600 font-bold" x-text="item.price"></p>
-                        </div>
-                        <span class="material-symbols-outlined text-gray-300">chevron_right</span>
+                     <a :href="item.url" class="flex items-center gap-3 p-3 hover:bg-brand-50 dark:hover:bg-gray-700 transition border-b border-outline-variant dark:border-gray-600 last:border-0">
+                         <img :src="item.image" :alt="item.name" class="w-10 h-10 rounded-lg object-cover" loading="lazy">
+                         <div class="flex-1 min-w-0">
+                             <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate" x-text="item.name"></p>
+                             <p class="text-xs text-brand-600 dark:text-brand-400 font-bold" x-text="item.price"></p>
+                         </div>
+                         <span class="material-symbols-outlined text-gray-300 dark:text-gray-500">chevron_right</span>
                     </a>
                 </template>
             </div>
@@ -133,19 +133,19 @@
             {{-- Currency Selector --}}
             <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                 <button @click="open = !open" type="button"
-                        class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform flex items-center gap-1 text-base hover:bg-gray-100 rounded-full"
+                        class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform flex items-center gap-1 text-base hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
                         title="{{ __t('topbar.change_currency') }}">
                     <span class="text-xs font-semibold">{{ countryCurrency(session('selected_country', 'SD')) }}</span>
                 </button>
                 <div x-show="open" x-transition
-                     class="absolute left-0 mt-2 w-44 bg-white border border-outline-variant rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+                     class="absolute left-0 mt-2 w-44 bg-white dark:bg-gray-800 border border-outline-variant dark:border-gray-600 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
                     @php $countries = config('ecommerce.countries', []); @endphp
                     @foreach($countries as $code => $info)
                         <a href="{{ route('currency.switch', ['code' => $code]) }}"
-                           class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-sm {{ session('selected_country', 'SD') === $code ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-gray-700' }}">
+                           class="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm {{ session('selected_country', 'SD') === $code ? 'bg-brand-50 dark:bg-gray-700 text-brand-700 dark:text-brand-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">
                             <span class="text-base font-bold w-8 text-center">{{ $info['currency_symbol'] ?? '' }}</span>
                             <span class="flex-1">{{ $info['name'] ?? $code }}</span>
-                            <span class="text-xs text-gray-400">{{ $code }}</span>
+                            <span class="text-xs text-gray-400 dark:text-gray-500">{{ $code }}</span>
                         </a>
                     @endforeach
                 </div>
@@ -154,7 +154,7 @@
             {{-- Language Switcher --}}
             <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                 <button @click="open = !open" type="button"
-                        class="flex items-center gap-1.5 px-2 py-1.5 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+                        class="flex items-center gap-1.5 px-2 py-1.5 text-sm font-semibold rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                         title="{{ __t('nav.language') }}">
                     @php $currentLang = $languages->firstWhere('code', current_locale()); @endphp
                     <span>{{ $currentLang->flag ?? '' }}</span>
@@ -162,15 +162,15 @@
                     <span class="material-symbols-outlined text-base transition-transform" :class="open ? 'rotate-180' : ''">expand_more</span>
                 </button>
                 <div x-show="open" x-transition
-                     class="absolute left-0 mt-2 w-44 bg-white border border-outline-variant rounded-xl shadow-lg z-50 overflow-hidden">
+                     class="absolute left-0 mt-2 w-44 bg-white dark:bg-gray-800 border border-outline-variant dark:border-gray-600 rounded-xl shadow-lg z-50 overflow-hidden">
                     @foreach($languages ?? collect() as $lang)
                         <a href="{{ route('lang.switch', ['locale' => $lang->code]) }}"
-                           class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-sm transition-colors {{ current_locale() === $lang->code ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-gray-700' }}">
+                           class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm transition-colors {{ current_locale() === $lang->code ? 'bg-brand-50 dark:bg-gray-700 text-brand-700 dark:text-brand-400 font-semibold' : 'text-gray-700 dark:text-gray-300' }}">
                             <span class="text-lg">{{ $lang->flag ?? '🏳️' }}</span>
                             <span class="flex-1">{{ $lang->native_name }}</span>
-                            <span class="text-xs text-gray-400 uppercase">{{ $lang->code }}</span>
+                            <span class="text-xs text-gray-400 dark:text-gray-500 uppercase">{{ $lang->code }}</span>
                             @if($lang->is_default)
-                                <span class="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">{{ __t('common.default') }}</span>
+                                <span class="text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded-full">{{ __t('common.default') }}</span>
                             @endif
                         </a>
                     @endforeach
@@ -178,12 +178,12 @@
             </div>
 
             {{-- Mobile Search Icon --}}
-            <button @click="searchOpen = !searchOpen" class="lg:hidden material-symbols-outlined text-primary p-2 hover:bg-gray-100 rounded-full">
+            <button @click="searchOpen = !searchOpen" class="lg:hidden material-symbols-outlined text-primary p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
                 search
             </button>
 
             {{-- Wishlist --}}
-            <a href="{{ route('wishlist.index') }}" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform relative hover:bg-gray-100 rounded-full">
+            <a href="{{ route('wishlist.index') }}" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform relative hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
                 favorite
                 <span x-show="$store.wishlist.count > 0"
                       x-text="$store.wishlist.count"
@@ -192,7 +192,7 @@
             </a>
 
             {{-- Cart --}}
-            <a href="{{ route('cart.index') }}" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform relative hover:bg-gray-100 rounded-full">
+            <a href="{{ route('cart.index') }}" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform relative hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
                 shopping_cart
                 <span x-show="$store.cart.count > 0"
                       x-text="$store.cart.count"
@@ -203,34 +203,34 @@
             {{-- Profile / User --}}
             @auth
                 <div class="relative" @click.outside="userMenu = false">
-                    <button @click="userMenu = !userMenu" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform hover:bg-gray-100 rounded-full">
+                    <button @click="userMenu = !userMenu" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full">
                         person
                     </button>
                     <div x-show="userMenu"
                          x-transition.duration.150ms
                          x-cloak
-                         class="absolute left-0 mt-2 w-64 bg-white rounded-2xl shadow-soft-xl border border-outline-variant py-2 z-50">
-                        <div class="px-4 py-3 border-b border-gray-100">
-                            <p class="font-semibold text-sm text-gray-800">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
+                         class="absolute left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-soft-xl border border-outline-variant dark:border-gray-600 py-2 z-50">
+                        <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                            <p class="font-semibold text-sm text-gray-800 dark:text-gray-100">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ auth()->user()->email }}</p>
                         </div>
                         <div class="py-1">
-                            <a href="{{ route('account.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
+                            <a href="{{ route('account.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-gray-700 hover:text-brand-700 dark:hover:text-brand-400 transition">
                                 <span class="material-symbols-outlined w-4">person</span> {{ __t('nav.my_account') }}
                             </a>
-                            <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
+                            <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-gray-700 hover:text-brand-700 dark:hover:text-brand-400 transition">
                                 <span class="material-symbols-outlined w-4">inventory_2</span> {{ __t('nav.my_orders') }}
                             </a>
                             @if(auth()->user()->isAdmin() || auth()->user()->isManager())
-                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 transition">
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-gray-700 hover:text-brand-700 dark:hover:text-brand-400 transition">
                                     <span class="material-symbols-outlined w-4">dashboard</span> {{ __t('nav.dashboard') }}
                                 </a>
                             @endif
                         </div>
-                        <div class="border-t border-gray-100 pt-1">
+                        <div class="border-t border-gray-100 dark:border-gray-700 pt-1">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="flex items-center gap-3 w-full text-right px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition">
+                                <button type="submit" class="flex items-center gap-3 w-full text-right px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition">
                                     <span class="material-symbols-outlined w-4">logout</span> {{ __t('nav.logout') }}
                                 </button>
                             </form>
@@ -238,7 +238,7 @@
                     </div>
                 </div>
             @else
-                <a href="{{ route('login') }}" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform hover:bg-gray-100 rounded-full" title="{{ __t('nav.my_account') }}">
+                <a href="{{ route('login') }}" class="material-symbols-outlined text-primary p-2 active:scale-95 transition-transform hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full" title="{{ __t('nav.my_account') }}">
                     person
                 </a>
             @endauth
@@ -249,11 +249,11 @@
     <div x-show="searchOpen"
          x-collapse
          x-cloak
-         class="lg:hidden border-t border-outline-variant bg-white">
+         class="lg:hidden border-t border-outline-variant dark:border-gray-700 bg-white dark:bg-gray-900">
         <div class="container-app py-3">
             <form action="{{ route('shop.index') }}" method="GET" class="relative">
-                <input type="text" name="q" placeholder="{{ __t('nav.search_placeholder') }}" class="w-full pr-10 pl-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-sm">
-                <span class="material-symbols-outlined absolute top-1/2 -translate-y-1/2 right-4 text-gray-400">search</span>
+                <input type="text" name="q" placeholder="{{ __t('nav.search_placeholder') }}" class="w-full pr-10 pl-4 py-2 bg-surface-container-low dark:bg-gray-800 border border-outline-variant dark:border-gray-600 rounded-full text-sm dark:text-gray-100">
+                <span class="material-symbols-outlined absolute top-1/2 -translate-y-1/2 right-4 text-gray-400 dark:text-gray-500">search</span>
                 <button type="submit" class="absolute left-1 top-1 bottom-1 px-4 btn-primary rounded-full text-xs">{{ __t('nav.search_submit') }}</button>
             </form>
         </div>

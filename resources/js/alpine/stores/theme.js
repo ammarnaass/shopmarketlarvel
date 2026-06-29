@@ -8,6 +8,8 @@ document.addEventListener('alpine:init', () => {
         dark: Alpine.$persist(false).as('amar:theme').using(localStorage),
 
         init() {
+            // Apply persisted theme on load
+            this._apply();
             // Watch for system preference changes
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
                 if (this.dark === null) {
