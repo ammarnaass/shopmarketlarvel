@@ -9,19 +9,21 @@
     $defaultCountry = old('country_code', config('ecommerce.store.default_country', 'SD'));
 @endphp
 
-<section class="min-h-[85vh] flex items-center justify-center py-12 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800" style="background: linear-gradient(135deg, {{ $siteSettings['accent_color'] ?? '#f59e0b' }}11 0%, {{ $siteSettings['primary_color'] ?? '#004ac6' }}11 50%, {{ $siteSettings['accent_color'] ?? '#f59e0b' }}08 100%);">
+<section class="min-h-[85vh] flex items-center justify-center py-12 bg-surface dark:bg-gray-900">
     <div class="w-full max-w-2xl mx-auto px-4">
         <div class="card animate-fade-up overflow-hidden border border-outline-variant/60 dark:border-gray-700 shadow-xl dark:bg-gray-800/90 backdrop-blur-sm">
             {{-- Header with logo --}}
-            <div class="relative overflow-hidden p-8 text-center" style="background: linear-gradient(135deg, {{ $siteSettings['accent_color'] ?? '#f59e0b' }}, {{ $siteSettings['primary_color'] ?? '#004ac6' }});">
-                <div class="absolute inset-0 bg-black/10"></div>
+            <div class="relative overflow-hidden p-8 text-center" style="background: {{ $siteSettings['primary_color'] ?? '#004ac6' }};">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                <div class="absolute -bottom-8 -left-8 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
                 <div class="relative z-10">
                     @if(site('store_logo'))
-                        <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white/90 backdrop-blur-md p-2 flex items-center justify-center shadow-lg border border-white/30">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-2xl backdrop-blur-lg p-2 flex items-center justify-center shadow-lg border border-white/30" style="background: rgba(255,255,255,0.15);">
                             <img src="{{ site('store_logo') }}" alt="{{ site('store_name') }}" class="w-full h-full object-contain">
                         </div>
                     @else
-                        <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+                        <div class="w-20 h-20 mx-auto mb-4 rounded-2xl backdrop-blur-lg flex items-center justify-center border border-white/30" style="background: rgba(255,255,255,0.15);">
                             <span class="material-symbols-outlined text-3xl text-white">storefront</span>
                         </div>
                     @endif
@@ -140,7 +142,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-block btn-lg mt-2 text-white font-bold rounded-xl py-3.5 transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-lg" style="background: linear-gradient(135deg, {{ $siteSettings['accent_color'] ?? '#f59e0b' }}, {{ $siteSettings['primary_color'] ?? '#004ac6' }});">
+                    <button type="submit" class="btn-block btn-lg mt-2 text-white font-bold rounded-xl py-3.5 transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-lg" style="background: {{ $siteSettings['primary_color'] ?? '#004ac6' }};">
                         <span class="material-symbols-outlined align-middle ml-1">person_add</span>
                         {{ __t('auth.register.submit') }}
                     </button>

@@ -117,8 +117,8 @@
 <body class="bg-surface text-on-surface min-h-screen flex flex-col antialiased">
 
     {{-- Page loader --}}
-    <div class="page-loader dark:bg-gray-900" id="pageLoader">
-        <div class="page-loader-spinner dark:border-gray-700 dark:border-t-brand-400"></div>
+    <div class="page-loader" id="pageLoader">
+        <div class="page-loader-spinner"></div>
     </div>
 
     <script>
