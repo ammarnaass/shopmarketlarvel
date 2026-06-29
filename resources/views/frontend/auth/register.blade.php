@@ -3,13 +3,26 @@
 @section('title', __t('auth.register.title') . ' - ' . site('store_name'))
 @section('description', __t('auth.register.description') . ' ' . site('store_name'))
 
+@push('styles')
+<style>
+    .auth-form .form-input {
+        background-color: #fff;
+        border-color: {{ $siteSettings['primary_color'] ?? '#004ac6' }} !important;
+    }
+    .dark .auth-form .form-input {
+        background-color: #1f2937;
+        border-color: {{ $siteSettings['primary_color'] ?? '#004ac6' }}88 !important;
+    }
+</style>
+@endpush
+
 @section('content')
 @php
     $countries = config('ecommerce.countries', []);
     $defaultCountry = old('country_code', config('ecommerce.store.default_country', 'SD'));
 @endphp
 
-<section class="min-h-[85vh] flex items-center justify-center py-12 bg-surface dark:bg-gray-900">
+<section class="min-h-[85vh] flex items-center justify-center py-12 bg-white dark:bg-gray-900">
     <div class="w-full max-w-2xl mx-auto px-4">
         <div class="card animate-fade-up overflow-hidden border border-outline-variant/60 dark:border-gray-700 shadow-xl dark:bg-gray-800/90 backdrop-blur-sm">
             {{-- Header with logo --}}
@@ -32,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="card-body p-6 md:p-8">
+            <div class="card-body p-6 md:p-8 auth-form">
                 @if($errors->any())
                     <div class="alert alert-danger mb-5">
                         <span class="material-symbols-outlined text-lg">warning</span>
