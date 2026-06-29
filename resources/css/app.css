@@ -487,7 +487,7 @@
 
     .sidebar-link.active,
     nav a.active {
-        @apply bg-secondary dark:bg-secondary-fixed-dim border-r-4 border-primary text-on-secondary font-bold shadow-sm;
+        @apply bg-secondary border-r-4 border-primary text-on-secondary font-bold shadow-sm;
     }
 
     /* Status badges with dot indicator (uiux pattern) */

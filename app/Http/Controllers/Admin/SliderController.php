@@ -9,11 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class SliderController extends Controller
 {
     private const IMAGE_MAX_KB = 2048;
     private const IMAGE_MIMES = 'jpeg,jpg,png,webp';
+    private const SLIDER_WIDTH = 1920;
+    private const SLIDER_HEIGHT = 600;
 
     public function index(): View
     {
@@ -106,10 +110,27 @@ class SliderController extends Controller
         if (!$file || !$file->isValid()) return null;
         $ext = strtolower($file->getClientOriginalExtension() ?: $file->extension() ?: 'jpg');
         $filename = $folder . '/' . Str::random(20) . '.' . $ext;
-        $file->storeAs(dirname($filename), basename($filename), 'public');
+        $stored = $file->storeAs(dirname($filename), basename($filename), 'public');
         if ($oldPath && !preg_match('#^https?://#i', $oldPath) && Storage::disk('public')->exists($oldPath)) {
             Storage::disk('public')->delete($oldPath);
         }
+        if ($stored) {
+            $this->processImage(Storage::disk('public')->path($filename));
+        }
         return $filename;
+    }
+
+    private function processImage(string $path): void
+    {
+        try {
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($path);
+            if ($image->width() >= self::SLIDER_WIDTH || $image->height() >= self::SLIDER_HEIGHT) {
+                $image->cover(self::SLIDER_WIDTH, self::SLIDER_HEIGHT);
+                $image->save();
+            }
+        } catch (\Throwable $e) {
+            logger()->warning('Slider image processing failed: ' . $e->getMessage());
+        }
     }
 }

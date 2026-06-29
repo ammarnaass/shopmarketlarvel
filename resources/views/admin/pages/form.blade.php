@@ -39,11 +39,35 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-semibold text-on-surface mb-1">{{ __t('admin.pages.icon') }}</label>
+                <input type="text" name="icon" value="{{ old('icon', $page->icon ?? '') }}"
+                       class="w-full border rounded-lg px-4 py-2.5 text-sm" placeholder="info, help, shield...">
+                <p class="text-gray-400 text-xs mt-1">{{ __t('admin.pages.icon_help') }}</p>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-on-surface mb-1">{{ __t('admin.pages.color') }}</label>
+                <select name="color" class="w-full border rounded-lg px-4 py-2.5 text-sm">
+                    <option value="blue" {{ old('color', $page->color ?? '') === 'blue' ? 'selected' : '' }}>Blue</option>
+                    <option value="green" {{ old('color', $page->color ?? '') === 'green' ? 'selected' : '' }}>Green</option>
+                    <option value="purple" {{ old('color', $page->color ?? '') === 'purple' ? 'selected' : '' }}>Purple</option>
+                    <option value="indigo" {{ old('color', $page->color ?? '') === 'indigo' ? 'selected' : '' }}>Indigo</option>
+                    <option value="red" {{ old('color', $page->color ?? '') === 'red' ? 'selected' : '' }}>Red</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-on-surface mb-1">{{ __t('admin.pages.intro') }}</label>
+                <textarea name="intro" rows="2"
+                          class="w-full border rounded-lg px-4 py-2.5 text-sm">{{ old('intro', $page->intro ?? '') }}</textarea>
+            </div>
+        </div>
+
         <div>
             <label class="block text-sm font-semibold text-on-surface mb-1">{{ __t('admin.pages.content') }}</label>
             <textarea name="content" rows="15"
                       class="w-full border rounded-lg px-4 py-2.5 font-mono text-sm">{{ old('content', $page->content ?? '') }}</textarea>
-            <p class="text-gray-400 text-xs mt-1">{{ __t('admin.pages.supports_markdown') }}</p>
+            <p class="text-gray-400 text-xs mt-1">{{ __t('admin.pages.supports_json') }}</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

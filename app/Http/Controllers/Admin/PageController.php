@@ -52,6 +52,9 @@ class PageController extends Controller
         return $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'required|string|max:255|' . $uniqueRule,
+            'icon' => 'nullable|string|max:50',
+            'color' => 'nullable|string|max:50',
+            'intro' => 'nullable|string|max:500',
             'content' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',

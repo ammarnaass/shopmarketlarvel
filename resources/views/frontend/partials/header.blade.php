@@ -29,13 +29,6 @@
                 </span>
             </div>
             <div class="flex items-center gap-4">
-                {{-- Theme toggle --}}
-                <button @click="$store.theme.toggle()"
-                        class="hover:opacity-80 transition flex items-center"
-                        :title="$store.theme.dark ? '{{ __t('topbar.day_mode') }}' : '{{ __t('topbar.night_mode') }}'"
-                        style="color: {{ $topBarColor }}">
-                    <span class="material-symbols-outlined text-base" x-text="$store.theme.dark ? 'light_mode' : 'dark_mode'"></span>
-                </button>
                 <span class="opacity-35">|</span>
                 <a href="{{ route('track') }}" class="hover:opacity-80 transition text-sm" style="color: {{ $topBarColor }}">{{ __t('topbar.track_order') }}</a>
                 <span class="opacity-35">|</span>
@@ -75,12 +68,10 @@
                     <a class="font-body-md text-sm transition-colors {{ request()->routeIs('shop.index') && !request('featured') ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('shop.index') }}">{{ __t('nav.products') }}</a>
                 @endif
                 @if(site('nav_show_categories', '1') === '1')
-                    {{-- Dynamic category links --}}
                     @foreach(($navCategories ?? collect())->take((int)site('nav_categories_limit', 3)) as $cat)
                         <a class="font-body-md text-sm transition-colors {{ request()->is('category/'.$cat->slug) ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('shop.category', ['slug' => $cat->slug]) }}">{{ $cat->name }}</a>
                     @endforeach
                 @endif
-                {{-- Dynamic page links --}}
                 @foreach(($navPages ?? collect()) as $page)
                     <a class="font-body-md text-sm transition-colors {{ request()->is('page/'.$page->slug) ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-secondary hover:text-primary' }}" href="{{ route('page.show', ['slug' => $page->slug]) }}">{{ $page->title }}</a>
                 @endforeach

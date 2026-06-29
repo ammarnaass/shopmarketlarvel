@@ -9,7 +9,7 @@
 @if($slides->count() > 0)
 <section x-data="carousel({{ $slides->count() }}, { autoplay: true, interval: 5000 })" @mouseenter="pause()" @mouseleave="resume()" class="relative overflow-hidden text-white">
     @foreach($slides as $i => $slide)
-    <div x-show="active === {{ $i }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="min-h-[420px] md:min-h-[520px] flex items-center">
+    <div x-show="active === {{ $i }}" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="min-h-[280px] sm:min-h-[350px] md:min-h-[450px] lg:min-h-[520px] xl:aspect-[16/5] xl:max-h-[600px] flex items-center">
         <div class="absolute inset-0">
             @if($slide->image)
                 <img src="{{ $slide->image_url }}" alt="{{ $slide->title }}" class="w-full h-full object-cover">
@@ -81,7 +81,7 @@
 </section>
 @else
 {{-- Fallback static hero when no slides exist --}}
-<section class="relative overflow-hidden text-white bg-gradient-to-bl from-brand-700 via-brand-600 to-brand-500 min-h-[420px] flex items-center">
+<section class="relative overflow-hidden text-white bg-gradient-to-bl from-brand-700 via-brand-600 to-brand-500 min-h-[280px] sm:min-h-[350px] md:min-h-[450px] lg:min-h-[520px] flex items-center">
     <div class="absolute inset-0 opacity-10">
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><pattern id="hero-pattern-fb" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse"><circle cx="30" cy="30" r="2" fill="white"/></pattern></defs><rect width="100%" height="100%" fill="url(#hero-pattern-fb)"/></svg>
     </div>

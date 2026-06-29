@@ -9,18 +9,14 @@
         background-color: #fff;
         border-color: {{ $siteSettings['primary_color'] ?? '#004ac6' }} !important;
     }
-    .dark .auth-form .form-input {
-        background-color: #1f2937;
-        border-color: {{ $siteSettings['primary_color'] ?? '#004ac6' }}88 !important;
-    }
 </style>
 @endpush
 
 @section('content')
 
-<section class="min-h-[85vh] flex items-center justify-center py-12 bg-white dark:bg-gray-900">
+<section class="min-h-[85vh] flex items-center justify-center py-12 bg-white">
     <div class="w-full max-w-md mx-auto px-4">
-        <div class="card animate-fade-up overflow-hidden border border-outline-variant/60 dark:border-gray-700 shadow-xl dark:bg-gray-800/90 backdrop-blur-sm">
+        <div class="card animate-fade-up overflow-hidden border border-outline-variant/60 shadow-xl backdrop-blur-sm">
             {{-- Header with logo --}}
             <div class="relative overflow-hidden p-8 text-center" style="background: {{ $siteSettings['primary_color'] ?? '#004ac6' }};">
                 <div class="absolute inset-0 bg-black/20"></div>
@@ -80,11 +76,11 @@
                     </div>
 
                     <div class="flex items-center justify-between text-sm">
-                        <label class="flex items-center gap-2 cursor-pointer text-on-surface-variant dark:text-gray-300">
+                        <label class="flex items-center gap-2 cursor-pointer text-on-surface-variant">
                             <input type="checkbox" name="remember" class="form-checkbox">
                             <span>{{ __t('auth.login.remember_me') }}</span>
                         </label>
-                        <a href="#" class="text-brand-600 dark:text-brand-400 font-semibold hover:underline">
+                        <a href="#" class="text-brand-600 font-semibold hover:underline">
                             {{ __t('auth.login.forgot_password') }}
                         </a>
                     </div>
@@ -97,27 +93,27 @@
 
                 <div class="relative my-6">
                     <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-outline-variant dark:border-gray-600"></div>
+                        <div class="w-full border-t border-outline-variant"></div>
                     </div>
                     <div class="relative flex justify-center text-xs">
-                        <span class="bg-surface-container-lowest dark:bg-gray-800 px-3 text-on-surface-variant">{{ __t('auth.login.or') }}</span>
+                        <span class="bg-surface-container-lowest px-3 text-on-surface-variant">{{ __t('auth.login.or') }}</span>
                     </div>
                 </div>
 
-                <p class="text-center text-sm text-on-surface-variant dark:text-gray-300">
+                <p class="text-center text-sm text-on-surface-variant">
                     {{ __t('auth.login.no_account') }}
-                    <a href="{{ route('register') }}" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">
+                    <a href="{{ route('register') }}" class="text-brand-600 font-bold hover:underline">
                         {{ __t('auth.login.register_now') }}
                     </a>
                 </p>
             </div>
         </div>
 
-        <p class="text-center text-xs text-on-surface-variant/60 dark:text-gray-500 mt-6">
+        <p class="text-center text-xs text-on-surface-variant/60 mt-6">
             {{ __t('auth.login.terms_prefix') }}
-            <a href="{{ route('page.show', ['slug' => 'terms']) }}" class="text-brand-600 dark:text-brand-400 hover:underline">{{ __t('auth.login.terms') }}</a>
+            <a href="{{ route('page.show', ['slug' => 'terms']) }}" class="text-brand-600 hover:underline">{{ __t('auth.login.terms') }}</a>
             {{ __t('auth.login.and') }}
-            <a href="{{ route('page.show', ['slug' => 'privacy']) }}" class="text-brand-600 dark:text-brand-400 hover:underline">{{ __t('auth.login.privacy') }}</a>
+            <a href="{{ route('page.show', ['slug' => 'privacy']) }}" class="text-brand-600 hover:underline">{{ __t('auth.login.privacy') }}</a>
         </p>
     </div>
 </section>

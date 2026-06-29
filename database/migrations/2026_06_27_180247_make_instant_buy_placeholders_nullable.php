@@ -1,22 +1,26 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement('ALTER TABLE `instant_buy_settings` MODIFY `field_country_placeholder` VARCHAR(100) NULL');
-        DB::statement('ALTER TABLE `instant_buy_settings` MODIFY `field_state_placeholder` VARCHAR(100) NULL');
-        DB::statement('ALTER TABLE `instant_buy_settings` MODIFY `field_city_placeholder` VARCHAR(100) NULL');
+        Schema::table('instant_buy_settings', function (Blueprint $table) {
+            $table->string('field_country_placeholder', 100)->nullable()->change();
+            $table->string('field_state_placeholder', 100)->nullable()->change();
+            $table->string('field_city_placeholder', 100)->nullable()->change();
+        });
     }
 
     public function down(): void
     {
-        DB::statement('ALTER TABLE `instant_buy_settings` MODIFY `field_country_placeholder` VARCHAR(100) NOT NULL DEFAULT \'اختر الدولة\'');
-        DB::statement('ALTER TABLE `instant_buy_settings` MODIFY `field_state_placeholder` VARCHAR(100) NOT NULL DEFAULT \'اختر الولاية\'');
-        DB::statement('ALTER TABLE `instant_buy_settings` MODIFY `field_city_placeholder` VARCHAR(100) NOT NULL DEFAULT \'أدخل المدينة\'');
+        Schema::table('instant_buy_settings', function (Blueprint $table) {
+            $table->string('field_country_placeholder', 100)->nullable(false)->default('اختر الدولة')->change();
+            $table->string('field_state_placeholder', 100)->nullable(false)->default('اختر الولاية')->change();
+            $table->string('field_city_placeholder', 100)->nullable(false)->default('أدخل المدينة')->change();
+        });
     }
 };

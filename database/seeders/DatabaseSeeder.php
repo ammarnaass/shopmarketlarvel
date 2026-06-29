@@ -39,6 +39,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Seeding coupons...');
         $this->seedCoupons();
 
+        $this->command->info('Seeding pages...');
+        $this->call(PageSeeder::class);
+
         $this->command->info('Seeding products...');
         $this->seedProducts();
 

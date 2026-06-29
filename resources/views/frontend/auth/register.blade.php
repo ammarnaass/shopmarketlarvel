@@ -9,10 +9,6 @@
         background-color: #fff;
         border-color: {{ $siteSettings['primary_color'] ?? '#004ac6' }} !important;
     }
-    .dark .auth-form .form-input {
-        background-color: #1f2937;
-        border-color: {{ $siteSettings['primary_color'] ?? '#004ac6' }}88 !important;
-    }
 </style>
 @endpush
 
@@ -22,9 +18,9 @@
     $defaultCountry = old('country_code', config('ecommerce.store.default_country', 'SD'));
 @endphp
 
-<section class="min-h-[85vh] flex items-center justify-center py-12 bg-white dark:bg-gray-900">
+<section class="min-h-[85vh] flex items-center justify-center py-12 bg-white">
     <div class="w-full max-w-2xl mx-auto px-4">
-        <div class="card animate-fade-up overflow-hidden border border-outline-variant/60 dark:border-gray-700 shadow-xl dark:bg-gray-800/90 backdrop-blur-sm">
+        <div class="card animate-fade-up overflow-hidden border border-outline-variant/60 shadow-xl backdrop-blur-sm">
             {{-- Header with logo --}}
             <div class="relative overflow-hidden p-8 text-center" style="background: {{ $siteSettings['primary_color'] ?? '#004ac6' }};">
                 <div class="absolute inset-0 bg-black/20"></div>
@@ -121,7 +117,7 @@
                         <div class="flex gap-2" dir="ltr">
                             <input type="text" id="dial_code" value="{{ $countries[$defaultCountry]['dial_code'] ?? '' }}"
                                    readonly
-                                   class="w-20 px-3 py-2.5 border border-outline-variant dark:border-gray-600 rounded-xl bg-surface-container-low dark:bg-gray-700 text-center font-semibold text-on-surface-variant">
+                                   class="w-20 px-3 py-2.5 border border-outline-variant rounded-xl bg-surface-container-low text-center font-semibold text-on-surface-variant">
                             <input type="text" name="phone" value="{{ old('phone') }}" required
                                    placeholder="5XXXXXXXX"
                                    class="flex-1 form-input text-right @error('phone') form-input-error @enderror">
@@ -163,16 +159,16 @@
 
                 <div class="relative my-6">
                     <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-outline-variant dark:border-gray-600"></div>
+                        <div class="w-full border-t border-outline-variant"></div>
                     </div>
                     <div class="relative flex justify-center text-xs">
-                        <span class="bg-surface-container-lowest dark:bg-gray-800 px-3 text-on-surface-variant">{{ __t('auth.register.or') }}</span>
+                        <span class="bg-surface-container-lowest px-3 text-on-surface-variant">{{ __t('auth.register.or') }}</span>
                     </div>
                 </div>
 
-                <p class="text-center text-sm text-on-surface-variant dark:text-gray-300">
+                <p class="text-center text-sm text-on-surface-variant">
                     {{ __t('auth.register.has_account') }}
-                    <a href="{{ route('login') }}" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">
+                    <a href="{{ route('login') }}" class="text-brand-600 font-bold hover:underline">
                         {{ __t('auth.register.login') }}
                     </a>
                 </p>
